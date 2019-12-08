@@ -4,6 +4,7 @@ import 'package:commerce_shop_flutter/pages/home.dart';
 import 'package:commerce_shop_flutter/pages/market.dart';
 import 'package:commerce_shop_flutter/pages/user_center.dart';
 import 'package:commerce_shop_flutter/pages/rent_land.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class IndexPage extends StatefulWidget {
   final int counter;
@@ -46,24 +47,26 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance =ScreenUtil(width: 750,height: 1334,allowFontScaling: true)..init(context);
     return Scaffold(
-        backgroundColor: Color.fromARGB(244, 245, 245, 1),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          items: _bottomList,
-          onTap: (index) {
-            setState(() {
-              // 切换底部展示页面
-              _currentIndex = index;
-              currentPage = tabPages[_currentIndex];
-            });
-          },
-        ),
-        // body: tabPages[_currentIndex],
-        body: IndexedStack(
-          index: _currentIndex,
-          children: tabPages,
-        ));
+      backgroundColor: Color.fromARGB(244, 245, 245, 1),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        items: _bottomList,
+        onTap: (index) {
+          setState(() {
+            // 切换底部展示页面
+            _currentIndex = index;
+            currentPage = tabPages[_currentIndex];
+          });
+        },
+      ),
+      // body: tabPages[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: tabPages,
+      )
+    );
   }
 }

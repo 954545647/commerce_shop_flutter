@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:commerce_shop_flutter/components/welcome/UserCenter.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -8,7 +9,7 @@ class Home extends StatelessWidget {
         title: Text('首页'),
       ),
       body: Center(
-        child: Text('首页'),
+        child: UserCenter(),
       ),
     );
   }

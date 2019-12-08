@@ -8,7 +8,12 @@ class Market extends StatelessWidget {
         title: Text('集市'),
       ),
       body: Center(
-        child: Text('集市'),
+        child: InkWell(
+          onTap: (){
+            Navigator.pushNamed(context, '/userCenter');
+          },
+          child: Text('集市'),
+        )
       ),
     );
   }
