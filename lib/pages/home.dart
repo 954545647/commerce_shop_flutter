@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/components/welcome/UserCenter.dart';
+import 'package:commerce_shop_flutter/components/user_center/UserCenter.dart';
 
 class Home extends StatelessWidget {
   @override

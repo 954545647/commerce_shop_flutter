@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/model/state.dart';
-import 'package:commerce_shop_flutter/model/actions.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:commerce_shop_flutter/pages/index.dart';
+// import 'package:commerce_shop_flutter/model/actions.dart';
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
   final int counter;
   final String userName;
   final bool isLogin;
-  Login({this.counter, this.userName, this.isLogin});
+  Register({this.counter, this.userName, this.isLogin});
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   TextEditingController _unameController = new TextEditingController();
   TextEditingController _pwdController = new TextEditingController();
   GlobalKey _formKey = new GlobalKey<FormState>();
@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
               left: 5.0,
               top: 90.0,
               child: Text(
-                'Login',
+                'Sign Up',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.0,
@@ -97,18 +97,6 @@ class _LoginState extends State<Login> {
                               children: <Widget>[
                                 Column(
                                   children: <Widget>[
-                                    InkWell(
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(0,30,30,0),
-                                        child: Text(
-                                          'Frogot your password?',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      onTap: () {},
-                                    ),
                                     GestureDetector(
                                       child: Container(
                                         height: ScreenUtil().setHeight(100),
@@ -123,18 +111,7 @@ class _LoginState extends State<Login> {
                                             size: 30, color: Colors.white),
                                       ),
                                       onTap: () {
-                                        if ((_formKey.currentState as FormState)
-                                            .validate()) {
-                                          store.dispatch(new LoginSuccessAction(
-                                              userName: _unameController.text,
-                                              password: _pwdController.text));
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                                  new MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          new IndexPage()),
-                                                  (route) => route == null);
-                                        }
+                                        Navigator.pushNamed(context, '/login');
                                       },
                                     )
                                   ],
@@ -147,6 +124,25 @@ class _LoginState extends State<Login> {
                     })),
               ),
             ),
+            Positioned(
+              bottom: 30,
+              child: InkWell(
+                child: Container(
+                  alignment: Alignment.center,
+                  width: ScreenUtil().setWidth(680),
+                  margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
+                  child: Text(
+                    'Already have an account? Sign In',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
+            )
           ],
         ),
       ),
