@@ -32,7 +32,7 @@ class _WelcomeState extends State<Welcome> {
                 width: double.infinity,
                 height: double.infinity,
                 child: Image.asset(
-                  "assets/images/welcome2.jpg",
+                  "assets/images/welcome.webp",
                   fit: BoxFit.cover,
                 ),
               ),

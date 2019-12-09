@@ -16,8 +16,11 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  TextEditingController _unameController = new TextEditingController();
-  TextEditingController _pwdController = new TextEditingController();
+  TextEditingController _unameController = new TextEditingController(); // 用户名
+  TextEditingController _pwdController = new TextEditingController(); // 密码
+  TextEditingController _phoneController = new TextEditingController(); // 手机号
+  TextEditingController _checkCodeController =
+      new TextEditingController(); // 验证码
   GlobalKey _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,7 @@ class _RegisterState extends State<Register> {
                               controller: _unameController,
                               decoration: InputDecoration(
                                   labelText: '用户名',
-                                  hintText: '用户名或邮箱',
+                                  hintText: '用户名或手机号',
                                   icon: Icon(Icons.person)),
                               validator: (v) {
                                 return v.trim().length > 0 ? null : '用户名不能为空';
@@ -92,6 +95,37 @@ class _RegisterState extends State<Register> {
                                       ? null
                                       : "密码不能少于6位";
                                 }),
+                            TextFormField(
+                              controller: _phoneController,
+                              decoration: InputDecoration(
+                                  labelText: "手机号",
+                                  hintText: "关联您的手机号码",
+                                  icon: Icon(Icons.phone_iphone)),
+                              obscureText: true,
+                              //校验密码
+                              // validator: (v) {
+                              //   return v.trim().length > 5
+                              //       ? null
+                              //       : "密码不能少于6位";
+                              // }
+                            ),
+                            TextFormField(
+                              controller: _checkCodeController,
+                              decoration: InputDecoration(
+                                  labelText: "验证码",
+                                  hintText: "输入6位数验证码",
+                                  icon: Icon(
+                                    IconData(0xe64a,fontFamily:'myIcons'),
+                                    size: 20,
+                                  )),
+                              obscureText: true,
+                              //校验密码
+                              // validator: (v) {
+                              //   return v.trim().length > 5
+                              //       ? null
+                              //       : "密码不能少于6位";
+                              // }
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[

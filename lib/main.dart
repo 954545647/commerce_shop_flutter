@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           title: '认养农场',
           debugShowCheckedModeBanner: false, // 关闭debug显示条
           theme: ThemeData(
-            primaryColor: Color.fromRGBO(37, 102, 177, 1),
+            primaryColor: Colors.lightGreen,
           ),
           routes: {
             '/welcome': (context) => Welcome(),
@@ -55,27 +55,3 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   final Store<AppState> store;
-//   MyApp({Key key, this.store}) : super(key: key);
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//         MaterialApp(
-//           title: '认养农场',
-//           debugShowCheckedModeBanner: false, // 关闭debug显示条
-//           theme: ThemeData(
-//             primaryColor: Color.fromRGBO(37, 102, 177, 1),
-//           ),
-//           routes: {
-//             '/welcome': (context) => Welcome(),
-//             '/home': (context) => Home(),
-//             '/market': (context, {arguments}) => Market(),
-//             '/userCenter': (context, {arguments}) => UserCenter(),
-//             '/rentLand': (context, {arguments}) => RentLand()
-//           },
-//           // initialRoute: '/welcome',
-//           home: Welcome(),
-//         );
-//   }
-// }
