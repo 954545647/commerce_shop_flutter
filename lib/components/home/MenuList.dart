@@ -9,7 +9,7 @@ class MenuList extends StatelessWidget {
       width: ScreenUtil.getInstance().setWidth(750),
       height: ScreenUtil.getInstance().setHeight(310),
       child: GridView.count(
-        physics: NeverScrollableScrollPhysics(),  // 禁止回弹
+        physics: NeverScrollableScrollPhysics(), // 禁止回弹
         crossAxisCount: 5,
         padding: EdgeInsets.symmetric(vertical: 0),
         children: menuListData.map((item) => menuListItem(item)).toList(),
@@ -17,32 +17,8 @@ class MenuList extends StatelessWidget {
     );
   }
 
-  Widget menuListItem(data){
-        return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.only(bottom: 10.0),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: GestureDetector(
-              onTap: (){print('4444');},
-              child: data.icon,
-            ),
-          ),
-          Text(data.title,
-              style: TextStyle(fontSize: 13, color: Color(0xFF333333))),
-        ],
-      ),
-    );
-  }
-}
-
 // 菜单列表单独子项
-class MenuListItem extends StatelessWidget {
-  final MenuListItemViewModel data;
-  MenuListItem({Key key, this.data}) : super(key: key);
-
-  Widget build(BuildContext context) {
+  Widget menuListItem(data) {
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(bottom: 10.0),
@@ -50,11 +26,13 @@ class MenuListItem extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: GestureDetector(
-              onTap: (){print('4444');},
-              child: this.data.icon,
+              onTap: () {
+                print('4444');
+              },
+              child: data.icon,
             ),
           ),
-          Text(this.data.title,
+          Text(data.title,
               style: TextStyle(fontSize: 13, color: Color(0xFF333333))),
         ],
       ),

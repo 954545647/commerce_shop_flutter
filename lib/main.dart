@@ -7,6 +7,7 @@ import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
+import 'package:commerce_shop_flutter/components/user_center/SetUp.dart';
 import 'package:commerce_shop_flutter/model/reducer.dart';
 import 'package:commerce_shop_flutter/model/state.dart';
 import 'package:redux/redux.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
             '/home': (context) => Home(),
             '/login': (context) => Login(),
             '/register': (context) => Register(),
+            '/setup': (context) => SetUp(),
             '/market': (context, {arguments}) => Market(),
             '/userCenter': (context, {arguments}) => UserCenter(),
             '/rentLand': (context, {arguments}) => RentLand()

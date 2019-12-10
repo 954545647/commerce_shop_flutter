@@ -4,7 +4,7 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/model/actions.dart';
+import 'package:commerce_shop_flutter/model/actions.dart';
 
 class Login extends StatefulWidget {
   final int counter;
@@ -126,10 +126,9 @@ class _LoginState extends State<Login> {
                                       onTap: () {
 //                                         if ((_formKey.currentState as FormState)
 //                                             .validate()) {
-//                                           store.dispatch(new LoginSuccessAction(
-//                                               userName: _unameController.text,
-//                                               password: _pwdController.text));
-// ;
+                                        store.dispatch(new LoginSuccessAction(
+                                            userName: _unameController.text,
+                                            password: _pwdController.text));
 //                                         }
                                         Navigator.of(context)
                                             .pushAndRemoveUntil(

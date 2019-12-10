@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:commerce_shop_flutter/components/market/GoodsCard.dart';
+import 'package:commerce_shop_flutter/model/goodsCardModel.dart';
+class Market extends StatefulWidget {
+  @override
+  _MarketState createState() => _MarketState();
+}
 
-class Market extends StatelessWidget {
+class _MarketState extends State<Market> {
+  var goodsList = [];
+  @override
+  void initState() {
+    super.initState();
+    getData('goodsList').then((val) {
+      setState(() {
+        goodsList = val['data']['goodsList'];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,13 +26,11 @@ class Market extends StatelessWidget {
         title: Text('集市'),
       ),
       body: Center(
-        child: InkWell(
-          onTap: (){
-            Navigator.pushNamed(context, '/userCenter');
-          },
-          child: Text('集市'),
-        )
-      ),
+          child: ListView(
+              children: goodsList.map((item) {
+        GoodsCardModel goodsModel = GoodsCardModel.fromJson(item);
+        return GoodsCard(data: goodsModel);
+      }).toList())),
     );
   }
 }
