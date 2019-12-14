@@ -1,36 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
-import 'package:commerce_shop_flutter/components/market/GoodsCard.dart';
-import 'package:commerce_shop_flutter/model/goodsCardModel.dart';
+// import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:commerce_shop_flutter/components/market/card_list.dart';
+import 'package:commerce_shop_flutter/components/common/top_title.dart';
+
 class Market extends StatefulWidget {
   @override
   _MarketState createState() => _MarketState();
 }
 
 class _MarketState extends State<Market> {
-  var goodsList = [];
-  @override
-  void initState() {
-    super.initState();
-    getData('goodsList').then((val) {
-      setState(() {
-        goodsList = val['data']['goodsList'];
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('集市'),
+      body: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: Column(
+          children: <Widget>[
+            TopTitle(title: '认养'),
+            CardList()
+          ],
+        ),
+        // child: Container(
+        //     child: ListView(
+        //   children: <Widget>[
+        //     TopTitle(title: '认养'),
+        //     CardList(),
+        //   ],
+        // )),
       ),
-      body: Center(
-          child: ListView(
-              children: goodsList.map((item) {
-        GoodsCardModel goodsModel = GoodsCardModel.fromJson(item);
-        return GoodsCard(data: goodsModel);
-      }).toList())),
     );
   }
 }

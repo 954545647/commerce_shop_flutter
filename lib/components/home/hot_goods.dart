@@ -58,25 +58,38 @@ class _HotGoodsState extends State<HotGoods> {
 
   // 热门商品子项
   Widget hotGoodsItem(item) {
+    var id = item['id'];
+    var name = item['name'];
+    var price = item['price'];
+    var desc = item['desc'];
+    var carriage = item['carriage'];
+    var monthlySales = item['monthlySales'];
+    var yieldly = item['yieldly'];
     return GestureDetector(
-      onTap: (){
-        print('点击的是${item['desc']}');
+      onTap: () {
+        Navigator.pushNamed(context, 'homeGoodsDetail',
+            arguments:
+                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","carriage":"$carriage","monthlySales":"$monthlySales","yieldly":"$yieldly"}');
       },
       child: Container(
-      width: ScreenUtil().setWidth(360),
-      height: ScreenUtil().setHeight(340),
-      child: Column(
-        children: <Widget>[
-          Image.network(
-            item['imgUrl'],
-            width: ScreenUtil().setWidth(340),
-            height: ScreenUtil().setHeight(240),
-          ),
-          Text(item['desc']),
-          Text(item['price']),
-        ],
+        width: ScreenUtil().setWidth(360),
+        height: ScreenUtil().setHeight(340),
+        child: Column(
+          children: <Widget>[
+            Image.network(
+              item['imgUrl'],
+              width: ScreenUtil().setWidth(340),
+              height: ScreenUtil().setHeight(240),
+            ),
+            Text(
+              item['name'],
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(item['price']),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

@@ -40,7 +40,7 @@ class _LoginState extends State<Login> {
                       size: 30.0,
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/welcome');
+                      Navigator.pushNamed(context, 'welcome');
                     })),
             Positioned(
               left: 5.0,

@@ -49,6 +49,11 @@ flutter:
   assets:
    - assets/images/welcome.webp
    - assets/images/welcome2.jpg
+   - assets/images/potatoes1.webp
+   - assets/images/potatoes2.webp
+   - assets/images/potatoes3.webp
+   - assets/images/user.jpg
+   - assets/images/user2.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

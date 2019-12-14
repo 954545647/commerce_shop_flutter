@@ -60,7 +60,7 @@ class _WelcomeState extends State<Welcome> {
                                   color: Color.fromRGBO(244, 66, 53, 1)),
                             ),
                             onTap: () {
-                              Navigator.pushNamed(context, '/login');
+                              Navigator.pushNamed(context, 'login');
                             }),
                         GestureDetector(
                             child: Container(
@@ -78,7 +78,7 @@ class _WelcomeState extends State<Welcome> {
                                   ),
                             ),
                             onTap: () {
-                              Navigator.pushNamed(context, '/register');
+                              Navigator.pushNamed(context, 'register');
                             }),
                       ],
                     ),

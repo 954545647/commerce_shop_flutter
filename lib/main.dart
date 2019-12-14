@@ -5,6 +5,7 @@ import 'package:commerce_shop_flutter/pages/user_center.dart';
 import 'package:commerce_shop_flutter/pages/rent_land.dart';
 import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
+import 'package:commerce_shop_flutter/components/home/good_detail/index.dart';
 import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/user_center/SetUp.dart';
@@ -33,15 +34,16 @@ class MyApp extends StatelessWidget {
             primaryColor: Colors.lightGreen,
           ),
           routes: {
-            '/welcome': (context) => Welcome(),
-            '/index': (context)=> IndexPage(),
-            '/home': (context) => Home(),
-            '/login': (context) => Login(),
-            '/register': (context) => Register(),
-            '/setup': (context) => SetUp(),
-            '/market': (context, {arguments}) => Market(),
-            '/userCenter': (context, {arguments}) => UserCenter(),
-            '/rentLand': (context, {arguments}) => RentLand()
+            'welcome': (context) => Welcome(),
+            'index': (context)=> IndexPage(),
+            'home': (context) => Home(),
+            'login': (context) => Login(),
+            'register': (context) => Register(),
+            'setup': (context) => SetUp(),
+            'market': (context, {arguments}) => Market(),
+            'userCenter': (context, {arguments}) => UserCenter(),
+            'rentLand': (context, {arguments}) => RentLand(),
+            'homeGoodsDetail': (context,{arguments}) => GoodDetails(),
           },
           // initialRoute: '/welcome',
           home: new StoreConnector<AppState, AppState>(

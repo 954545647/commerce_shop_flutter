@@ -43,7 +43,7 @@ class _RegisterState extends State<Register> {
                       size: 30.0,
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/welcome');
+                      Navigator.pushNamed(context, 'welcome');
                     })),
             Positioned(
               left: 5.0,
@@ -145,7 +145,7 @@ class _RegisterState extends State<Register> {
                                             size: 30, color: Colors.white),
                                       ),
                                       onTap: () {
-                                        Navigator.pushNamed(context, '/login');
+                                        Navigator.pushNamed(context, 'login');
                                       },
                                     )
                                   ],
@@ -173,7 +173,7 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, '/login');
+                  Navigator.pushNamed(context, 'login');
                 },
               ),
             )

@@ -61,7 +61,7 @@ class _TopBannerState extends State<TopBanner> {
                               children: <Widget>[
                                 InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(context, '/setup');
+                                    Navigator.pushNamed(context, 'setup');
                                   },
                                   child: Container(
                                     width: 20,
