@@ -8,5 +8,6 @@ const urlList = {
   'hotGoods': baseUrl + 'home/hotGoods',
   'goodsList': baseUrl + 'market/goodsList',
   'leftList': baseUrl + 'rentLand/leftList',
-  'login': baseUrl + 'login'
+  'login': baseUrl + 'login',
+  'register': baseUrl + 'register',
 };

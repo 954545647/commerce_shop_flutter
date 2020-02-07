@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/config/service_method.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -51,7 +52,6 @@ class _RegisterState extends State<Register> {
               top: 150.0,
               child: Container(
                 width: ScreenUtil().setWidth(680),
-                height: ScreenUtil().setHeight(700),
                 child: Form(
                     key: _formKey,
                     // autovalidate: true,
@@ -78,22 +78,27 @@ class _RegisterState extends State<Register> {
                               obscureText: true,
                               //校验密码
                               validator: (v) {
-                                return v.trim().length > 5 ? null : "密码不能少于6位";
+                                return v.trim().length > 2 ? null : "密码不能少于6位";
                               }),
                           TextFormField(
-                            controller: _phoneController,
-                            decoration: InputDecoration(
-                                labelText: "手机号",
-                                hintText: "关联您的手机号码",
-                                icon: Icon(Icons.phone_iphone)),
-                            obscureText: true,
-                            //校验密码
-                            // validator: (v) {
-                            //   return v.trim().length > 5
-                            //       ? null
-                            //       : "密码不能少于6位";
-                            // }
-                          ),
+                              controller: _phoneController,
+                              decoration: InputDecoration(
+                                  labelText: "手机号",
+                                  hintText: "关联您的手机号码",
+                                  icon: Icon(Icons.phone_iphone)),
+                              // 校验手机号
+                              validator: (v) {
+                                int count = v.trim().length;
+                                if (count != 11) {
+                                  return "手机号必须是11位";
+                                }
+                                RegExp mobile = new RegExp(r"^1[3-9]\d{9}$");
+                                if (mobile.hasMatch(v)) {
+                                  return null;
+                                } else {
+                                  return "手机格式不正确";
+                                }
+                              }),
                           TextFormField(
                             controller: _checkCodeController,
                             decoration: InputDecoration(
@@ -128,8 +133,24 @@ class _RegisterState extends State<Register> {
                                       child: Icon(Icons.keyboard_arrow_right,
                                           size: 30, color: Colors.white),
                                     ),
-                                    onTap: () {
-                                      Navigator.pushNamed(context, 'login');
+                                    onTap: () async {
+                                      if ((_formKey.currentState as FormState)
+                                          .validate()) {
+                                        var data = await getData("register",
+                                            formdata: {
+                                              "username": _unameController.text,
+                                              "password": _pwdController.text,
+                                              "phone": _phoneController.text,
+                                              "verifiCode":
+                                                  _checkCodeController.text
+                                            });
+                                        print('${data}6666');
+                                        if (data["errorCode"] == 0) {
+                                          Navigator.pushNamed(context, 'login');
+                                        } else {
+                                          print(data["msg"]);
+                                        }
+                                      }
                                     },
                                   )
                                 ],

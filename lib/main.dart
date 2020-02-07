@@ -14,9 +14,16 @@ import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/user_center/SetUp.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: UserData()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -48,6 +55,6 @@ class MyApp extends StatelessWidget {
           'merchant': (context, {arguments}) => Merchant(),
         },
         // initialRoute: '/welcome',
-        home: IndexPage());
+        home: Register());
   }
 }

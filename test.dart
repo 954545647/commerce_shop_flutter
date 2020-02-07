@@ -14,15 +14,15 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage>
     with SingleTickerProviderStateMixin {
   // 底部导航图标列表
-  final List<BottomNavigationBarItem> _bottomList = [
-    BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), title: Text('首页')),
-    BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.location), title: Text('租地')),
-    BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.shopping_cart), title: Text('认养')),
-    BottomNavigationBarItem(
-        icon: Icon(CupertinoIcons.profile_circled), title: Text('我的')),
-  ];
+  // final List<BottomNavigationBarItem> _bottomList = [
+  //   BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), title: Text('首页')),
+  //   BottomNavigationBarItem(
+  //       icon: Icon(CupertinoIcons.location), title: Text('租地')),
+  //   BottomNavigationBarItem(
+  //       icon: Icon(CupertinoIcons.shopping_cart), title: Text('认养')),
+  //   BottomNavigationBarItem(
+  //       icon: Icon(CupertinoIcons.profile_circled), title: Text('我的')),
+  // ];
 
   TabController _tabController; //需要定义一个Controller
   List tabs = ["首页", "租地", "认养", "我的"];

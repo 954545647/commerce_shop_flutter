@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/pages/index.dart';
+// import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -14,18 +16,13 @@ class _LoginState extends State<Login> {
   TextEditingController _pwdController = new TextEditingController();
   GlobalKey _formKey = new GlobalKey<FormState>();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // 监听变化
-  //   _unameController.addListener(() => print(_unameController.text));
-  // }
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
+    final user = Provider.of<UserData>(context);
+    print(user.userInfo);
     return Material(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -86,7 +83,7 @@ class _LoginState extends State<Login> {
                               obscureText: true, // 隐藏正在输入的内容
                               //校验密码
                               validator: (v) {
-                                return v.trim().length > 5 ? null : "密码不能少于6位";
+                                return v.trim().length > 2 ? null : "密码不能少于3位";
                               }),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -108,42 +105,43 @@ class _LoginState extends State<Login> {
                                     },
                                   ),
                                   GestureDetector(
-                                    child: Container(
-                                      height: ScreenUtil().setHeight(100),
-                                      width: ScreenUtil().setWidth(100),
-                                      margin: EdgeInsets.only(top: 30.0),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(60.0),
-                                          color: Color.fromRGBO(208, 1, 27, 1)),
-                                      child: Icon(Icons.keyboard_arrow_right,
-                                          size: 30, color: Colors.white),
-                                    ),
-                                    onTap: () {
-                                      Navigator.pushNamed(context, 'index');
-                                      /*
+                                      child: Container(
+                                        height: ScreenUtil().setHeight(100),
+                                        width: ScreenUtil().setWidth(100),
+                                        margin: EdgeInsets.only(top: 30.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(60.0),
+                                            color:
+                                                Color.fromRGBO(208, 1, 27, 1)),
+                                        child: Icon(Icons.keyboard_arrow_right,
+                                            size: 30, color: Colors.white),
+                                      ),
+                                      onTap: () async {
+                                        /*
                                         Form.of(context).validate(); // 不行
                                         这里的 context 是 Login 的 context
                                         而Form.of(context)是根据所指定context向根去查找
                                         而 FormState 是在 Login 的子树中，所以查找不到
                                       */
-                                      // if ((_formKey.currentState as FormState)
-                                      //     .validate()) {
-                                      //   getData("login", formdata: {
-                                      //     "username": _unameController.text,
-                                      //     "password": _pwdController.text
-                                      //   });
-                                      //   Navigator.pushNamed(context, 'index');
-                                      // } else {
-                                      //   print("error");
-                                      // }
-                                      // Navigator.of(context).pushAndRemoveUntil(
-                                      //     new MaterialPageRoute(
-                                      //         builder: (context) =>
-                                      //             new IndexPage()),
-                                      //     (route) => route == null);
-                                    },
-                                  )
+                                        if ((_formKey.currentState as FormState)
+                                            .validate()) {
+                                          var data =
+                                              await getData("login", formdata: {
+                                            "username": _unameController.text,
+                                            "password": _pwdController.text
+                                          });
+                                          if (data["errorCode"] == 0) {
+                                            // 将用户信息注册到全局上
+                                            user.login(data["data"]["username"],
+                                                data["data"]["phone:"]);
+                                            Navigator.pushNamed(
+                                                context, 'index');
+                                          } else {
+                                            print(data["msg"]);
+                                          }
+                                        }
+                                      })
                                 ],
                               ),
                             ],

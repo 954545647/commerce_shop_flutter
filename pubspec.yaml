@@ -29,18 +29,17 @@ dependencies:
   flutter_swiper: ^1.1.6
   flutter_easyrefresh: ^2.0.4
   flutter_calendar_carousel: ^1.4.10
+  provider: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -48,13 +47,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - assets/images/welcome.webp
-   - assets/images/welcome2.jpg
-   - assets/images/potatoes1.webp
-   - assets/images/potatoes2.webp
-   - assets/images/potatoes3.webp
-   - assets/images/user.jpg
-   - assets/images/user2.jpg
+    - assets/images/welcome.webp
+    - assets/images/welcome2.jpg
+    - assets/images/potatoes1.webp
+    - assets/images/potatoes2.webp
+    - assets/images/potatoes3.webp
+    - assets/images/user.jpg
+    - assets/images/user2.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

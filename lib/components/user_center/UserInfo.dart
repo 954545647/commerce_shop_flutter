@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class UserInfo extends StatefulWidget {
   @override
@@ -12,6 +14,8 @@ class _UserInfoState extends State<UserInfo> {
   }
 
   Widget userInfo() {
+    final user = Provider.of<UserData>(context);
+    var userInfo = user.userInfo;
     return Container(
       child: Row(
         children: <Widget>[
@@ -34,7 +38,7 @@ class _UserInfoState extends State<UserInfo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'rex',
+                    user.isLogin ? userInfo.username : "未登录",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.0,
