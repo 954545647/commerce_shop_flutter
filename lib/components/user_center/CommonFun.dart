@@ -37,7 +37,7 @@ class _CommonFunState extends State<CommonFun> {
               width: ScreenUtil.getInstance().setWidth(750),
               height: ScreenUtil().setHeight(280),
               child: GridView.count(
-                // physics: NeverScrollableScrollPhysics(), // 禁止回弹
+                physics: NeverScrollableScrollPhysics(), // 禁止回弹
                 crossAxisCount: 2,
                 childAspectRatio: 2.5,
                 padding: EdgeInsets.symmetric(vertical: 0),
@@ -51,7 +51,7 @@ class _CommonFunState extends State<CommonFun> {
   }
 
   Widget singleFun(data) {
-    var name = int.parse(data['iconName']);
+    var icon = int.parse(data['iconName']);
     return Container(
       decoration: BoxDecoration(
           border: Border(
@@ -70,7 +70,7 @@ class _CommonFunState extends State<CommonFun> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[Text(data['funName']), Text(data['funDesc'])],
           ),
-          Icon(IconData(name,fontFamily: 'myIcons')),
+          Icon(IconData(icon,fontFamily: 'myIcons')),
         ],
       ),
     );

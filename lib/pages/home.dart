@@ -13,7 +13,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
-  @override
+  List lists = [
+    // 轮播图
+    HomeSwiper(),
+    // 菜单列表
+    MenuList(),
+    // 新闻资讯
+    NewBroadCast(),
+    // 热门商品
+    HotGoods()
+  ];
   bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
@@ -24,27 +33,11 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
       removeTop: true,
       child: Stack(
         children: <Widget>[
-          ListView(
-            children: <Widget>[
-              // Column(children: <Widget>[
-              // 轮播图
-              HomeSwiper(),
-              // 菜单列表
-              MenuList(),
-              // 新闻资讯
-              NewBroadCast(),
-              // 热门商品
-              HotGoods()
-              // ])
-            ],
-          ),
-          // onRefresh: () async {
-          //   print('上拉');
-          // },
-          // onLoad: () async {
-          //   print('下拉加载更多');
-          // },
-          // ),
+          ListView.builder(
+              itemCount: 4,
+              itemBuilder: (BuildContext context, int index) {
+                return lists[index];
+              })
         ],
       ),
     ));

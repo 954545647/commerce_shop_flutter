@@ -16,18 +16,8 @@ class _MarketState extends State<Market> {
         context: context,
         removeTop: true,
         child: Column(
-          children: <Widget>[
-            TopTitle(title: '认养'),
-            CardList()
-          ],
+          children: <Widget>[TopTitle(title: '认养'), CardList()],
         ),
-        // child: Container(
-        //     child: ListView(
-        //   children: <Widget>[
-        //     TopTitle(title: '认养'),
-        //     CardList(),
-        //   ],
-        // )),
       ),
     );
   }

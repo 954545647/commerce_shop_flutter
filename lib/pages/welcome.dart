@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'dart:async';
-// import './../model/state.dart';
-// import 'package:commerce_shop_flutter/pages/index.dart';
-// import 'package:commerce_shop_flutter/components/welcome/Login.dart';
-// import 'package:commerce_shop_flutter/components/user_center/UserCenter.dart';
-// import 'package:flutter_redux/flutter_redux.dart';
 
 class Welcome extends StatefulWidget {
-  final int counter;
-  final String userName;
-  final bool isLogin;
-  Welcome({this.counter, this.userName, this.isLogin});
   @override
   _WelcomeState createState() => _WelcomeState();
 }
@@ -73,9 +63,9 @@ class _WelcomeState extends State<Welcome> {
                                           color: Colors.white,
                                           fontSize: 14.0))),
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  ),
+                                border: Border.all(color: Colors.white),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
                             ),
                             onTap: () {
                               Navigator.pushNamed(context, 'register');

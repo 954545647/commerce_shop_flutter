@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/model/state.dart';
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/pages/index.dart';
-// import 'package:commerce_shop_flutter/model/actions.dart';
 
 class Register extends StatefulWidget {
-  final int counter;
-  final String userName;
-  final bool isLogin;
-  Register({this.counter, this.userName, this.isLogin});
   @override
   _RegisterState createState() => _RegisterState();
 }
@@ -64,98 +55,90 @@ class _RegisterState extends State<Register> {
                 child: Form(
                     key: _formKey,
                     // autovalidate: true,
-                    child:
-                        new StoreConnector(converter: (Store<AppState> store) {
-                      return store;
-                    }, builder: (BuildContext context, Store<AppState> store) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            TextFormField(
-                              controller: _unameController,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _unameController,
+                            decoration: InputDecoration(
+                                labelText: '用户名',
+                                hintText: '用户名或手机号',
+                                icon: Icon(Icons.person)),
+                            validator: (v) {
+                              return v.trim().length > 0 ? null : '用户名不能为空';
+                            },
+                          ),
+                          TextFormField(
+                              controller: _pwdController,
                               decoration: InputDecoration(
-                                  labelText: '用户名',
-                                  hintText: '用户名或手机号',
-                                  icon: Icon(Icons.person)),
+                                  labelText: "密码",
+                                  hintText: "您的登录密码",
+                                  icon: Icon(Icons.lock)),
+                              obscureText: true,
+                              //校验密码
                               validator: (v) {
-                                return v.trim().length > 0 ? null : '用户名不能为空';
-                              },
-                            ),
-                            TextFormField(
-                                controller: _pwdController,
-                                decoration: InputDecoration(
-                                    labelText: "密码",
-                                    hintText: "您的登录密码",
-                                    icon: Icon(Icons.lock)),
-                                obscureText: true,
-                                //校验密码
-                                validator: (v) {
-                                  return v.trim().length > 5
-                                      ? null
-                                      : "密码不能少于6位";
-                                }),
-                            TextFormField(
-                              controller: _phoneController,
-                              decoration: InputDecoration(
-                                  labelText: "手机号",
-                                  hintText: "关联您的手机号码",
-                                  icon: Icon(Icons.phone_iphone)),
-                              obscureText: true,
-                              //校验密码
-                              // validator: (v) {
-                              //   return v.trim().length > 5
-                              //       ? null
-                              //       : "密码不能少于6位";
-                              // }
-                            ),
-                            TextFormField(
-                              controller: _checkCodeController,
-                              decoration: InputDecoration(
-                                  labelText: "验证码",
-                                  hintText: "输入6位数验证码",
-                                  icon: Icon(
-                                    IconData(0xe64a,fontFamily:'myIcons'),
-                                    size: 20,
-                                  )),
-                              obscureText: true,
-                              //校验密码
-                              // validator: (v) {
-                              //   return v.trim().length > 5
-                              //       ? null
-                              //       : "密码不能少于6位";
-                              // }
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    GestureDetector(
-                                      child: Container(
-                                        height: ScreenUtil().setHeight(100),
-                                        width: ScreenUtil().setWidth(100),
-                                        margin: EdgeInsets.only(top: 30.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(60.0),
-                                            color:
-                                                Color.fromRGBO(208, 1, 27, 1)),
-                                        child: Icon(Icons.keyboard_arrow_right,
-                                            size: 30, color: Colors.white),
-                                      ),
-                                      onTap: () {
-                                        Navigator.pushNamed(context, 'login');
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    })),
+                                return v.trim().length > 5 ? null : "密码不能少于6位";
+                              }),
+                          TextFormField(
+                            controller: _phoneController,
+                            decoration: InputDecoration(
+                                labelText: "手机号",
+                                hintText: "关联您的手机号码",
+                                icon: Icon(Icons.phone_iphone)),
+                            obscureText: true,
+                            //校验密码
+                            // validator: (v) {
+                            //   return v.trim().length > 5
+                            //       ? null
+                            //       : "密码不能少于6位";
+                            // }
+                          ),
+                          TextFormField(
+                            controller: _checkCodeController,
+                            decoration: InputDecoration(
+                                labelText: "验证码",
+                                hintText: "输入6位数验证码",
+                                icon: Icon(
+                                  IconData(0xe64a, fontFamily: 'myIcons'),
+                                  size: 20,
+                                )),
+                            obscureText: true,
+                            //校验密码
+                            // validator: (v) {
+                            //   return v.trim().length > 5
+                            //       ? null
+                            //       : "密码不能少于6位";
+                            // }
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    child: Container(
+                                      height: ScreenUtil().setHeight(100),
+                                      width: ScreenUtil().setWidth(100),
+                                      margin: EdgeInsets.only(top: 30.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60.0),
+                                          color: Color.fromRGBO(208, 1, 27, 1)),
+                                      child: Icon(Icons.keyboard_arrow_right,
+                                          size: 30, color: Colors.white),
+                                    ),
+                                    onTap: () {
+                                      Navigator.pushNamed(context, 'login');
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    )),
               ),
             ),
             Positioned(

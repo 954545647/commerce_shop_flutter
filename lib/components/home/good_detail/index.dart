@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:commerce_shop_flutter/components/common/top_title.dart';
+import 'package:commerce_shop_flutter/components/common/common_title.dart';
 import 'package:commerce_shop_flutter/components/common/good_banner.dart';
 import 'dart:convert';
 
@@ -29,9 +29,9 @@ class _GoodDetailsState extends State<GoodDetails> {
         child: ListView(
           children: <Widget>[
             // 商品标题
-            goodTitle(argument),
+            CommonTitle(title: argument['name'].toString()),
             // 商品图片展示
-            GoodBanner(imageList: imageList),
+            GoodBanner(imageList: imageList,height: 400,),
             // 商品价格、简介、销量
             goodDetails(argument),
             // 商品规格（尺码、地址）
@@ -41,28 +41,6 @@ class _GoodDetailsState extends State<GoodDetails> {
         ),
       ),
       // 顶部商品展示
-    );
-  }
-
-// 商品头部标题
-  Widget goodTitle(argument) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Stack(
-            alignment: const Alignment(-0.9, 0.5),
-            children: <Widget>[
-              TopTitle(title: argument['name'].toString()),
-              InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.chevron_left, size: 35),
-              )
-            ],
-          )
-        ],
-      ),
     );
   }
 
@@ -202,7 +180,6 @@ class _GoodDetailsState extends State<GoodDetails> {
                       height: 60.0,
                       child: Text('Item ${index + 1}')),
                   onTap: () {
-                    print('tapped item ${index + 1}');
                     Navigator.pop(context);
                   }),
             )),

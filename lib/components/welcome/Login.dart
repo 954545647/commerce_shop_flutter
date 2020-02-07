@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/model/state.dart';
-import 'package:redux/redux.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/model/actions.dart';
+import 'package:commerce_shop_flutter/config/service_method.dart';
 
 class Login extends StatefulWidget {
-  final int counter;
-  final String userName;
-  final bool isLogin;
-  Login({this.counter, this.userName, this.isLogin});
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
+  // 定义 Controller
   TextEditingController _unameController = new TextEditingController();
   TextEditingController _pwdController = new TextEditingController();
   GlobalKey _formKey = new GlobalKey<FormState>();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // 监听变化
+  //   _unameController.addListener(() => print(_unameController.text));
+  // }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
@@ -59,93 +61,96 @@ class _LoginState extends State<Login> {
                 width: ScreenUtil().setWidth(680),
                 height: ScreenUtil().setHeight(700),
                 child: Form(
-                    key: _formKey,
-                    // autovalidate: true,
-                    child:
-                        new StoreConnector(converter: (Store<AppState> store) {
-                      return store;
-                    }, builder: (BuildContext context, Store<AppState> store) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            TextFormField(
-                              controller: _unameController,
+                    key: _formKey, // 获取 FormState
+                    autovalidate: true, // 自动校验
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _unameController, // 用于获取输入的文本
+                            decoration: InputDecoration(
+                                labelText: '用户名',
+                                hintText: '用户名或邮箱',
+                                icon: Icon(Icons.person)),
+                            validator: (v) {
+                              return v.trim().length > 0 ? null : '用户名不能为空';
+                            },
+                          ),
+                          TextFormField(
+                              controller: _pwdController,
                               decoration: InputDecoration(
-                                  labelText: '用户名',
-                                  hintText: '用户名或邮箱',
-                                  icon: Icon(Icons.person)),
+                                  labelText: "密码",
+                                  hintText: "您的登录密码",
+                                  icon: Icon(Icons.lock)),
+                              obscureText: true, // 隐藏正在输入的内容
+                              //校验密码
                               validator: (v) {
-                                return v.trim().length > 0 ? null : '用户名不能为空';
-                              },
-                            ),
-                            TextFormField(
-                                controller: _pwdController,
-                                decoration: InputDecoration(
-                                    labelText: "密码",
-                                    hintText: "您的登录密码",
-                                    icon: Icon(Icons.lock)),
-                                obscureText: true,
-                                //校验密码
-                                validator: (v) {
-                                  return v.trim().length > 5
-                                      ? null
-                                      : "密码不能少于6位";
-                                }),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    InkWell(
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(0, 30, 30, 0),
-                                        child: Text(
-                                          'Frogot your password?',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                return v.trim().length > 5 ? null : "密码不能少于6位";
+                              }),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  InkWell(
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
+                                      child: Text(
+                                        'Frogot your password?',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      onTap: () {},
                                     ),
-                                    GestureDetector(
-                                      child: Container(
-                                        height: ScreenUtil().setHeight(100),
-                                        width: ScreenUtil().setWidth(100),
-                                        margin: EdgeInsets.only(top: 30.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(60.0),
-                                            color:
-                                                Color.fromRGBO(208, 1, 27, 1)),
-                                        child: Icon(Icons.keyboard_arrow_right,
-                                            size: 30, color: Colors.white),
-                                      ),
-                                      onTap: () {
-//                                         if ((_formKey.currentState as FormState)
-//                                             .validate()) {
-                                        store.dispatch(new LoginSuccessAction(
-                                            userName: _unameController.text,
-                                            password: _pwdController.text));
-//                                         }
-                                        Navigator.of(context)
-                                            .pushAndRemoveUntil(
-                                                new MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        new IndexPage()),
-                                                (route) => route == null);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    })),
+                                    onTap: () {
+                                      Navigator.pushNamed(context, 'forget');
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    child: Container(
+                                      height: ScreenUtil().setHeight(100),
+                                      width: ScreenUtil().setWidth(100),
+                                      margin: EdgeInsets.only(top: 30.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60.0),
+                                          color: Color.fromRGBO(208, 1, 27, 1)),
+                                      child: Icon(Icons.keyboard_arrow_right,
+                                          size: 30, color: Colors.white),
+                                    ),
+                                    onTap: () {
+                                      Navigator.pushNamed(context, 'index');
+                                      /*
+                                        Form.of(context).validate(); // 不行
+                                        这里的 context 是 Login 的 context
+                                        而Form.of(context)是根据所指定context向根去查找
+                                        而 FormState 是在 Login 的子树中，所以查找不到
+                                      */
+                                      // if ((_formKey.currentState as FormState)
+                                      //     .validate()) {
+                                      //   getData("login", formdata: {
+                                      //     "username": _unameController.text,
+                                      //     "password": _pwdController.text
+                                      //   });
+                                      //   Navigator.pushNamed(context, 'index');
+                                      // } else {
+                                      //   print("error");
+                                      // }
+                                      // Navigator.of(context).pushAndRemoveUntil(
+                                      //     new MaterialPageRoute(
+                                      //         builder: (context) =>
+                                      //             new IndexPage()),
+                                      //     (route) => route == null);
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    )),
               ),
             ),
           ],

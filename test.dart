@@ -11,7 +11,8 @@ class IndexPage extends StatefulWidget {
   _IndexPageState createState() => _IndexPageState();
 }
 
-class _IndexPageState extends State<IndexPage> {
+class _IndexPageState extends State<IndexPage>
+    with SingleTickerProviderStateMixin {
   // 底部导航图标列表
   final List<BottomNavigationBarItem> _bottomList = [
     BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), title: Text('首页')),
@@ -23,6 +24,8 @@ class _IndexPageState extends State<IndexPage> {
         icon: Icon(CupertinoIcons.profile_circled), title: Text('我的')),
   ];
 
+  TabController _tabController; //需要定义一个Controller
+  List tabs = ["首页", "租地", "认养", "我的"];
   // 页面列表
   final List<Widget> tabPages = [
     Home(), // 首页
@@ -36,9 +39,10 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   void initState() {
-    // 初始化：变量设定默认为首页
-    currentPage = tabPages[_currentIndex];
     super.initState();
+    // 初始化：变量设定默认为首页
+    _tabController = TabController(length: tabs.length, vsync: this);
+    currentPage = tabPages[_currentIndex];
   }
 
   @override
@@ -47,23 +51,26 @@ class _IndexPageState extends State<IndexPage> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     return Scaffold(
-        backgroundColor: Color.fromARGB(244, 245, 245, 1),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          items: _bottomList,
-          onTap: (index) {
-            setState(() {
-              // 切换底部展示页面
-              _currentIndex = index;
-              currentPage = tabPages[_currentIndex];
-            });
-          },
+        appBar: AppBar(
+          bottom: TabBar(
+              controller: _tabController,
+              tabs: tabs.map((e) => Tab(text: e)).toList()),
         ),
+        backgroundColor: Color.fromARGB(244, 245, 245, 1),
         // body: tabPages[_currentIndex],
-        body: IndexedStack(
-          index: _currentIndex,
-          children: tabPages,
+        // body: IndexedStack(
+        //   index: _currentIndex,
+        //   children: tabPages,
+        // ),
+        body: TabBarView(
+          controller: _tabController,
+          children: tabs.map((e) {
+            //创建3个Tab页
+            return Container(
+              alignment: Alignment.center,
+              child: Text(e, textScaleFactor: 5),
+            );
+          }).toList(),
         ));
   }
 }

@@ -28,6 +28,7 @@ dependencies:
   dio: ^3.0.7
   flutter_swiper: ^1.1.6
   flutter_easyrefresh: ^2.0.4
+  flutter_calendar_carousel: ^1.4.10
 
 dev_dependencies:
   flutter_test:

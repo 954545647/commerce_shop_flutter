@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:redux/redux.dart';
-// import 'package:flutter_redux/flutter_redux.dart';
-// import 'package:commerce_shop_flutter/model/state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserWealth extends StatefulWidget {
