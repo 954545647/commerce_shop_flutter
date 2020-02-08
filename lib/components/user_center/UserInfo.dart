@@ -33,19 +33,31 @@ class _UserInfoState extends State<UserInfo> {
               SizedBox(
                 width: 10.0,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    user.isLogin ? userInfo.username : "未登录",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              )
+              user.isLogin
+                  ? Text(
+                      userInfo.username,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold),
+                    )
+                  : RaisedButton(
+                      child: Text("点击登录"),
+                      onPressed: () => Navigator.pushNamed(context, "login"),
+                    ),
+              // Column(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: <Widget>[
+              //     Text(
+              //       user.isLogin ? userInfo.username : "未登录",
+              //       style: TextStyle(
+              //           color: Colors.white,
+              //           fontSize: 22.0,
+              //           fontWeight: FontWeight.bold),
+              //     ),
+              //   ],
+              // )
             ],
           ),
         ],

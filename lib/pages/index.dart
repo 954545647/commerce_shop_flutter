@@ -47,23 +47,24 @@ class _IndexPageState extends State<IndexPage> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     return Scaffold(
-        backgroundColor: Color.fromARGB(244, 245, 245, 1),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          items: _bottomList,
-          onTap: (index) {
-            setState(() {
-              // 切换底部展示页面
-              _currentIndex = index;
-              currentPage = tabPages[_currentIndex];
-            });
-          },
-        ),
-        // body: tabPages[_currentIndex],
-        body: IndexedStack(
-          index: _currentIndex,
-          children: tabPages,
-        ));
+      backgroundColor: Color.fromARGB(244, 245, 245, 1),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        items: _bottomList,
+        onTap: (index) {
+          setState(() {
+            // 切换底部展示页面
+            _currentIndex = index;
+            currentPage = tabPages[_currentIndex];
+          });
+        },
+      ),
+      body: tabPages[_currentIndex],
+      // body: IndexedStack(
+      //   index: _currentIndex,
+      //   children: tabPages,
+      // )
+    );
   }
 }

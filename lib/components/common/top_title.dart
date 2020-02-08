@@ -3,17 +3,49 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TopTitle extends StatelessWidget {
   final String title;
-  TopTitle({this.title});
+  final double top;
+  final bool showArrow;
+  TopTitle({this.title, this.top = 20, this.showArrow = false});
   @override
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            border:
-                Border(bottom: BorderSide(width: 1, color: Colors.black12))),
+            border: Border(bottom: BorderSide(width: 1, color: Colors.black12)),
+            color: Colors.white),
         alignment: Alignment.center,
         height: ScreenUtil().setHeight(150),
-        padding: EdgeInsets.only(top: 20.0),
-        child: Text(title,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)));
+        padding: EdgeInsets.only(top: top),
+        child: ConstrainedBox(
+          constraints: BoxConstraints.expand(),
+          child: showArrow
+              ? Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Text(title,
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    Positioned(
+                      left: 10,
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.chevron_left,
+                          size: 30,
+                          color: Colors.grey,
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                  ],
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  height: ScreenUtil().setHeight(150),
+                  child: Text(title,
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold)),
+                ),
+        ));
   }
 }

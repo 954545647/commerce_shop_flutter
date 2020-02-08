@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/configuration.dart' as config;
 import 'package:commerce_shop_flutter/components/user_center/UserInfo.dart';
-import 'package:commerce_shop_flutter/components/user_center/UserWealth.dart';
+// import 'package:commerce_shop_flutter/components/user_center/UserWealth.dart';
 
 class TopBanner extends StatefulWidget {
   @override
@@ -18,9 +18,7 @@ class _TopBannerState extends State<TopBanner> {
 
   Widget topBanner() {
     return Container(
-        // decoration: BoxDecoration(
-        //   border: Border.all(color: Colors.red)
-        // ),
+        // decoration: BoxDecoration(border: Border.all(color: Colors.red)),
         child: MediaQuery.removePadding(
       removeTop: true,
       context: context,
@@ -33,15 +31,14 @@ class _TopBannerState extends State<TopBanner> {
               children: <Widget>[
                 Container(
                   width: ScreenUtil().setWidth(750),
-                  height: ScreenUtil().setHeight(460),
+                  height: ScreenUtil().setHeight(350),
                 ),
                 Positioned(
                   top: 0,
                   child: Container(
-                    padding:
-                        EdgeInsets.fromLTRB(15, config.topHeight + 10, 15, 15),
+                    padding: EdgeInsets.fromLTRB(15, config.topHeight, 15, 15),
                     width: ScreenUtil().setWidth(750),
-                    height: ScreenUtil().setHeight(360),
+                    height: ScreenUtil().setHeight(300),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
@@ -57,7 +54,7 @@ class _TopBannerState extends State<TopBanner> {
                           children: <Widget>[
                             InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context, 'setup');
+                                Navigator.pushNamed(context, 'setting');
                               },
                               child: Container(
                                 width: 20,
@@ -75,10 +72,10 @@ class _TopBannerState extends State<TopBanner> {
                   ),
                 ),
                 // 积分数据模块
-                Positioned(
-                  bottom: 25,
-                  child: UserWealth(),
-                )
+                // Positioned(
+                //   bottom: 25,
+                //   child: UserWealth(),
+                // )
               ],
             )
           ],

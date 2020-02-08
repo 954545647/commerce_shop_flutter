@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/pages/home.dart';
-import 'package:commerce_shop_flutter/pages/market.dart';
-import 'package:commerce_shop_flutter/pages/user_center.dart';
-import 'package:commerce_shop_flutter/pages/rent_land.dart';
 import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:commerce_shop_flutter/components/home/good_detail/index.dart';
@@ -13,7 +9,7 @@ import 'package:commerce_shop_flutter/components/home/near_farm/merchant_detail.
 import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
-import 'package:commerce_shop_flutter/components/user_center/SetUp.dart';
+import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 
@@ -40,14 +36,10 @@ class MyApp extends StatelessWidget {
         routes: {
           'welcome': (context) => Welcome(),
           'index': (context) => IndexPage(),
-          'home': (context) => Home(),
           'login': (context) => Login(),
           'forget': (context) => Forget(),
           'register': (context) => Register(),
-          'setup': (context) => SetUp(),
-          'market': (context, {arguments}) => Market(),
-          'userCenter': (context, {arguments}) => UserCenter(),
-          'rentLand': (context, {arguments}) => RentLand(),
+          'setting': (context) => Setting(),
           'homeGoodsDetail': (context, {arguments}) => GoodDetails(),
           'signIn': (context, {arguments}) => SignIn(),
           'integralMall': (context, {arguments}) => IntegralMall(),
@@ -55,6 +47,6 @@ class MyApp extends StatelessWidget {
           'merchant': (context, {arguments}) => Merchant(),
         },
         // initialRoute: '/welcome',
-        home: Register());
+        home: Welcome());
   }
 }

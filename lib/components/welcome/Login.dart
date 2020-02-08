@@ -22,7 +22,6 @@ class _LoginState extends State<Login> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     final user = Provider.of<UserData>(context);
-    print(user.userInfo);
     return Material(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -39,7 +38,7 @@ class _LoginState extends State<Login> {
                       size: 30.0,
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, 'welcome');
+                      Navigator.pop(context);
                     })),
             Positioned(
               left: 5.0,
