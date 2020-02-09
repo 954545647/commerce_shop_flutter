@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/components/common/list_item.dart';
 
 class UserWealth extends StatefulWidget {
   @override
@@ -18,20 +19,35 @@ class _UserWealthState extends State<UserWealth> {
             borderRadius: BorderRadius.circular(10.0), color: Colors.white),
         child: Row(
           children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[Text('15'), Text('我的积分')],
-              ),
+            ListItem(
+              title: "我的积分",
+              onChanged: () {
+                print("544");
+              },
+              iconName: "0xe684",
             ),
-            Expanded(
-              child: Column(
-                children: <Widget>[Text('15'), Text('我的积分')],
-              ),
+            ListItem(
+              title: "优惠卷",
+              onChanged: () {
+                print("444");
+              },
+              iconName: "0xe60e",
             ),
-            Expanded(
-              child: Column(
-                children: <Widget>[Text('15'), Text('我的积分')],
-              ),
+            ListItem(
+              title: "收货地址",
+              onChanged: () {
+                print("");
+              },
+              iconName: "0xe778",
+              jumpRoute: "setting",
+            ),
+            ListItem(
+              title: "设置",
+              onChanged: () {
+                print("");
+              },
+              iconName: "0xe733",
+              jumpRoute: "setting",
             ),
           ],
         ),

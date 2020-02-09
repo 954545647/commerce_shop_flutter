@@ -10,6 +10,7 @@ import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
+import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           'integralMall': (context, {arguments}) => IntegralMall(),
           'nearFarm': (context, {arguments}) => NearFarm(),
           'merchant': (context, {arguments}) => Merchant(),
+          'password': (context) => Password(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

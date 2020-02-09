@@ -1,3 +1,4 @@
+// 用户信息（头像+名字）
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';

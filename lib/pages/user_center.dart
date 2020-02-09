@@ -4,6 +4,7 @@ import 'package:commerce_shop_flutter/components/user_center/OrderList.dart';
 import 'package:commerce_shop_flutter/components/user_center/CommonFun.dart';
 // import 'package:commerce_shop_flutter/components/user_center/TopBanner.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/components/user_center/UserWealth.dart';
 
 class UserCenter extends StatelessWidget {
   @override
@@ -15,7 +16,15 @@ class UserCenter extends StatelessWidget {
       body: Container(
         color: Color.fromRGBO(240, 240, 240, 1),
         child: Column(
-          children: <Widget>[TopBanner(), OrderList(), CommonFun()],
+          children: <Widget>[
+            TopBanner(),
+            OrderList(),
+            SizedBox(
+              height: 20.0,
+            ),
+            CommonFun(),
+            UserWealth(),
+          ],
         ),
       ),
     );

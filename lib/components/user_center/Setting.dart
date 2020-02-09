@@ -12,7 +12,11 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
-    List settingList = ["修改密码", "常见问题", "关于应用"];
+    List listData = [
+      {'jumpRoute': 'password', 'title': '修改密码'},
+      {'jumpRoute': 'password', 'title': '常见问题'},
+      {'jumpRoute': 'password', 'title': '关于应用'},
+    ];
     return Scaffold(
       body: Container(
           color: Color.fromRGBO(240, 237, 237, 1),
@@ -24,7 +28,7 @@ class _SettingState extends State<Setting> {
                 showArrow: true,
               ),
               ListView.builder(
-                itemCount: settingList.length,
+                itemCount: listData.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
@@ -35,12 +39,13 @@ class _SettingState extends State<Setting> {
                               bottom:
                                   BorderSide(width: 1, color: Colors.black12)),
                           color: Colors.white),
-                      child: Text(settingList[index]),
+                      child: Text(listData[index]["title"]),
                       height: 50.0,
                       padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
                     ),
                     onTap: () {
-                      print(settingList[index]);
+                      Navigator.pushNamed(
+                          context, listData[index]["jumpRoute"]);
                     },
                   );
                 },

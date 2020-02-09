@@ -7,9 +7,9 @@ class UserData with ChangeNotifier {
   get isLogin => _isLogin;
   get userInfo => _userInfo;
 
-  login(username, phone) {
+  login(id, username, phone) {
     _isLogin = true;
-    _userInfo = new User(username, phone);
+    _userInfo = new User(id, username, phone);
     notifyListeners();
   }
 
@@ -20,11 +20,13 @@ class UserData with ChangeNotifier {
 }
 
 class User {
+  int id;
   String username;
   String phone;
 
   // 标准写法
-  User(String username, String phone) {
+  User(int id, String username, String phone) {
+    this.id = id;
     this.username = username;
     this.phone = phone;
   }

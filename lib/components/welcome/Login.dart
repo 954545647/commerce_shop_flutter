@@ -132,8 +132,10 @@ class _LoginState extends State<Login> {
                                           });
                                           if (data["errorCode"] == 0) {
                                             // 将用户信息注册到全局上
-                                            user.login(data["data"]["username"],
-                                                data["data"]["phone:"]);
+                                            user.login(
+                                                data["data"]["id"],
+                                                data["data"]["username"],
+                                                data["data"]["phone"]);
                                             Navigator.pushNamed(
                                                 context, 'index');
                                           } else {

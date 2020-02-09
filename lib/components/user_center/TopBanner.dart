@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/configuration.dart' as config;
 import 'package:commerce_shop_flutter/components/user_center/UserInfo.dart';
-// import 'package:commerce_shop_flutter/components/user_center/UserWealth.dart';
 
 class TopBanner extends StatefulWidget {
   @override
@@ -49,33 +48,13 @@ class _TopBannerState extends State<TopBanner> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, 'setting');
-                              },
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                child: Icon(Icons.settings),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 10.0),
+                        SizedBox(height: 30.0),
                         // 用户基本信息模块
                         UserInfo()
                       ],
                     ),
                   ),
                 ),
-                // 积分数据模块
-                // Positioned(
-                //   bottom: 25,
-                //   child: UserWealth(),
-                // )
               ],
             )
           ],

@@ -56,4 +56,10 @@ class MenuIcons {
 
   // 我的推广
   static const IconData myAssemble = IconData(0xe635, fontFamily: 'myIcons');
+
+  // 我的积分
+  static const IconData myIntegral = IconData(0xe684, fontFamily: 'myIcons');
+
+  static const IconData myDiscount = IconData(0xe60e, fontFamily: 'myIcons');
+  // static const IconData myAssemble = IconData(0xe635, fontFamily: 'myIcons');
 }

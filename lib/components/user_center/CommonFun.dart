@@ -18,7 +18,7 @@ class _CommonFunState extends State<CommonFun> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin: EdgeInsets.fromLTRB(15, 25, 15, 15),
+      margin: EdgeInsets.fromLTRB(15, 15, 15, 15),
       width: ScreenUtil().setWidth(750),
       height: ScreenUtil().setHeight(400),
       decoration: BoxDecoration(
@@ -70,7 +70,7 @@ class _CommonFunState extends State<CommonFun> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[Text(data['funName']), Text(data['funDesc'])],
           ),
-          Icon(IconData(icon,fontFamily: 'myIcons')),
+          Icon(IconData(icon, fontFamily: 'myIcons')),
         ],
       ),
     );

@@ -10,4 +10,5 @@ const urlList = {
   'leftList': baseUrl + 'rentLand/leftList',
   'login': baseUrl + 'login',
   'register': baseUrl + 'register',
+  "changePass": baseUrl + "user/changePass"
 };
