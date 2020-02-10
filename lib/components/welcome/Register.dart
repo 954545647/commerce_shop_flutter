@@ -108,7 +108,7 @@ class _RegisterState extends State<Register> {
                                   IconData(0xe64a, fontFamily: 'myIcons'),
                                   size: 20,
                                 )),
-                            obscureText: true,
+                            // obscureText: true,
                             //校验密码
                             // validator: (v) {
                             //   return v.trim().length > 5

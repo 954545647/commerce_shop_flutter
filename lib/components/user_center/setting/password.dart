@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import 'package:provider/provider.dart';
-import 'package:commerce_shop_flutter/provider/userData.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
 
 class Password extends StatefulWidget {
   @override
@@ -15,7 +14,6 @@ class _PasswordState extends State<Password> {
   TextEditingController _pass2Controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserData>(context);
     return Scaffold(
       body: Container(
           // color: Color.fromRGBO(240, 237, 237, 1),
@@ -58,18 +56,20 @@ class _PasswordState extends State<Password> {
                     onPressed: () async {
                       if ((_formKey.currentState as FormState).validate()) {
                         // 校验通过
-                        var data = await getData("changePass", formdata: {
-                          "id": user.userInfo.id,
+                        var data = await DioUtils.getInstance()
+                            .post("changePass", data: {
                           "oldPass": _pass1Controller.text,
                           "newPass": _pass2Controller.text
                         });
-                        if (data["errorCode"] == 0) {
-                          (_formKey.currentState as FormState).reset();
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          // 将用户信息注册到全局上
-                          print("修改成功");
-                        } else {
-                          print(data["msg"]);
+                        if (data != null) {
+                          if (data["errorCode"] == 0) {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            (_formKey.currentState as FormState).reset();
+                            // 将用户信息注册到全局上
+                            Toast.toast(context, msg: "修改成功");
+                          } else {
+                            Toast.toast(context, msg: data["msg"]);
+                          }
                         }
                       }
                     },

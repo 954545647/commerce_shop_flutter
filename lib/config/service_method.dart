@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:commerce_shop_flutter/config/serviceUrl.dart';
 
 // 封装通用接口
-Future getData(url,{formdata}) async {
-    try {
+Future getData(url, {formdata}) async {
+  try {
     Response response;
     Dio dio = new Dio();
-    if(formdata == null){
+    if (formdata == null) {
       // get请求
       response = await dio.get(urlList[url]);
-    }else{
+    } else {
       // post请求
-      response =await dio.post(urlList[url],data:formdata);
+      response = await dio.post(urlList[url], data: formdata);
     }
     if (response.statusCode == 200) {
       return response.data;
@@ -23,4 +23,3 @@ Future getData(url,{formdata}) async {
     return print(e);
   }
 }
-

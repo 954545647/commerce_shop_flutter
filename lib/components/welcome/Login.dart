@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -130,12 +131,19 @@ class _LoginState extends State<Login> {
                                             "username": _unameController.text,
                                             "password": _pwdController.text
                                           });
+                                          print(data);
                                           if (data["errorCode"] == 0) {
                                             // 将用户信息注册到全局上
                                             user.login(
-                                                data["data"]["id"],
-                                                data["data"]["username"],
-                                                data["data"]["phone"]);
+                                              data["data"]["id"],
+                                              data["data"]["username"],
+                                              data["data"]["phone"],
+                                            );
+                                            SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            prefs.setString(
+                                                "token", data["data"]["token"]);
                                             Navigator.pushNamed(
                                                 context, 'index');
                                           } else {

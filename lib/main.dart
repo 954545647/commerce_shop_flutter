@@ -11,6 +11,7 @@ import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
+import 'package:commerce_shop_flutter/components/user_center/setting/location.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 
@@ -25,7 +26,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   MyApp({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
           'nearFarm': (context, {arguments}) => NearFarm(),
           'merchant': (context, {arguments}) => Merchant(),
           'password': (context) => Password(),
+          'location': (context) => Location(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

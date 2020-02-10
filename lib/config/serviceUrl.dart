@@ -1,14 +1,13 @@
 // 路由列表
-
-const baseUrl = 'http://10.0.2.2:3000/'; // 基本路由
+import 'package:commerce_shop_flutter/config/config.dart';
 
 const urlList = {
-  'homeSwiperImgList': baseUrl + 'home/homeSwiperImgList',
-  'homeNewsList': baseUrl + 'home/homeNewsList',
-  'hotGoods': baseUrl + 'home/hotGoods',
-  'goodsList': baseUrl + 'market/goodsList',
-  'leftList': baseUrl + 'rentLand/leftList',
-  'login': baseUrl + 'login',
-  'register': baseUrl + 'register',
-  "changePass": baseUrl + "user/changePass"
+  'homeSwiperImgList': BASEURL + 'home/homeSwiperImgList',
+  'homeNewsList': BASEURL + 'home/homeNewsList',
+  'hotGoods': BASEURL + 'home/hotGoods',
+  'goodsList': BASEURL + 'market/goodsList',
+  'leftList': BASEURL + 'rentLand/leftList',
+  'login': BASEURL + 'login',
+  'register': BASEURL + 'register',
+  "changePass": BASEURL + "user/changePass"
 };

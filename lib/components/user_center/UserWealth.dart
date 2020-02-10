@@ -39,7 +39,7 @@ class _UserWealthState extends State<UserWealth> {
                 print("");
               },
               iconName: "0xe778",
-              jumpRoute: "setting",
+              jumpRoute: "location",
             ),
             ListItem(
               title: "设置",
