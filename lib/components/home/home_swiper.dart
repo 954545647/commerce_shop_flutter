@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class HomeSwiper extends StatelessWidget {
   @override
@@ -10,7 +10,7 @@ class HomeSwiper extends StatelessWidget {
     // print('设备的宽度${ScreenUtil.screenWidth}');
     // print('设备的高度${ScreenUtil.screenHeight}');
     return FutureBuilder(
-      future: getData('homeSwiperImgList'),
+      future: DioUtils.getInstance().get('homeSwiperImgList'),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/market/goods_card.dart';
 import 'package:commerce_shop_flutter/model/goodsCardModel.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class CardList extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _CardListState extends State<CardList> {
   @override
   void initState() {
     super.initState();
-    getData('goodsList').then((val) {
+    DioUtils.getInstance().get('goodsList').then((val) {
       setState(() {
         goodsList = val['data']['goodsList'];
       });

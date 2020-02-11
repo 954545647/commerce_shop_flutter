@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class TopBanner extends StatefulWidget {
   @override
@@ -14,7 +14,7 @@ class _TopBannerState extends State<TopBanner> {
   @override
   void initState() {
     super.initState();
-    getData('leftList').then((val) {
+    DioUtils.getInstance().get('leftList').then((val) {
       setState(() {
         list = val['data']['menuList'];
       });

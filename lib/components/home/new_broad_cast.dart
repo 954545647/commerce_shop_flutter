@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class NewBroadCast extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getData('homeNewsList'),
+      future: DioUtils.getInstance().get('homeNewsList'),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
@@ -17,7 +17,7 @@ class NewBroadCast extends StatelessWidget {
             return Container(
               width: ScreenUtil.getInstance().setWidth(750),
               height: ScreenUtil.getInstance().setHeight(120),
-              margin: EdgeInsets.fromLTRB(0,10.0,0,0.0),
+              margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[leftNew(), rightNew(newList)],

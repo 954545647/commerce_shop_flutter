@@ -38,13 +38,14 @@ class DioUtils {
         // 从本地缓存中读取token
         requestions.headers
             .addAll({"Authorization": "Bearer " + await getToken()});
-        print('-----请求参数--' + requestions.headers.toString());
+        // print('-----请求参数--' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
         //此处拦截工作在数据返回之后，可在此对dio请求的数据做二次封装或者转实体类等相关操作
         return response;
       }, onError: (DioError error) {
         //处理错误请求
+        print("拦截器拦截错误");
         return error;
       }),
     );
@@ -57,7 +58,7 @@ class DioUtils {
     try {
       response =
           await _dio.get(urlList[url], queryParameters: data, options: options);
-      print('请求结果--------${response.data}');
+      print('\n\n请求路径---$url------请求结果--------${response.data}\n\n');
       return response.data;
     } on DioError catch (e) {
       print('请求失败---错误类型${e.type}--错误信息${e.message}');
@@ -70,7 +71,8 @@ class DioUtils {
     Response response;
     try {
       response = await _dio.post(urlList[url], data: data, options: options);
-      print('请求结果-----${response.data}');
+      print('\n\n请求路径---$url------请求结果-----${response.data}\n\n');
+      print('\n\n');
       return response.data;
     } on DioError catch (e) {
       print('请求失败---错误类型${e.type}--错误信息${e.message}');

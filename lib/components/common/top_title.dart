@@ -5,7 +5,9 @@ class TopTitle extends StatelessWidget {
   final String title;
   final double top;
   final bool showArrow;
-  TopTitle({this.title, this.top = 20, this.showArrow = false});
+  final ifRefresh;
+  TopTitle(
+      {this.title, this.top = 20, this.showArrow = false, this.ifRefresh = ""});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,7 +25,10 @@ class TopTitle extends StatelessWidget {
                   children: <Widget>[
                     Text(title,
                         style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                            color: Colors.black,
+                            decoration: TextDecoration.none,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold)),
                     Positioned(
                       left: 10,
                       child: GestureDetector(
@@ -33,7 +38,7 @@ class TopTitle extends StatelessWidget {
                           color: Colors.grey,
                         ),
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context, ifRefresh);
                         },
                       ),
                     )

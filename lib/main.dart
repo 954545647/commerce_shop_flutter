@@ -11,7 +11,8 @@ import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
-import 'package:commerce_shop_flutter/components/user_center/setting/location.dart';
+import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
+import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 
@@ -32,8 +33,8 @@ class MyApp extends StatelessWidget {
         title: '认养农场',
         debugShowCheckedModeBanner: false, // 关闭debug显示条
         theme: ThemeData(
-          primaryColor: Colors.lightGreen,
-        ),
+            primaryColor: Colors.lightGreen,
+            accentColor: Color.fromRGBO(98, 148, 208, 1)),
         routes: {
           'welcome': (context) => Welcome(),
           'index': (context) => IndexPage(),
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
           'merchant': (context, {arguments}) => Merchant(),
           'password': (context) => Password(),
           'location': (context) => Location(),
+          "newAddress": (context) => NewAddress(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

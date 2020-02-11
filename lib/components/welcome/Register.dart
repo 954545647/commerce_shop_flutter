@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -136,14 +136,14 @@ class _RegisterState extends State<Register> {
                                     onTap: () async {
                                       if ((_formKey.currentState as FormState)
                                           .validate()) {
-                                        var data = await getData("register",
-                                            formdata: {
-                                              "username": _unameController.text,
-                                              "password": _pwdController.text,
-                                              "phone": _phoneController.text,
-                                              "verifiCode":
-                                                  _checkCodeController.text
-                                            });
+                                        var data = await DioUtils.getInstance()
+                                            .post("register", data: {
+                                          "username": _unameController.text,
+                                          "password": _pwdController.text,
+                                          "phone": _phoneController.text,
+                                          "verifiCode":
+                                              _checkCodeController.text
+                                        });
                                         print('${data}6666');
                                         if (data["errorCode"] == 0) {
                                           Navigator.pushNamed(context, 'login');

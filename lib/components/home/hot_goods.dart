@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class HotGoods extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _HotGoodsState extends State<HotGoods> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getData('hotGoods', formdata: {"page": page}),
+      future: DioUtils.getInstance().post('hotGoods', data: {"page": 1}),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

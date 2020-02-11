@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 // import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -127,27 +128,32 @@ class _LoginState extends State<Login> {
                                         if ((_formKey.currentState as FormState)
                                             .validate()) {
                                           var data =
-                                              await getData("login", formdata: {
+                                              await DioUtils.getInstance()
+                                                  .post('login', data: {
                                             "username": _unameController.text,
                                             "password": _pwdController.text
                                           });
-                                          print(data);
-                                          if (data["errorCode"] == 0) {
-                                            // 将用户信息注册到全局上
-                                            user.login(
-                                              data["data"]["id"],
-                                              data["data"]["username"],
-                                              data["data"]["phone"],
-                                            );
-                                            SharedPreferences prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            prefs.setString(
-                                                "token", data["data"]["token"]);
-                                            Navigator.pushNamed(
-                                                context, 'index');
+                                          if (data != null) {
+                                            if (data["errorCode"] == 0) {
+                                              // 将用户信息注册到全局上
+                                              user.login(
+                                                data["data"]["id"],
+                                                data["data"]["username"],
+                                                data["data"]["phone"],
+                                              );
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              prefs.setString("token",
+                                                  data["data"]["token"]);
+                                              Navigator.pushNamed(
+                                                  context, 'index');
+                                            } else {
+                                              Toast.toast(context, msg: "登录失败");
+                                            }
                                           } else {
-                                            print(data["msg"]);
+                                            print("登录失败$data");
+                                            Toast.toast(context, msg: "登录失败");
                                           }
                                         }
                                       })

@@ -1,13 +1,13 @@
 // 路由列表
-import 'package:commerce_shop_flutter/config/config.dart';
-
 const urlList = {
-  'homeSwiperImgList': BASEURL + 'home/homeSwiperImgList',
-  'homeNewsList': BASEURL + 'home/homeNewsList',
-  'hotGoods': BASEURL + 'home/hotGoods',
-  'goodsList': BASEURL + 'market/goodsList',
-  'leftList': BASEURL + 'rentLand/leftList',
-  'login': BASEURL + 'login',
-  'register': BASEURL + 'register',
-  "changePass": BASEURL + "user/changePass"
+  'homeSwiperImgList': 'home/homeSwiperImgList',
+  'homeNewsList': 'home/homeNewsList',
+  'hotGoods': 'home/hotGoods',
+  'goodsList': 'market/goodsList',
+  'leftList': 'rentLand/leftList',
+  'login': 'login',
+  'register': 'register',
+  "changePass": "user/changePass",
+  "address": "user/address",
+  "newAddress": "user/newAddress",
 };
