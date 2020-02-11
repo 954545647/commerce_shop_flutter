@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/components/market/goods_card.dart';
+import 'package:commerce_shop_flutter/components/shop/goods_card.dart';
 import 'package:commerce_shop_flutter/model/goodsCardModel.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 

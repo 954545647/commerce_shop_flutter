@@ -1,8 +1,11 @@
+// 签到页面
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/common_title.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-// show CalendarCarousel;
+import 'package:commerce_shop_flutter/utils/utils.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -16,9 +19,27 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      signDays = [11, 12, 13];
+    getUserSignData().then((val) {
+      setState(() {
+        signDays = val;
+      });
+      print(signDays);
     });
+  }
+
+// 获取用户签到日期 返回的是一个 Future对象
+  getUserSignData() async {
+    var data = await DioUtils.getInstance().post('getUserSignDays');
+    return parseTimeList(data["data"]);
+  }
+
+// 修改积分
+  void modifyIntegral() async {
+    var data = await DioUtils.getInstance()
+        .post("changeIntegral", data: {"source": 1});
+    if (data == null) {
+      Toast.toast(context, msg: "修改失败");
+    }
   }
 
   @override
@@ -51,7 +72,6 @@ class _SignInState extends State<SignIn> {
         children: <Widget>[
           // 签到按钮
           signButton(),
-          // 积分数据
         ],
       ),
     );
@@ -64,21 +84,12 @@ class _SignInState extends State<SignIn> {
         // Navigator.pushNamed(context, 'integralMall');
         // 调接口，将当前日期保存到已经签到数组中去
         setState(() {
-          if (signDays.indexOf(_currentDate.day) == -1) {
-            signDays.add(_currentDate.day);
+          if (signDays.indexOf(parseTime(_currentDate)) == -1) {
+            signDays.add(parseTime(_currentDate));
+            // 修改积分
+            modifyIntegral();
           } else {
-            showDialog(
-                context: context,
-                builder: (_) {
-                  return GestureDetector(
-                    onTap: (){
-                      Navigator.pop(_);
-                    },
-                    child: Center(
-                    child: Text('已经签到啦'),
-                  ),
-                  );
-                });
+            Toast.toast(context, msg: "已经签到啦");
           }
         });
       },
@@ -138,7 +149,7 @@ class _SignInState extends State<SignIn> {
         // 工作日字体颜色
         weekdayTextStyle: TextStyle(color: Color.fromRGBO(172, 170, 170, 1)),
         // 当天按钮的颜色
-        todayButtonColor: Colors.blue,
+        todayButtonColor: Color.fromRGBO(203, 209, 215, 1),
         //当天按钮边框的颜色
         todayBorderColor: Colors.transparent,
         // 当前月所有按钮的边框颜色
@@ -154,7 +165,8 @@ class _SignInState extends State<SignIn> {
           bool isThisMonthDay,
           DateTime day,
         ) {
-          if (signDays.indexOf(day.day) != -1) {
+          String today = parseTime(day);
+          if (signDays.indexOf(today) != -1) {
             return Container(
                 child: Center(
               child: Icon(

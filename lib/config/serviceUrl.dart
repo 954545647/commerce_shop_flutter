@@ -10,4 +10,6 @@ const urlList = {
   "changePass": "user/changePass",
   "address": "user/address",
   "newAddress": "user/newAddress",
+  "changeIntegral": "user/changeIntegral",
+  "getUserSignDays": "user/getUserSignDays",
 };
