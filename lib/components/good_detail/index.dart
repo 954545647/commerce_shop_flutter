@@ -31,7 +31,10 @@ class _GoodDetailsState extends State<GoodDetails> {
             // 商品标题
             CommonTitle(title: argument['name'].toString()),
             // 商品图片展示
-            GoodBanner(imageList: imageList,height: 400,),
+            GoodBanner(
+              imageList: imageList,
+              height: 400,
+            ),
             // 商品价格、简介、销量
             goodDetails(argument),
             // 商品规格（尺码、地址）

@@ -3,6 +3,7 @@ import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:commerce_shop_flutter/components/good_detail/index.dart';
 import 'package:commerce_shop_flutter/components/home/hot_news.dart';
+import 'package:commerce_shop_flutter/components/home/news/news_detail.dart';
 import 'package:commerce_shop_flutter/components/sign_in/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/integral_detail.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
           "newAddress": (context) => NewAddress(),
           "hotNews": (context) => HotNews(),
           "coupon": (context) => Coupon(),
+          "newsDetail": (context, {arguments}) => NewDetails(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

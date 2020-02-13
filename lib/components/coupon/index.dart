@@ -16,7 +16,6 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   TabController _tabController; //定义一个Controller
   List tabs = ["未使用", "已使用"];
   int count = 1;
-  int _selectedIndex;
   List couponList = [];
   List unUseCoupons = [];
   List useCoupons = [];
@@ -26,10 +25,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
-    _tabController.addListener(() {
-      setState(() => _selectedIndex = _tabController.index);
-      print("liucheng-> ${_tabController.indexIsChanging}");
-    });
+    // _tabController.addListener(() {
+    // });
     getCoupon();
   }
 

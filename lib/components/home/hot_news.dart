@@ -4,7 +4,6 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 // import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
 // import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/utils/http.dart';
-import 'package:commerce_shop_flutter/utils/utils.dart';
 
 class HotNews extends StatefulWidget {
   @override
@@ -12,12 +11,18 @@ class HotNews extends StatefulWidget {
 }
 
 class _HotNewsState extends State<HotNews> {
-  List integralList = [];
+  List news = [];
   @override
   void initState() {
     super.initState();
     getData("news").then((val) {
-      print(val);
+      if (val != null &&
+          val["extend"] != null &&
+          val["extend"]["news"] != null) {
+        setState(() {
+          news = val["extend"]["news"];
+        });
+      }
     });
   }
 
@@ -29,10 +34,10 @@ class _HotNewsState extends State<HotNews> {
         removeTop: true,
         child: ListView(
           children: <Widget>[
-            // 积分标题
+            // 标题
             TopTitle(title: '热点新闻', showArrow: true),
-            // 积分详情
-            // integralDetail(),
+            // 新闻详情
+            newslist(),
           ],
         ),
       ),
@@ -40,46 +45,66 @@ class _HotNewsState extends State<HotNews> {
     );
   }
 
-  Widget integralDetail() {
-    print(integralList.length);
-    if (integralList.length > 0) {
+  Widget newslist() {
+    if (news.length > 0) {
       return Container(
         child: Column(
-          children: integralList.map((item) {
-            return integralItem(item);
+          children: news.map((item) {
+            return newsItem(item);
           }).toList(),
         ),
       );
     } else {
-      return Text("暂无数据");
+      return CircularProgressIndicator();
     }
   }
 
-  Widget integralItem(data) {
-    var source = data["source"];
-    return Container(
-      height: 60.0,
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
-      padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-              margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-              child: Text(judgeIntegralSource(source))),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(sourcePoint(source)),
-              SizedBox(
-                height: 5,
+  Widget newsItem(data) {
+    var title = data['title'];
+    var content = data['content'];
+    var date = data['date'];
+    var cover = data['cover'];
+    print(content is String);
+    content = content.replaceAll("\r\n", "");
+    return GestureDetector(
+      child: Container(
+        height: 180,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(border: Border.all(width: 1)),
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 200,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    data["title"],
+                    style: TextStyle(fontSize: 20),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(data["date"])
+                ],
               ),
-              Text(parseSingleTime(data["createdAt"]))
-            ],
-          )
-        ],
+            ),
+            Expanded(
+              child: Image.network(
+                data["cover"],
+                fit: BoxFit.fill,
+              ),
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        Navigator.pushNamed(context, 'newsDetail',
+            arguments:
+                '{"title":"$title","content":"$content","date":"$date","cover":"$cover"}');
+      },
     );
   }
 }
