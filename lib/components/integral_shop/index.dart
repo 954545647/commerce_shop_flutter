@@ -1,8 +1,10 @@
+// 积分商城
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/components/common/common_title.dart';
+import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/good_banner.dart';
 // import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class IntegralMall extends StatefulWidget {
   @override
@@ -10,6 +12,21 @@ class IntegralMall extends StatefulWidget {
 }
 
 class _IntegralMallState extends State<IntegralMall> {
+  int point;
+  @override
+  void initState() {
+    super.initState();
+    // 获取用户积分
+    DioUtils.getInstance().post('getUserInfo').then((val) {
+      if (val != null) {
+        setState(() {
+          point = val["data"]["point"];
+        });
+      }
+    });
+    // 获取积分商城数据
+  }
+
   var imageList = [
     'assets/images/potatoes1.webp',
     'assets/images/potatoes2.webp',
@@ -24,7 +41,7 @@ class _IntegralMallState extends State<IntegralMall> {
         child: ListView(
           children: <Widget>[
             // 积分标题
-            CommonTitle(title: '积分商城'),
+            TopTitle(title: '积分商城', showArrow: true),
             // 积分详情
             intergalDetail(),
             // 商品轮播图
@@ -63,6 +80,7 @@ class _IntegralMallState extends State<IntegralMall> {
   // 积分数据
   Widget intergalData() {
     return Container(
+      height: 100.0,
       decoration: BoxDecoration(
           border: Border(
               right: BorderSide(color: Color.fromRGBO(224, 222, 222, 1)))),
@@ -74,7 +92,7 @@ class _IntegralMallState extends State<IntegralMall> {
             padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
             child: Text('积分'),
           ),
-          Text('19')
+          Text(point.toString())
         ],
       ),
     );
@@ -82,17 +100,23 @@ class _IntegralMallState extends State<IntegralMall> {
 
   // 兑换记录
   Widget exchangeRecord() {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.data_usage),
-          Padding(
-            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-            child: Text('兑换记录'),
-          )
-        ],
+    return GestureDetector(
+      child: Container(
+        height: 100.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.data_usage),
+            Padding(
+              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              child: Text('兑换记录'),
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        Navigator.pushNamed(context, "integralDetail");
+      },
     );
   }
 
@@ -113,7 +137,7 @@ class _IntegralMallState extends State<IntegralMall> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: AssetImage('assets/images/potatoes1.webp'),
+                        image: AssetImage('assets/images/poultry.jpg'),
                         fit: BoxFit.cover)),
               ),
               Text('家禽')
@@ -127,7 +151,7 @@ class _IntegralMallState extends State<IntegralMall> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: AssetImage('assets/images/potatoes1.webp'),
+                        image: AssetImage('assets/images/vegetable.jpg'),
                         fit: BoxFit.cover)),
               ),
               Text('蔬菜')
@@ -141,7 +165,7 @@ class _IntegralMallState extends State<IntegralMall> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                        image: AssetImage('assets/images/potatoes1.webp'),
+                        image: AssetImage('assets/images/fruit.jpeg'),
                         fit: BoxFit.cover)),
               ),
               Text('水果')
@@ -178,6 +202,16 @@ class _IntegralMallState extends State<IntegralMall> {
         'imgUrl': 'assets/images/potatoes1.webp',
         'title': '土豆',
         'integral': '200'
+      },
+      {
+        'imgUrl': 'assets/images/potatoes1.webp',
+        'title': '土豆',
+        'integral': '70'
+      },
+      {
+        'imgUrl': 'assets/images/potatoes1.webp',
+        'title': '土豆',
+        'integral': '70'
       },
       {
         'imgUrl': 'assets/images/potatoes1.webp',

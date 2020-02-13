@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
-import 'package:commerce_shop_flutter/components/home/good_detail/index.dart';
-import 'package:commerce_shop_flutter/components/home/sign_in/index.dart';
-import 'package:commerce_shop_flutter/components/home/sign_in/integral_mall.dart';
-import 'package:commerce_shop_flutter/components/home/near_farm/index.dart';
-import 'package:commerce_shop_flutter/components/home/near_farm/merchant_detail.dart';
+import 'package:commerce_shop_flutter/components/good_detail/index.dart';
+import 'package:commerce_shop_flutter/components/home/hot_news.dart';
+import 'package:commerce_shop_flutter/components/sign_in/index.dart';
+import 'package:commerce_shop_flutter/components/integral_shop/index.dart';
+import 'package:commerce_shop_flutter/components/integral_shop/integral_detail.dart';
+import 'package:commerce_shop_flutter/components/near_farm/index.dart';
+import 'package:commerce_shop_flutter/components/near_farm/merchant_detail.dart';
 import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
+import 'package:commerce_shop_flutter/components/coupon/index.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
@@ -45,11 +48,14 @@ class MyApp extends StatelessWidget {
           'homeGoodsDetail': (context, {arguments}) => GoodDetails(),
           'signIn': (context, {arguments}) => SignIn(),
           'integralMall': (context, {arguments}) => IntegralMall(),
+          'integralDetail': (context, {arguments}) => IntegralDetail(),
           'nearFarm': (context, {arguments}) => NearFarm(),
           'merchant': (context, {arguments}) => Merchant(),
           'password': (context) => Password(),
           'location': (context) => Location(),
           "newAddress": (context) => NewAddress(),
+          "hotNews": (context) => HotNews(),
+          "coupon": (context) => Coupon(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

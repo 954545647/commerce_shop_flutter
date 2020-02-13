@@ -10,31 +10,64 @@ class HotGoods extends StatefulWidget {
 class _HotGoodsState extends State<HotGoods> {
   var page = 1;
   List goodsList;
+  bool ifShowLoading = true;
+  @override
+  initState() {
+    super.initState();
+    DioUtils.getInstance().post('hotGoods', data: {"page": 1}).then((val) {
+      if (val != null) {
+        setState(() {
+          goodsList = val["data"]["goodsList"];
+          ifShowLoading = false;
+        });
+      }
+      print(val);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: DioUtils.getInstance().post('hotGoods', data: {"page": 1}),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            goodsList = snapshot.data['data']['goodsList'];
-            return Container(
-              width: ScreenUtil.getInstance().setWidth(750),
-              // height: ScreenUtil.getInstance().setHeight(500),
-              color: Color.fromRGBO(245, 245, 245, 0.8),
-              child: Column(
-                children: <Widget>[hotGoodsTitle(), hotGoodsList()],
-              ),
-            );
-          }
-        } else {
-          return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading
-        }
-      },
-    );
+    return ifShowLoading
+        ? Container(
+            width: 50.0,
+            height: 100.0,
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            // height: ScreenUtil.getInstance().setHeight(500),
+            color: Color.fromRGBO(245, 245, 245, 0.8),
+            child: Column(
+              children: <Widget>[hotGoodsTitle(), hotGoodsList()],
+            ),
+          );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return FutureBuilder(
+  //     future: DioUtils.getInstance().post('hotGoods', data: {"page": 1}),
+  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         if (snapshot.hasError) {
+  //           return Text("Error: ${snapshot.error}");
+  //         } else {
+  //           goodsList = snapshot.data['data']['goodsList'];
+  //           return Container(
+  //             width: ScreenUtil.getInstance().setWidth(750),
+  //             // height: ScreenUtil.getInstance().setHeight(500),
+  //             color: Color.fromRGBO(245, 245, 245, 0.8),
+  //             child: Column(
+  //               children: <Widget>[hotGoodsTitle(), hotGoodsList()],
+  //             ),
+  //           );
+  //         }
+  //       } else {
+  //         return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading
+  //       }
+  //     },
+  //   );
+  // }
 
   // 热门商品标题
   Widget hotGoodsTitle() {

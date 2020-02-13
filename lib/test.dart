@@ -1,6 +1,10 @@
 main() {
-  var a = 1;
-  print(a);
-  print(a.toString().padRight(2));
-  print(a.toString().padLeft(2, "0"));
+  var a = {
+    "data": [1]
+  };
+  if (a != null && a["data"] != null && a["data"][0] != null) {
+    print("aa");
+    print("44");
+  }
+  // print(a["data"][0]["name"]);
 }

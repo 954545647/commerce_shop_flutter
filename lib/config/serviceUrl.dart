@@ -12,4 +12,8 @@ const urlList = {
   "newAddress": "user/newAddress",
   "changeIntegral": "user/changeIntegral",
   "getUserSignDays": "user/getUserSignDays",
+  "getUserInfo": "user/getUserInfo",
+  "getAlls": "coupon/getAlls",
+  "myCoupon": "coupon/myCoupon",
+  "new": "coupon/new",
 };

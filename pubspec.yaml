@@ -63,6 +63,9 @@ flutter:
     - assets/images/potatoes3.webp
     - assets/images/user.jpg
     - assets/images/user2.jpg
+    - assets/images/poultry.jpg
+    - assets/images/vegetable.jpg
+    - assets/images/fruit.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

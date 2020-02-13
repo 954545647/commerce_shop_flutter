@@ -126,7 +126,7 @@ const List<MenuListItemViewModel> menuListData = [
   ),
   MenuListItemViewModel(
     title: '热点新闻',
-    path: 'signIn',
+    path: 'hotNews',
     icon: Icon(
       MenuIcons.hotNews,
       size: 29,
@@ -135,7 +135,7 @@ const List<MenuListItemViewModel> menuListData = [
   ),
   MenuListItemViewModel(
     title: '领劵中心',
-    path: 'signIn',
+    path: 'coupon',
     icon: Icon(
       MenuIcons.coupon,
       size: 29,

@@ -16,21 +16,27 @@ class HomeSwiper extends StatelessWidget {
           if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
-            var homeSwiperData = snapshot.data['data']['swiperImgList'];
-            return Container(
-              width: ScreenUtil.getInstance().setWidth(750),
-              height: ScreenUtil.getInstance().setHeight(420),
-              child: new Swiper(
-                itemBuilder: (BuildContext context, int index) {
-                  return new Image.network(
-                    '${homeSwiperData[index]['url']}',
-                    fit: BoxFit.fill,
-                  );
-                },
-                itemCount: homeSwiperData.length,
-                pagination: new SwiperPagination(),
-              ),
-            );
+            if (snapshot.data != null &&
+                snapshot.data["data"] != null &&
+                snapshot.data["data"]["swiperImgList"] != null) {
+              var homeSwiperData = snapshot.data['data']['swiperImgList'];
+              return Container(
+                width: ScreenUtil.getInstance().setWidth(750),
+                height: ScreenUtil.getInstance().setHeight(420),
+                child: new Swiper(
+                  itemBuilder: (BuildContext context, int index) {
+                    return new Image.network(
+                      '${homeSwiperData[index]['url']}',
+                      fit: BoxFit.fill,
+                    );
+                  },
+                  itemCount: homeSwiperData.length,
+                  pagination: new SwiperPagination(),
+                ),
+              );
+            } else {
+              return CircularProgressIndicator();
+            }
           }
         } else {
           return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading

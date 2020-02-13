@@ -88,7 +88,25 @@ class _LocationState extends State<Location> {
       );
     } else {
       // 加载菊花
-      return CupertinoActivityIndicator();
+      return GestureDetector(
+        child: Container(
+          alignment: Alignment.center,
+          height: 200.0,
+          width: 500.0,
+          // decoration: BoxDecoration(border: Border.all(width: 1)),
+          child: Text(
+            "去新增地址",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        onTap: () {
+          Navigator.pushNamed(context, "newAddress").then((val) {
+            if (val == true) {
+              loadData();
+            }
+          });
+        },
+      );
     }
   }
 
