@@ -13,6 +13,7 @@ import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/coupon/index.dart';
+import 'package:commerce_shop_flutter/components/coupon/take_coupon.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           "newAddress": (context) => NewAddress(),
           "hotNews": (context) => HotNews(),
           "coupon": (context) => Coupon(),
+          "takeCoupon": (context) => TakeCoupon(),
           "newsDetail": (context, {arguments}) => NewDetails(),
         },
         // initialRoute: '/welcome',

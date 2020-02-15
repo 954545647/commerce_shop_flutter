@@ -8,20 +8,18 @@ class HotGoods extends StatefulWidget {
 }
 
 class _HotGoodsState extends State<HotGoods> {
-  var page = 1;
   List goodsList;
   bool ifShowLoading = true;
   @override
   initState() {
     super.initState();
-    DioUtils.getInstance().post('hotGoods', data: {"page": 1}).then((val) {
-      if (val != null) {
+    DioUtils.getInstance().post('getAllGoods').then((val) {
+      if (val != null && val["data"] != null) {
         setState(() {
-          goodsList = val["data"]["goodsList"];
+          goodsList = val["data"];
           ifShowLoading = false;
         });
       }
-      print(val);
     });
   }
 
@@ -34,88 +32,93 @@ class _HotGoodsState extends State<HotGoods> {
             // height: ScreenUtil.getInstance().setHeight(500),
             color: Color.fromRGBO(245, 245, 245, 0.8),
             child: Column(
-              children: <Widget>[hotGoodsTitle(), hotGoodsList()],
+              children: <Widget>[
+                hotGoodsTitle(),
+                Column(
+                    children: goodsList.map((item) {
+                  return hotGoodsItem(item);
+                }).toList())
+              ],
             ),
           );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return FutureBuilder(
-  //     future: DioUtils.getInstance().post('hotGoods', data: {"page": 1}),
-  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.done) {
-  //         if (snapshot.hasError) {
-  //           return Text("Error: ${snapshot.error}");
-  //         } else {
-  //           goodsList = snapshot.data['data']['goodsList'];
-  //           return Container(
-  //             width: ScreenUtil.getInstance().setWidth(750),
-  //             // height: ScreenUtil.getInstance().setHeight(500),
-  //             color: Color.fromRGBO(245, 245, 245, 0.8),
-  //             child: Column(
-  //               children: <Widget>[hotGoodsTitle(), hotGoodsList()],
-  //             ),
-  //           );
-  //         }
-  //       } else {
-  //         return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading
-  //       }
-  //     },
-  //   );
-  // }
-
   // 热门商品标题
   Widget hotGoodsTitle() {
     return Container(
-      height: ScreenUtil.getInstance().setHeight(80),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(color: Color.fromRGBO(239, 239, 239, 1)))),
+      height: ScreenUtil.getInstance().setHeight(100),
       width: ScreenUtil.getInstance().setWidth(750),
-      color: Colors.white,
       alignment: Alignment.center,
       child: Text('热门商品'),
     );
   }
 
-  // 热门商品列表
-  Widget hotGoodsList() {
-    return Wrap(
-        spacing: 2,
-        children: goodsList.map((item) {
-          return hotGoodsItem(item);
-        }).toList());
-  }
-
   // 热门商品子项
   Widget hotGoodsItem(item) {
     var id = item['id'];
-    var name = item['name'];
+    var name = item['goodName'];
     var price = item['price'];
-    var desc = item['desc'];
-    var carriage = item['carriage'];
-    var monthlySales = item['monthlySales'];
-    var yieldly = item['yieldly'];
+    var desc = item['descript'];
+    var stock = item['stock'];
+    var imgCover = item['imgCover'];
+    var sales = item['sales'];
+    var expressCost = item['expressCost'];
+    var from = item['from'];
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, 'homeGoodsDetail',
             arguments:
-                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","carriage":"$carriage","monthlySales":"$monthlySales","yieldly":"$yieldly"}');
+                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","from":"$from"}');
       },
       child: Container(
-        width: ScreenUtil().setWidth(360),
         height: ScreenUtil().setHeight(340),
-        child: Column(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(
+                bottom: BorderSide(color: Color.fromRGBO(242, 242, 242, 1)))),
+        padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Image.network(
-              item['imgUrl'],
-              width: ScreenUtil().setWidth(340),
-              height: ScreenUtil().setHeight(240),
-            ),
-            Text(
-              item['name'],
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(item['price']),
+            Image.network(imgCover.toString(),
+                width: ScreenUtil().setWidth(300),
+                height: ScreenUtil().setHeight(300),
+                fit: BoxFit.cover),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    desc.toString(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Text(
+                        name.toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Text("￥${price.toString()}",
+                          style: TextStyle(
+                              // color: Color.fromRGBO(201, 66, 45, 1),
+                              color: Colors.red,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),

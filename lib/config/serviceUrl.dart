@@ -15,5 +15,7 @@ const urlList = {
   "getUserInfo": "user/getUserInfo",
   "getAlls": "coupon/getAlls",
   "myCoupon": "coupon/myCoupon",
+  "handleCoupon": "coupon/handleCoupon",
   "new": "coupon/new",
+  "getAllGoods": "goods/getAlls",
 };

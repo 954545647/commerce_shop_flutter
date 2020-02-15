@@ -1,8 +1,7 @@
+// 商品详情
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:commerce_shop_flutter/components/common/common_title.dart';
-import 'package:commerce_shop_flutter/components/common/good_banner.dart';
 import 'dart:convert';
 
 class GoodDetails extends StatefulWidget {
@@ -11,12 +10,6 @@ class GoodDetails extends StatefulWidget {
 }
 
 class _GoodDetailsState extends State<GoodDetails> {
-  // 商品图片列表，到时传id去后台获取
-  var imageList = [
-    'assets/images/potatoes1.webp',
-    'assets/images/potatoes2.webp',
-    'assets/images/potatoes3.webp',
-  ];
   @override
   Widget build(BuildContext context) {
     // 获取路由参数
@@ -31,10 +24,7 @@ class _GoodDetailsState extends State<GoodDetails> {
             // 商品标题
             CommonTitle(title: argument['name'].toString()),
             // 商品图片展示
-            GoodBanner(
-              imageList: imageList,
-              height: 400,
-            ),
+            goodBanner(argument),
             // 商品价格、简介、销量
             goodDetails(argument),
             // 商品规格（尺码、地址）
@@ -45,6 +35,10 @@ class _GoodDetailsState extends State<GoodDetails> {
       ),
       // 顶部商品展示
     );
+  }
+
+  Widget goodBanner(argument) {
+    return Image.network(argument["imgCover"]);
   }
 
   // 商品价格+简介+销量信息
@@ -131,7 +125,8 @@ class _GoodDetailsState extends State<GoodDetails> {
 
   // 商品销量
   Widget goodSales(argument) {
-    var carriage = argument['carriage'] == 0 ? '免运费' : argument['carriage'];
+    var carriage =
+        argument['expressCost'] == 0 ? '免运费' : argument['expressCost'];
     return Container(
       height: ScreenUtil().setHeight(80),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -142,9 +137,9 @@ class _GoodDetailsState extends State<GoodDetails> {
             '快递:$carriage',
             style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)),
           ),
-          Text('月销:${argument['monthlySales']}',
+          Text('月销:${argument['sales']}',
               style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1))),
-          Text(argument['yieldly'],
+          Text(argument['from'],
               style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)))
         ],
       ),

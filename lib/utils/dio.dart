@@ -58,7 +58,7 @@ class DioUtils {
     try {
       response =
           await _dio.get(urlList[url], queryParameters: data, options: options);
-      print('请求路径---$url------请求结果--------${response.data}\n\n');
+      // print('请求路径---$url------请求结果--------${response.data}\n\n');
       return response.data;
     } on DioError catch (e) {
       print('请求失败---错误类型${e.type}--错误信息${e.message}');
@@ -71,7 +71,7 @@ class DioUtils {
     Response response;
     try {
       response = await _dio.post(urlList[url], data: data, options: options);
-      print('请求路径---$url------请求结果-----${response.data}\n\n');
+      // print('请求路径---$url------请求结果-----${response.data}\n\n');
       print('\n\n');
       return response.data;
     } on DioError catch (e) {

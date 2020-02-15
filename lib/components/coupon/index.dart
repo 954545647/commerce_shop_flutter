@@ -1,10 +1,7 @@
 // 优惠卷主页
-// 修改地址
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
-// import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 
 class Coupon extends StatefulWidget {
@@ -25,21 +22,20 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
-    // _tabController.addListener(() {
-    // });
     getCoupon();
   }
 
   getCoupon() {
-    DioUtils.getInstance().post("getAlls").then((val) {
+    DioUtils.getInstance().post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         List list = val["data"];
         List useList = [];
         List unUseList = [];
         list.forEach((item) {
-          if (item["use_state"] == 0) {
+          var state = item["use_state"];
+          if (state == 1) {
             useList.add(item);
-          } else {
+          } else if (state == 0) {
             unUseList.add(item);
           }
         });
@@ -63,7 +59,25 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             TopTitle(title: "我的优惠卷", showArrow: true),
-            _buildRoot()
+            Stack(
+              children: <Widget>[
+                _buildRoot(),
+                Positioned(
+                    top: 5,
+                    right: 5,
+                    child: GestureDetector(
+                      child: Icon(Icons.more),
+                      onTap: () {
+                        Navigator.pushNamed(context, "takeCoupon").then((val) {
+                          if (val == true) {
+                            // 重新刷新页面
+                            getCoupon();
+                          }
+                        });
+                      },
+                    ))
+              ],
+            )
           ],
         ),
       )),
@@ -107,15 +121,17 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
 // 未使用
   Widget unUsed() {
     return Container(
-      padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
+      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
       child: Column(
         children: <Widget>[
-          ListView.builder(
-            itemCount: unUseCoupons.length,
-            itemBuilder: (BuildContext context, int index) {
-              return unUsedCoupon(unUseCoupons[index]);
-            },
-            shrinkWrap: true,
+          Expanded(
+            child: ListView.builder(
+              itemCount: unUseCoupons.length,
+              itemBuilder: (BuildContext context, int index) {
+                return unUsedCoupon(unUseCoupons[index]);
+              },
+              shrinkWrap: true,
+            ),
           )
         ],
       ),

@@ -171,3 +171,97 @@
 //     return pages;
 //   }
 // }
+
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     Widget titlesection = Container(
+//       padding: EdgeInsets.all(10.0),
+//       child: Expanded(
+//         child: Row(
+//           children: <Widget>[
+//             Column(
+//               children: <Widget>[
+//                 Container(
+//                   padding: EdgeInsets.only(bottom: 8.0),
+//                   child: Text(
+//                     "Some Lage Somthing",
+//                     style: TextStyle(fontWeight: FontWeight.bold),
+//                   ),
+//                 ),
+//                 Text("Someplace, Country")
+//               ],
+//             ),
+//             Icon(Icons.star)
+//           ],
+//         ),
+//       ),
+//     );
+
+//     return MaterialApp(
+//       title: 'My Layout App',
+//       home: Scaffold(
+//           appBar: AppBar(
+//             title: Text("My Layout App"),
+//           ),
+//           body: ListView(
+//             children: <Widget>[
+//               titlesection,
+//             ],
+//           )),
+//     );
+//   }
+// }
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Widget titlesection = Container(
+      padding: EdgeInsets.all(10.0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    "Some Lage Somthing",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Text("Someplace, Country")
+              ],
+            ),
+          ),
+          Icon(Icons.star)
+        ],
+      ),
+    );
+
+    return MaterialApp(
+      title: 'My Layout App',
+      home: Scaffold(
+          appBar: AppBar(
+            title: Text("My Layout App"),
+          ),
+          body: ListView(
+            children: <Widget>[
+              titlesection,
+            ],
+          )),
+    );
+  }
+}

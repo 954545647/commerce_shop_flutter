@@ -133,6 +133,7 @@ class _LoginState extends State<Login> {
                                             "username": _unameController.text,
                                             "password": _pwdController.text
                                           });
+                                          print(data);
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               // 将用户信息注册到全局上
@@ -149,7 +150,8 @@ class _LoginState extends State<Login> {
                                               Navigator.pushNamed(
                                                   context, 'index');
                                             } else {
-                                              Toast.toast(context, msg: "登录失败");
+                                              Toast.toast(context,
+                                                  msg: data["msg"]);
                                             }
                                           } else {
                                             print("登录失败$data");
