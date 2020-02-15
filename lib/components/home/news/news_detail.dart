@@ -11,7 +11,6 @@ class NewDetails extends StatelessWidget {
     // 获取路由参数
     var args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> argument = json.decode(args);
-    print(argument);
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,

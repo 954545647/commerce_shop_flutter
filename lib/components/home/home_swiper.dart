@@ -35,11 +35,11 @@ class HomeSwiper extends StatelessWidget {
                 ),
               );
             } else {
-              return CircularProgressIndicator();
+              return Text("还没有数据");
             }
           }
         } else {
-          return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading
+          return Text("还没有数据"); // 请求未结束，显示loading
         }
       },
     );

@@ -28,11 +28,7 @@ class _HotGoodsState extends State<HotGoods> {
   @override
   Widget build(BuildContext context) {
     return ifShowLoading
-        ? Container(
-            width: 50.0,
-            height: 100.0,
-            child: CircularProgressIndicator(),
-          )
+        ? Text("")
         : Container(
             width: ScreenUtil.getInstance().setWidth(750),
             // height: ScreenUtil.getInstance().setHeight(500),
@@ -125,21 +121,4 @@ class _HotGoodsState extends State<HotGoods> {
       ),
     );
   }
-}
-
-class PetCardViewModel {
-  /// 封面地址
-  final String coverUrl;
-
-  /// 用户头像地址
-  final String userImgUrl;
-
-  /// 用户名
-  final String userName;
-
-  const PetCardViewModel({
-    this.coverUrl,
-    this.userImgUrl,
-    this.userName,
-  });
 }

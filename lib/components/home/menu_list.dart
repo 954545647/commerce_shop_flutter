@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/menuIcon.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/utils/diaLog.dart';
 
 class MenuList extends StatelessWidget {
   @override
@@ -12,7 +15,6 @@ class MenuList extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(), // 禁止回弹
         crossAxisCount: 4,
         childAspectRatio: 1.3,
-        // padding: EdgeInsets.symmetric(vertical: 0),
         children:
             menuListData.map((item) => menuListItem(item, context)).toList(),
       ),
@@ -21,6 +23,7 @@ class MenuList extends StatelessWidget {
 
 // 菜单列表单独子项
   Widget menuListItem(data, context) {
+    final user = Provider.of<UserData>(context);
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(bottom: 10.0),
@@ -29,7 +32,17 @@ class MenuList extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, data.path);
+                // 如果需要登录
+                if (data.shouldLogin) {
+                  // 如果没有登录
+                  if (!user.isLogin) {
+                    loginDialog(context, "请先登录！");
+                  } else {
+                    Navigator.pushNamed(context, data.path);
+                  }
+                } else {
+                  Navigator.pushNamed(context, data.path);
+                }
               },
               child: data.icon,
             ),
@@ -52,24 +65,24 @@ class MenuListItemViewModel {
   // 跳转路由
   final String path;
 
-  const MenuListItemViewModel({
-    this.icon,
-    this.title,
-    this.path,
-  });
+  // 是否需要登录
+  final bool shouldLogin;
+
+  const MenuListItemViewModel(
+      {this.icon, this.title, this.path, this.shouldLogin});
 }
 
 /// 美团 - 服务菜单
 const List<MenuListItemViewModel> menuListData = [
   MenuListItemViewModel(
-    title: '实时监控',
-    path: 'signIn',
-    icon: Icon(
-      MenuIcons.monitoring,
-      size: 25,
-      color: Colors.lightBlue,
-    ),
-  ),
+      title: '实时监控',
+      path: 'signIn',
+      icon: Icon(
+        MenuIcons.monitoring,
+        size: 25,
+        color: Colors.lightBlue,
+      ),
+      shouldLogin: true),
   // MenuListItemViewModel(
   //   title: '租地种植',
   //   path: 'rentLand',
@@ -89,66 +102,66 @@ const List<MenuListItemViewModel> menuListData = [
   //   ),
   // ),
   MenuListItemViewModel(
-    title: '附近农场',
-    path: 'nearFarm',
-    icon: Icon(
-      MenuIcons.nearFarm,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '附近农场',
+      path: 'nearFarm',
+      icon: Icon(
+        MenuIcons.nearFarm,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: false),
   MenuListItemViewModel(
-    title: '拼团商城',
-    path: 'signIn',
-    icon: Icon(
-      MenuIcons.assemble,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '拼团商城',
+      path: 'signIn',
+      icon: Icon(
+        MenuIcons.assemble,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: false),
   MenuListItemViewModel(
-    title: '每日签到',
-    path: 'signIn',
-    icon: Icon(
-      MenuIcons.signIn,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '每日签到',
+      path: 'signIn',
+      icon: Icon(
+        MenuIcons.signIn,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: true),
   MenuListItemViewModel(
-    title: '积分商城',
-    path: 'integralMall',
-    icon: Icon(
-      MenuIcons.integralShop,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '积分商城',
+      path: 'integralMall',
+      icon: Icon(
+        MenuIcons.integralShop,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: true),
   MenuListItemViewModel(
-    title: '热点新闻',
-    path: 'hotNews',
-    icon: Icon(
-      MenuIcons.hotNews,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '热点新闻',
+      path: 'hotNews',
+      icon: Icon(
+        MenuIcons.hotNews,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: false),
   MenuListItemViewModel(
-    title: '领劵中心',
-    path: 'coupon',
-    icon: Icon(
-      MenuIcons.coupon,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '领劵中心',
+      path: 'coupon',
+      icon: Icon(
+        MenuIcons.coupon,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: true),
   MenuListItemViewModel(
-    title: '客服中心',
-    path: 'signIn',
-    icon: Icon(
-      MenuIcons.customerService,
-      size: 29,
-      color: Colors.deepOrangeAccent,
-    ),
-  ),
+      title: '客服中心',
+      path: 'signIn',
+      icon: Icon(
+        MenuIcons.customerService,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: false),
 ];
