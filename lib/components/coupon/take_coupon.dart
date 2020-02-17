@@ -46,7 +46,6 @@ class _TakeCouponState extends State<TakeCoupon> {
           couponList = list;
         });
       }
-      // print("未领取的优惠卷$couponList");
     });
   }
 

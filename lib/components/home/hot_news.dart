@@ -1,8 +1,7 @@
 // 热点新闻
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/loading.dart';
 import 'package:commerce_shop_flutter/utils/http.dart';
 
 class HotNews extends StatefulWidget {
@@ -15,7 +14,7 @@ class _HotNewsState extends State<HotNews> {
   @override
   void initState() {
     super.initState();
-    getData("news").then((val) {
+    getData("/news").then((val) {
       if (val != null &&
           val["extend"] != null &&
           val["extend"]["news"] != null) {
@@ -55,16 +54,15 @@ class _HotNewsState extends State<HotNews> {
         ),
       );
     } else {
-      return CircularProgressIndicator();
+      return Loading();
     }
   }
 
   Widget newsItem(data) {
     var title = data['title'];
     var content = data['content'];
-    var date = data['date'];
+    var date = data['publishDate'].toString();
     var cover = data['cover'];
-    print(content is String);
     content = content.replaceAll("\r\n", "");
     return GestureDetector(
       child: Container(
@@ -79,7 +77,7 @@ class _HotNewsState extends State<HotNews> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    data["title"],
+                    title,
                     style: TextStyle(fontSize: 20),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -87,13 +85,13 @@ class _HotNewsState extends State<HotNews> {
                   SizedBox(
                     height: 30,
                   ),
-                  Text(data["date"])
+                  Text(date)
                 ],
               ),
             ),
             Expanded(
               child: Image.network(
-                data["cover"],
+                cover,
                 fit: BoxFit.fill,
               ),
             )

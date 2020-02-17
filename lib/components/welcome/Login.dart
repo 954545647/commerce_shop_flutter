@@ -95,14 +95,14 @@ class _LoginState extends State<Login> {
                                     child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
                                       child: Text(
-                                        'Frogot your password?',
+                                        'No account yet. Sign up for one?',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                     onTap: () {
-                                      Navigator.pushNamed(context, 'forget');
+                                      Navigator.pushNamed(context, 'register');
                                     },
                                   ),
                                   GestureDetector(
@@ -133,7 +133,6 @@ class _LoginState extends State<Login> {
                                             "username": _unameController.text,
                                             "password": _pwdController.text
                                           });
-                                          print(data);
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               // 将用户信息注册到全局上
@@ -147,6 +146,8 @@ class _LoginState extends State<Login> {
                                                       .getInstance();
                                               prefs.setString("token",
                                                   data["data"]["token"]);
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
                                               Navigator.pushNamed(
                                                   context, 'index');
                                             } else {
@@ -154,7 +155,6 @@ class _LoginState extends State<Login> {
                                                   msg: data["msg"]);
                                             }
                                           } else {
-                                            print("登录失败$data");
                                             Toast.toast(context, msg: "登录失败");
                                           }
                                         }

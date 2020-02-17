@@ -18,4 +18,6 @@ const urlList = {
   "handleCoupon": "coupon/handleCoupon",
   "new": "coupon/new",
   "getAllGoods": "goods/getAlls",
+  "getCarts": "order/getCarts",
+  "handleCart": "order/handleCart",
 };

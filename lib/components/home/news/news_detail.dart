@@ -4,8 +4,6 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'dart:convert';
 
 class NewDetails extends StatelessWidget {
-  // final data;
-  // NewDetails({this.data});
   @override
   Widget build(BuildContext context) {
     // 获取路由参数

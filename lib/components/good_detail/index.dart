@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/common_title.dart';
 import 'dart:convert';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
+import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
+import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
 
 class GoodDetails extends StatefulWidget {
   @override
@@ -10,26 +14,161 @@ class GoodDetails extends StatefulWidget {
 }
 
 class _GoodDetailsState extends State<GoodDetails> {
+  TextEditingController _numController = TextEditingController();
+  List userAddress = []; // 用户地址
+  List orderCart = []; // 用户购物车
+  int cartItem = 0; // 购物车数量
+  int buyCount = 1; // 购物数量
+  @override
+  void initState() {
+    super.initState();
+    getAddress();
+    getCart();
+  }
+
+// 获取地址
+  getAddress() {
+    DioUtils.getInstance().post("address").then((val) {
+      if (val != null && val["data"] != null) {
+        setState(() {
+          userAddress = val["data"];
+        });
+      }
+    });
+  }
+
+  // 获取购物车
+  getCart() {
+    DioUtils.getInstance().post("getCarts").then((val) {
+      if (val != null && val["data"] != null) {
+        orderCart = val["data"];
+        cartItem = orderCart.length;
+        setState(() {});
+      }
+    });
+  }
+
+// 添加到购物车
+  addCart(id, goodName, price, buyCount, expressCost) {
+    DioUtils.getInstance().post("handleCart", data: {
+      "goodId": id,
+      "goodName": goodName,
+      "price": price,
+      "count": buyCount,
+      "expressCount": expressCost
+    }).then((val) {
+      print(val);
+      if (val != null && val["data"] != null) {
+        getCart();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // 获取路由参数
     var args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> argument = json.decode(args);
+    var id = argument["id"];
+    var goodName = argument["name"];
+    var price = argument["price"].toString();
+    var expressCost = argument["expressCost"].toString();
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: ListView(
+        child: Stack(
+          alignment: Alignment.center,
           children: <Widget>[
             // 商品标题
-            CommonTitle(title: argument['name'].toString()),
-            // 商品图片展示
-            goodBanner(argument),
-            // 商品价格、简介、销量
-            goodDetails(argument),
-            // 商品规格（尺码、地址）
-            goodSpecification(argument),
-            goodEvaluate(argument),
+            ListView(
+              children: <Widget>[
+                CommonTitle(title: argument['name'].toString()),
+                // 商品图片展示
+                goodBanner(argument),
+                // 商品价格、简介、销量
+                goodDetail(argument),
+                // 商品规格（尺码、地址）
+                goodSpecification(argument),
+                goodEvaluate(argument),
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              child: Container(
+                width: ScreenUtil().setWidth(750),
+                height: 60,
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[Icon(Icons.shop), Text("商家详情")],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // 将当前商品及数量加入购物车
+                        addCart(id, goodName, price, buyCount, expressCost);
+                      },
+                      child: Container(
+                        height: 30,
+                        width: ScreenUtil().setWidth(260),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.center,
+                              width: ScreenUtil().setWidth(200),
+                              child: Text(
+                                "加入购物车",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Positioned(
+                              child: Container(
+                                width: 18,
+                                height: 18,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    // borderRadius: BorderRadius.circular(30),
+                                    border: Border.all(
+                                        width: 1, color: Colors.white)),
+                                child: Center(
+                                  child: Text(
+                                    cartItem.toString(),
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              right: 0,
+                              top: 2,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 30,
+                      width: ScreenUtil().setWidth(260),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(255, 174, 28, 1),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Text(
+                        "立即支付",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -37,127 +176,26 @@ class _GoodDetailsState extends State<GoodDetails> {
     );
   }
 
+//  商品图片展示
   Widget goodBanner(argument) {
     return Image.network(argument["imgCover"]);
-  }
-
-  // 商品价格+简介+销量信息
-  Widget goodDetails(argument) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        children: <Widget>[
-          // 商品价格+关注+降价通知
-          gooodPrice(argument),
-          // 商品简介
-          goodDesc(argument),
-          // 商品销量
-          goodSales(argument)
-        ],
-      ),
-    );
-  }
-
-// 商品价格
-  Widget gooodPrice(argument) {
-    return Container(
-      height: ScreenUtil().setHeight(130),
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text.rich(TextSpan(children: [
-            TextSpan(
-                text: '￥',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold)),
-            TextSpan(
-                text: argument['price'].toString(),
-                style: TextStyle(
-                    fontSize: 30.0,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold))
-          ])),
-          Container(
-            child: Row(
-              children: <Widget>[
-                InkWell(
-                  child: Column(
-                    children: <Widget>[
-                      Icon(IconData(0xe628, fontFamily: 'myIcons'), size: 22),
-                      SizedBox(height: 2),
-                      Text('降价通知')
-                    ],
-                  ),
-                ),
-                SizedBox(width: 10),
-                InkWell(
-                    child: Column(
-                  children: <Widget>[
-                    Icon(IconData(0xe60a, fontFamily: 'myIcons'), size: 22),
-                    SizedBox(height: 2),
-                    Text('关注')
-                  ],
-                ))
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // 商品简介
-  Widget goodDesc(argument) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Text(
-        argument['desc'].toString(),
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-
-  // 商品销量
-  Widget goodSales(argument) {
-    var carriage =
-        argument['expressCost'] == 0 ? '免运费' : argument['expressCost'];
-    return Container(
-      height: ScreenUtil().setHeight(80),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            '快递:$carriage',
-            style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)),
-          ),
-          Text('月销:${argument['sales']}',
-              style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1))),
-          Text(argument['from'],
-              style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)))
-        ],
-      ),
-    );
   }
 
 // 商品规格（尺码+地址）
   Widget goodSpecification(argument) {
     return Container(
       margin: EdgeInsets.fromLTRB(0, 15, 0, 15),
-      height: ScreenUtil().setHeight(240),
+      height: ScreenUtil().setHeight(120),
       width: ScreenUtil().setWidth(750),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15), color: Colors.white),
       // color: Colors.white,
       child: Container(
           child: Column(
-        children: <Widget>[specification(argument), location(argument)],
+        children: <Widget>[
+          specification(argument),
+          // location(argument)
+        ],
       )),
     );
   }
@@ -167,26 +205,135 @@ class _GoodDetailsState extends State<GoodDetails> {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
+          isScrollControlled: true,
           context: context,
           builder: (context) => Container(
-            child: ListView(
-                children: List.generate(
-              2,
-              (index) => InkWell(
+            height: 330 + MediaQuery.of(context).viewInsets.bottom,
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              children: <Widget>[
+                // 商品图片和价格信息
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      Image.network(
+                        argument["imgCover"],
+                        fit: BoxFit.cover,
+                        width: 150,
+                        height: 150,
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Text("￥${argument['price'].toString()}"),
+                          Text("库存：${argument["stock"]}")
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                // 购买数量
+                Container(
+                  height: 100,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text("购买数量："),
+                      InkWell(
+                        child: Icon(Icons.ac_unit),
+                        onTap: () {
+                          if (_numController.text == "") {
+                            _numController.text = "0";
+                          }
+                          if (_numController.text == "0") {
+                            Toast.toast(context, msg: "购买数量最低为0");
+                          } else {
+                            _numController.text =
+                                "${int.parse(_numController.text) - 1}";
+                          }
+                        },
+                      ),
+                      Container(
+                        width: 240,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            TextField(
+                              controller: _numController,
+                              keyboardType: TextInputType.number,
+                              onChanged: (v) {
+                                int num = int.parse(v);
+                                int max = int.parse(argument["stock"]);
+                                if (num > max) {
+                                  Toast.toast(context, msg: "库存不足啦");
+                                  _numController.text = "$max";
+                                }
+                                if (num < 0) {
+                                  Toast.toast(context, msg: "购买数量不能低于0");
+                                  _numController.text = "0";
+                                }
+                              },
+                              decoration: InputDecoration(
+                                  labelText: "购买数量",
+                                  prefixIcon: Icon(Icons.person)),
+                            ),
+                          ],
+                        ),
+                      ),
+                      InkWell(
+                        child: Icon(Icons.add),
+                        onTap: () {
+                          if (_numController.text == "") {
+                            _numController.text = "1";
+                          }
+                          if (_numController.text == argument["stock"]) {
+                            Toast.toast(context, msg: "库存不足啦");
+                          } else {
+                            _numController.text =
+                                "${int.parse(_numController.text) + 1}";
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                GestureDetector(
                   child: Container(
-                      alignment: Alignment.center,
-                      height: 60.0,
-                      child: Text('Item ${index + 1}')),
+                    height: 50,
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    width: ScreenUtil().setWidth(280),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(255, 174, 28, 1),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Text(
+                      "确认",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                   onTap: () {
+                    if (_numController.text == "") {
+                      Toast.toast(context, msg: "数量最低为1");
+                    }
+                    setState(() {
+                      buyCount = int.parse(_numController.text);
+                    });
                     Navigator.pop(context);
-                  }),
-            )),
-            height: 120,
+                  },
+                )
+              ],
+            ),
           ),
         );
       },
       child: Container(
-        height: ScreenUtil().setHeight(100),
+        height: ScreenUtil().setHeight(120),
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
@@ -199,7 +346,11 @@ class _GoodDetailsState extends State<GoodDetails> {
                 children: <Widget>[
                   Text('选择', style: TextStyle(color: Colors.grey)),
                   SizedBox(width: 25),
-                  Text('尺码 颜色 规格', style: TextStyle(color: Colors.black)),
+                  Text('数量', style: TextStyle(color: Colors.black)),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(buyCount.toString())
                 ],
               ),
               InkWell(
@@ -241,230 +392,11 @@ class _GoodDetailsState extends State<GoodDetails> {
                   Container(
                       height: ScreenUtil().setHeight(150),
                       width: ScreenUtil().setWidth(500),
-                      child: Text('广东省广州市天河区华南农业大学华山区xx栋',
+                      child: Text(userAddress[0]["address"],
                           maxLines: 2, overflow: TextOverflow.ellipsis))
                 ],
               ),
-              InkWell(
-                child: Icon(Icons.arrow_right),
-              )
             ]),
-      ),
-    );
-  }
-
-// 商品评价（评价+标签+评论）
-  Widget goodEvaluate(argument) {
-    return Container(
-      // height: ScreenUtil().setHeight(250),
-      width: ScreenUtil().setWidth(750),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.white,
-      ),
-      child: Container(
-          child: Column(
-        children: <Widget>[
-          evaluate(argument),
-          labels(argument),
-          commentList(argument)
-        ],
-      )),
-    );
-  }
-
-// 评价
-  Widget evaluate(argument) {
-    return Container(
-      height: ScreenUtil().setHeight(80),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Text('评价', style: TextStyle(color: Colors.black, fontSize: 16)),
-                SizedBox(width: 5),
-                Text('2100+',
-                    style: TextStyle(color: Colors.black, fontSize: 12)),
-              ],
-            ),
-            InkWell(
-              onTap: () {
-                print('444');
-              },
-              child: Row(
-                children: <Widget>[
-                  Text('查看全部', style: TextStyle(color: Colors.grey)),
-                  Icon(Icons.arrow_right)
-                ],
-              ),
-            )
-          ]),
-    );
-  }
-
-  // 商品标签
-  Widget labels(argument) {
-    var labels = ['运行稳定', '兼容性佳', '质量上乘', '方便'];
-    return Container(
-      height: ScreenUtil().setHeight(60),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      margin: EdgeInsets.only(bottom: 5),
-      child: Row(
-          children: labels.map((item) {
-        return singleLabels(item);
-      }).toList()),
-    );
-  }
-
-  // 单个标签
-  Widget singleLabels(item) {
-    return InkWell(
-      onTap: () {
-        print(item);
-      },
-      child: Container(
-        alignment: Alignment.center,
-        margin: EdgeInsets.only(right: 10),
-        height: ScreenUtil().setHeight(50),
-        width: ScreenUtil().setWidth(150),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Color.fromRGBO(251, 230, 230, 1)),
-        child: Text(item),
-      ),
-    );
-  }
-
-  // 用户评论列表
-  Widget commentList(argument) {
-    return Container(
-      // height: ScreenUtil().setHeight(800),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Column(
-        children: <Widget>[
-          singleComment(),
-          singleComment(),
-          seeMore(),
-        ],
-      ),
-    );
-  }
-
-// 单个完整评论
-  Widget singleComment() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          // 用户头像、姓名、星级
-          userInfo(),
-          userComment(),
-        ],
-      ),
-    );
-  }
-
-// 用户信息
-  Widget userInfo() {
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: Row(
-        children: <Widget>[
-          Image.asset('assets/images/user2.jpg',
-              width: ScreenUtil().setWidth(80),
-              height: ScreenUtil().setHeight(80)),
-          SizedBox(width: 5),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('Rex'),
-              Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.star,
-                    size: 14,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 14,
-                  ),
-                  Icon(
-                    Icons.star,
-                    size: 14,
-                  )
-                ],
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  // 用户评论带图
-  Widget userComment() {
-    var imageList = [
-      'assets/images/potatoes1.webp',
-      'assets/images/user2.jpg',
-      'assets/images/potatoes3.webp',
-      'assets/images/user2.jpg',
-    ];
-    return Container(
-      // height: ScreenUtil().setHeight(200),
-      child: Column(
-        children: <Widget>[
-          Text(
-            'UI界面真难写！！UI界面真难写！！UI界面真难写！！UI界面真难写！！UI界面真难写！！',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Container(
-            height: ScreenUtil().setHeight(200),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: imageList.map((item) {
-                return singleImage(item);
-              }).toList(),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // 单个图片
-  Widget singleImage(item) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      decoration: BoxDecoration(border: Border.all(width: 1)),
-      child: new Image.asset(
-        item,
-        height: ScreenUtil().setHeight(80),
-        width: ScreenUtil().setWidth(180),
-        fit: BoxFit.fill,
-      ),
-    );
-  }
-
-  // 查看全部评价
-  Widget seeMore() {
-    return Container(
-      height: ScreenUtil().setHeight(60),
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
-      child: Container(
-        alignment: Alignment.center,
-        width: ScreenUtil().setWidth(220),
-        decoration: BoxDecoration(
-            border: Border.all(width: 1, color: Colors.grey),
-            borderRadius: BorderRadius.circular(10)),
-        child: Text(
-          '查看全部评价',
-          style: TextStyle(
-            fontSize: 14,
-          ),
-        ),
       ),
     );
   }

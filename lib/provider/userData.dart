@@ -1,3 +1,4 @@
+// 用户的Provider数据
 import 'package:flutter/foundation.dart';
 
 class UserData with ChangeNotifier {
@@ -7,12 +8,14 @@ class UserData with ChangeNotifier {
   get isLogin => _isLogin;
   get userInfo => _userInfo;
 
+// 登录
   login(id, username, phone) {
     _isLogin = true;
     _userInfo = new User(id, username, phone);
     notifyListeners();
   }
 
+// 退出
   logout() {
     _isLogin = false;
     notifyListeners();
@@ -20,9 +23,9 @@ class UserData with ChangeNotifier {
 }
 
 class User {
-  int id;
-  String username;
-  String phone;
+  int id; // 用户id
+  String username; // 用户名字
+  String phone; // 用户电话
 
   // 标准写法
   User(int id, String username, String phone) {

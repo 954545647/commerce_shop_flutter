@@ -11,20 +11,22 @@ import 'package:commerce_shop_flutter/components/near_farm/index.dart';
 import 'package:commerce_shop_flutter/components/near_farm/merchant_detail.dart';
 import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
-import 'package:commerce_shop_flutter/components/welcome/Forget.dart';
 import 'package:commerce_shop_flutter/components/coupon/index.dart';
 import 'package:commerce_shop_flutter/components/coupon/take_coupon.dart';
 import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
+import 'package:commerce_shop_flutter/components/common/loading.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/cartData.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider.value(value: UserData()),
+      ChangeNotifierProvider.value(value: UserData()), // 用户数据
+      ChangeNotifierProvider.value(value: CartData()), // 购物车数据
     ],
     child: MyApp(),
   ));
@@ -44,7 +46,6 @@ class MyApp extends StatelessWidget {
           'welcome': (context) => Welcome(),
           'index': (context) => IndexPage(),
           'login': (context) => Login(),
-          'forget': (context) => Forget(),
           'register': (context) => Register(),
           'setting': (context) => Setting(),
           'homeGoodsDetail': (context, {arguments}) => GoodDetails(),
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
           "coupon": (context) => Coupon(),
           "takeCoupon": (context) => TakeCoupon(),
           "newsDetail": (context, {arguments}) => NewDetails(),
+          "loading": (context) => Loading()
         },
         // initialRoute: '/welcome',
         home: Welcome());

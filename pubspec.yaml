@@ -66,6 +66,9 @@ flutter:
     - assets/images/poultry.jpg
     - assets/images/vegetable.jpg
     - assets/images/fruit.jpeg
+    - assets/images/loading1.gif
+    - assets/images/loading2.gif
+    - assets/images/loading3.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
