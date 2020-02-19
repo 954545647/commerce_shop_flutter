@@ -1,4 +1,7 @@
 main() {
-  var a = "12";
-  print(int.parse(a));
+  List<bool> list = [true, false, true];
+  var a = list.map((item) {
+    return true;
+  });
+  print(a);
 }

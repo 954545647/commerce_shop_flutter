@@ -17,26 +17,45 @@ class MyCart extends StatefulWidget {
 class _MyCartState extends State<MyCart> {
   List userCart = []; // 用户购物车
   List cartState; // 用户购物车状态
+  bool totalState;
+  int totalPrice = 0;
   List<String> cartCount = []; // 用户购物车的购买数量
   int curItem; // 当前被点击的商品的索引
   @override
   void initState() {
     // 获取购物车信息，并且获取对应商品的商家信息
-    getCart();
+    initCart();
+
     super.initState();
   }
 
-  // 获取购物车
-  getCart() {
+  // 初始化购物车
+  initCart() {
     DioUtils.getInstance().post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         userCart = val["data"];
         // 创建一个数组，用来关联每一件商品在购物车中的选择状态
         cartState = List<bool>(userCart.length);
-        cartState.fillRange(0, userCart.length, true);
+        cartState.fillRange(0, userCart.length, false);
+        totalState = cartState.every((state) => state == true);
         userCart.forEach((item) {
           cartCount.add(item["count"].toString());
         });
+        setState(() {});
+      }
+    });
+  }
+
+// 获取购物车
+  getCart() {
+    DioUtils.getInstance().post("getCarts").then((val) {
+      if (val != null && val["data"] != null) {
+        userCart = val["data"];
+        userCart.forEach((item) {
+          cartCount.add(item["count"].toString());
+        });
+        // 更新总价
+        totalPrice = getTotalPrice();
         setState(() {});
       }
     });
@@ -85,6 +104,15 @@ class _MyCartState extends State<MyCart> {
     updateCarts(id, count);
   }
 
+  // 获取总价格
+  int getTotalPrice() {
+    int total = 0;
+    userCart.forEach((good) {
+      total = total + int.parse(good["price"]) * good["count"];
+    });
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,10 +131,54 @@ class _MyCartState extends State<MyCart> {
               Positioned(
                 bottom: 0,
                 child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1), color: Colors.white),
                   height: 50,
                   width: ScreenUtil().setWidth(750),
-                  color: Colors.white,
-                  child: Text("444"),
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: Row(
+                    children: <Widget>[
+                      CirCleBox(
+                        ifCheck: totalState,
+                        callback: () {
+                          totalState = !totalState;
+                          cartState = List<bool>(userCart.length);
+                          // 更新购物车的选中状态
+                          cartState.fillRange(0, userCart.length, totalState);
+                          // 计算商品总价格
+                          totalPrice = totalState ? getTotalPrice() : 0;
+                          // 更新总价
+                          setState(() {});
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Text("总计:￥"),
+                            Text(totalPrice.toString()),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: ScreenUtil().setWidth(180),
+                      ),
+                      Container(
+                        width: ScreenUtil().setWidth(180),
+                        height: 30,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Text(
+                          "去结算",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -147,6 +219,12 @@ class _MyCartState extends State<MyCart> {
             ifCheck: cartState[index],
             callback: () {
               cartState[index] = !cartState[index];
+              totalState = cartState.every((state) => state == true);
+              if (cartState[index]) {
+                totalPrice = totalPrice + int.parse(price) * int.parse(count);
+              } else {
+                totalPrice = totalPrice - int.parse(price) * int.parse(count);
+              }
               setState(() {});
             },
           ),

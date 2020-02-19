@@ -13,7 +13,7 @@ class CirCleBox extends StatelessWidget {
       this.callback});
   @override
   Widget build(BuildContext context) {
-    return ifCheck
+    return ifCheck == true && ifCheck != null
         ? Container(
             width: width,
             height: height,
