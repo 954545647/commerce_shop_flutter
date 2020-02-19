@@ -18,15 +18,16 @@ import 'package:commerce_shop_flutter/components/user_center/setting/password.da
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
 import 'package:commerce_shop_flutter/components/common/loading.dart';
+import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
-import 'package:commerce_shop_flutter/provider/cartData.dart';
+import 'package:commerce_shop_flutter/provider/goodData.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: UserData()), // 用户数据
-      ChangeNotifierProvider.value(value: CartData()), // 购物车数据
+      ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
     ],
     child: MyApp(),
   ));
@@ -61,7 +62,8 @@ class MyApp extends StatelessWidget {
           "coupon": (context) => Coupon(),
           "takeCoupon": (context) => TakeCoupon(),
           "newsDetail": (context, {arguments}) => NewDetails(),
-          "loading": (context) => Loading()
+          "loading": (context) => Loading(),
+          "myCart": (context) => MyCart(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

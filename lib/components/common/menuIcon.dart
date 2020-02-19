@@ -61,5 +61,7 @@ class MenuIcons {
   static const IconData myIntegral = IconData(0xe684, fontFamily: 'myIcons');
 
   static const IconData myDiscount = IconData(0xe60e, fontFamily: 'myIcons');
-  // static const IconData myAssemble = IconData(0xe635, fontFamily: 'myIcons');
+
+  // 减少
+  static const IconData cutDown = IconData(0xe6e6, fontFamily: 'myIcons');
 }

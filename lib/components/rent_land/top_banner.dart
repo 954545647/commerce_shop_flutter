@@ -15,9 +15,13 @@ class _TopBannerState extends State<TopBanner> {
   void initState() {
     super.initState();
     DioUtils.getInstance().get('leftList').then((val) {
-      setState(() {
-        list = val['data']['menuList'];
-      });
+      if (val != null &&
+          val["data"] != null &&
+          val["data"]["menuList"] != null) {
+        setState(() {
+          list = val['data']['menuList'];
+        });
+      }
     });
   }
 

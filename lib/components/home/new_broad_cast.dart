@@ -13,16 +13,24 @@ class NewBroadCast extends StatelessWidget {
           if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
-            var newList = snapshot.data['data']['newsList'];
-            return Container(
-              width: ScreenUtil.getInstance().setWidth(750),
-              height: ScreenUtil.getInstance().setHeight(120),
-              margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[leftNew(), rightNew(newList)],
-              ),
-            );
+            if (snapshot.data != null &&
+                snapshot.data["data"] != null &&
+                snapshot.data["data"]["newsList"] != null) {
+              var newList = snapshot.data['data']['newsList'];
+              return Container(
+                width: ScreenUtil.getInstance().setWidth(750),
+                height: ScreenUtil.getInstance().setHeight(120),
+                margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[leftNew(), rightNew(newList)],
+                ),
+              );
+            } else {
+              return Container(
+                child: Text("数据发出错误"),
+              );
+            }
           }
         } else {
           return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading

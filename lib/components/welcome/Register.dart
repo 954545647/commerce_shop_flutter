@@ -239,7 +239,8 @@ class _RegisterState extends State<Register> {
                                             "password": _pwdController.text,
                                             "phone": _phoneController.text
                                           });
-                                          if (data["errorCode"] == 0) {
+                                          if (data != null &&
+                                              data["errorCode"] == 0) {
                                             Navigator.pushNamed(
                                                 context, 'login');
                                           } else {

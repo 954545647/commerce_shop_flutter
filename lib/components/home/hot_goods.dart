@@ -12,9 +12,7 @@ class _HotGoodsState extends State<HotGoods> {
   bool ifShowLoading = true;
   @override
   void initState() {
-    super.initState();
     DioUtils.getInstance().post('getAllGoods').then((val) {
-      print(val);
       if (val != null && val["data"] != null) {
         setState(() {
           goodsList = val["data"];
@@ -22,6 +20,7 @@ class _HotGoodsState extends State<HotGoods> {
         });
       }
     });
+    super.initState();
   }
 
   @override

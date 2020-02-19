@@ -15,9 +15,13 @@ class _CardListState extends State<CardList> {
   void initState() {
     super.initState();
     DioUtils.getInstance().get('goodsList').then((val) {
-      setState(() {
-        goodsList = val['data']['goodsList'];
-      });
+      if (val != null &&
+          val["data"] != null &&
+          val["data"]["goodsList"] != null) {
+        setState(() {
+          goodsList = val['data']['goodsList'];
+        });
+      }
     });
   }
 

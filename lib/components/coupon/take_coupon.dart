@@ -70,13 +70,14 @@ class _TakeCouponState extends State<TakeCoupon> {
       child: ListView.builder(
         itemCount: couponList.length,
         itemBuilder: (BuildContext context, int index) {
-          return unUsedCoupon(couponList[index]);
+          return couponInfo(couponList[index]);
         },
       ),
     ));
   }
 
-  Widget unUsedCoupon(data) {
+// 优惠卷信息
+  Widget couponInfo(data) {
     return Container(
       height: 100,
       margin: EdgeInsets.fromLTRB(15, 0, 15, 15),

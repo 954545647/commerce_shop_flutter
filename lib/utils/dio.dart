@@ -36,8 +36,10 @@ class DioUtils {
     _dio.interceptors.add(
       InterceptorsWrapper(onRequest: (RequestOptions requestions) async {
         // 从本地缓存中读取token
-        requestions.headers
-            .addAll({"Authorization": "Bearer " + await getToken()});
+        var token = await getToken();
+        if (token != null) {
+          requestions.headers.addAll({"Authorization": "Bearer " + token});
+        }
         // print('-----请求参数--' + requestions.headers.toString());
         return requestions;
       }, onResponse: (Response response) {
@@ -45,7 +47,6 @@ class DioUtils {
         return response;
       }, onError: (DioError error) {
         //处理错误请求
-        print("拦截器拦截错误");
         return error;
       }),
     );
@@ -83,7 +84,7 @@ class DioUtils {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.get("token");
-    if (token.length == 0) {
+    if (token != null && token.length == 0) {
       return "";
     }
     return token;

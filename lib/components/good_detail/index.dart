@@ -7,6 +7,9 @@ import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/utils/diaLog.dart';
 
 class GoodDetails extends StatefulWidget {
   @override
@@ -17,7 +20,7 @@ class _GoodDetailsState extends State<GoodDetails> {
   TextEditingController _numController = TextEditingController();
   List userAddress = []; // 用户地址
   List orderCart = []; // 用户购物车
-  int cartItem = 0; // 购物车数量
+  int cartNum = 0; // 购物车数量
   int buyCount = 1; // 购物数量
   @override
   void initState() {
@@ -42,7 +45,7 @@ class _GoodDetailsState extends State<GoodDetails> {
     DioUtils.getInstance().post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         orderCart = val["data"];
-        cartItem = orderCart.length;
+        cartNum = orderCart.length;
         setState(() {});
       }
     });
@@ -57,7 +60,6 @@ class _GoodDetailsState extends State<GoodDetails> {
       "count": buyCount,
       "expressCount": expressCost
     }).then((val) {
-      print(val);
       if (val != null && val["data"] != null) {
         getCart();
       }
@@ -66,6 +68,8 @@ class _GoodDetailsState extends State<GoodDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final userInfo = Provider.of<UserData>(context);
+    bool ifLogin = userInfo.isLogin; // 用户是否登录
     // 获取路由参数
     var args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> argument = json.decode(args);
@@ -97,65 +101,98 @@ class _GoodDetailsState extends State<GoodDetails> {
               bottom: 0,
               child: Container(
                 width: ScreenUtil().setWidth(750),
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(width: 1, color: Colors.grey)),
+                    color: Colors.white),
                 height: 60,
-                color: Colors.white,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[Icon(Icons.shop), Text("商家详情")],
+                    GestureDetector(
+                      onTap: () {
+                        //
+                      },
+                      child: Container(
+                        width: ScreenUtil().setWidth(100),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[Icon(Icons.shop), Text("商家")],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (!ifLogin) {
+                          loginDialog(context, "请先登录");
+                        } else {
+                          Navigator.pushNamed(context, "myCart");
+                        }
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: ScreenUtil().setWidth(100),
+                        height: 60,
+                        child: Stack(
+                          children: <Widget>[
+                            Positioned(
+                              child: Icon(Icons.shopping_cart),
+                              left: 5,
+                              top: 8,
+                            ),
+                            Positioned(
+                              child: Text("购物车"),
+                              top: 32,
+                            ),
+                            ifLogin
+                                ? Positioned(
+                                    child: Container(
+                                      width: 18,
+                                      height: 18,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              width: 1, color: Colors.red)),
+                                      child: Center(
+                                        child: Text(
+                                          cartNum.toString(),
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                    ),
+                                    right: 14,
+                                    top: 4,
+                                  )
+                                : Container()
+                          ],
+                        ),
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
                         // 将当前商品及数量加入购物车
-                        addCart(id, goodName, price, buyCount, expressCost);
+                        if (!ifLogin) {
+                          loginDialog(context, "请先登录");
+                        } else {
+                          addCart(id, goodName, price, buyCount, expressCost);
+                        }
                       },
                       child: Container(
                         height: 30,
-                        width: ScreenUtil().setWidth(260),
+                        width: ScreenUtil().setWidth(200),
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(15)),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.center,
-                              width: ScreenUtil().setWidth(200),
-                              child: Text(
-                                "加入购物车",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                            Positioned(
-                              child: Container(
-                                width: 18,
-                                height: 18,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    // borderRadius: BorderRadius.circular(30),
-                                    border: Border.all(
-                                        width: 1, color: Colors.white)),
-                                child: Center(
-                                  child: Text(
-                                    cartItem.toString(),
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                              right: 0,
-                              top: 2,
-                            )
-                          ],
+                        child: Text(
+                          "加入购物车",
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
                     Container(
                       height: 30,
-                      width: ScreenUtil().setWidth(260),
+                      width: ScreenUtil().setWidth(200),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                           color: Color.fromRGBO(255, 174, 28, 1),
@@ -205,7 +242,6 @@ class _GoodDetailsState extends State<GoodDetails> {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
-          isScrollControlled: true,
           context: context,
           builder: (context) => Container(
             height: 330 + MediaQuery.of(context).viewInsets.bottom,
@@ -260,7 +296,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                         },
                       ),
                       Container(
-                        width: 240,
+                        width: 200,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[

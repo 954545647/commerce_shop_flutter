@@ -141,6 +141,7 @@ class _LoginState extends State<Login> {
                                                 data["data"]["username"],
                                                 data["data"]["phone"],
                                               );
+                                              // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
