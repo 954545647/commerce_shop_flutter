@@ -8,6 +8,9 @@ import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/components/common/circleBox.dart';
 import 'package:commerce_shop_flutter/components/common/input/my_keyBoard.dart';
 import 'package:commerce_shop_flutter/components/common/input/pay_password.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/cartData.dart';
 
 class MyCart extends StatefulWidget {
   @override
@@ -25,7 +28,6 @@ class _MyCartState extends State<MyCart> {
   void initState() {
     // 获取购物车信息，并且获取对应商品的商家信息
     initCart();
-
     super.initState();
   }
 
@@ -73,6 +75,47 @@ class _MyCartState extends State<MyCart> {
     });
   }
 
+  // 提交订单
+  submitOrder() {
+    List goods = getSelectedGoods();
+    // 更新购物车表和订单表
+    return goods;
+  }
+
+  // 获取被选中的商品
+  List getSelectedGoods() {
+    final cart = Provider.of<CartData>(context);
+    final user = Provider.of<UserData>(context);
+    int userId = user.userInfo.id;
+    List selectedGoods = [];
+    cart.clear(); // 清空Provider中的数据
+    for (int i = 0; i < cartState.length; i++) {
+      if (cartState[i] == true) {
+        var curData = userCart[i];
+        // 往Provider中添加当前商品数据
+        cart.add(
+            userId,
+            curData["goodId"],
+            curData["goodName"],
+            curData["supplierId"],
+            curData["count"],
+            curData["price"],
+            curData["expressCost"].toString());
+        selectedGoods.add(curData);
+      }
+    }
+    return selectedGoods;
+  }
+
+  // 获取总价格
+  int getTotalPrice() {
+    int total = 0;
+    userCart.forEach((good) {
+      total = total + int.parse(good["price"]) * good["count"];
+    });
+    return total;
+  }
+
 // 每个数字的点击事件
   void _onKeyDown(KeyEvent data) {
     String num = cartCount[curItem].toString();
@@ -104,15 +147,6 @@ class _MyCartState extends State<MyCart> {
     updateCarts(id, count);
   }
 
-  // 获取总价格
-  int getTotalPrice() {
-    int total = 0;
-    userCart.forEach((good) {
-      total = total + int.parse(good["price"]) * good["count"];
-    });
-    return total;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,16 +158,15 @@ class _MyCartState extends State<MyCart> {
             children: <Widget>[
               ListView(
                 children: <Widget>[
-                  TopTitle(title: "购物车", showArrow: true, ifRefresh: true),
+                  TopTitle(title: "购物车", showArrow: true),
                   cartList(),
                 ],
               ),
               Positioned(
                 bottom: 0,
                 child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 1), color: Colors.white),
-                  height: 50,
+                  decoration: BoxDecoration(color: Colors.white),
+                  height: 60,
                   width: ScreenUtil().setWidth(750),
                   padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                   child: Row(
@@ -163,18 +196,26 @@ class _MyCartState extends State<MyCart> {
                         ),
                       ),
                       SizedBox(
-                        width: ScreenUtil().setWidth(180),
+                        width: ScreenUtil().setWidth(200),
                       ),
-                      Container(
-                        width: ScreenUtil().setWidth(180),
-                        height: 30,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Text(
-                          "去结算",
-                          style: TextStyle(color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          List goods = submitOrder();
+                          // cart.add(2, "444", 12, 12, "expressCost");
+                          Navigator.pushNamed(context, "payment",
+                              arguments: goods);
+                        },
+                        child: Container(
+                          width: ScreenUtil().setWidth(200),
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Text(
+                            "去结算",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       )
                     ],

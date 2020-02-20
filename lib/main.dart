@@ -19,15 +19,18 @@ import 'package:commerce_shop_flutter/components/user_center/location/location.d
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
 import 'package:commerce_shop_flutter/components/common/loading.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
+import 'package:commerce_shop_flutter/components/payment/index.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
+import 'package:commerce_shop_flutter/provider/cartData.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: UserData()), // 用户数据
       ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
+      ChangeNotifierProvider.value(value: CartData()), // 购物车数据
     ],
     child: MyApp(),
   ));
@@ -64,6 +67,7 @@ class MyApp extends StatelessWidget {
           "newsDetail": (context, {arguments}) => NewDetails(),
           "loading": (context) => Loading(),
           "myCart": (context) => MyCart(),
+          "payment": (context, {arguments}) => PayMent(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

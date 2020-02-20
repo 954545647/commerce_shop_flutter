@@ -21,4 +21,5 @@ const urlList = {
   "getCarts": "order/getCarts",
   "handleCart": "order/handleCart",
   "updateCarts": "order/updateCarts",
+  "getAllSuppliers": "supplier/getAll",
 };

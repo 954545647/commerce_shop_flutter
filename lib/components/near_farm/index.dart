@@ -51,34 +51,34 @@ class _NearFarmState extends State<NearFarm> {
         "imgUrl": "assets/images/potatoes1.webp",
         "name": "智慧农场",
         "location": "重庆市渝中区",
-        "phone":'13250504940',
-        "nameIcon":"0xe66f",
-        "phoneIcon":"0xe616",
-        "tabIcon":"0xe60b",
-        "shopIcon":"0xe60c",
-        "localIcon":"0xe62f"
+        "phone": '13250504940',
+        "nameIcon": "0xe66f",
+        "phoneIcon": "0xe616",
+        "tabIcon": "0xe60b",
+        "shopIcon": "0xe60c",
+        "localIcon": "0xe62f"
       },
       {
         "imgUrl": "assets/images/potatoes1.webp",
         "name": "华农农场",
         "location": "广东省广州市",
-        "phone":'13250504940',
-        "nameIcon":"0xe66f",
-        "phoneIcon":"0xe616",
-        "tabIcon":"0xe60b",
-        "shopIcon":"0xe60c",
-        "localIcon":"0xe62f"
+        "phone": '13250504940',
+        "nameIcon": "0xe66f",
+        "phoneIcon": "0xe616",
+        "tabIcon": "0xe60b",
+        "shopIcon": "0xe60c",
+        "localIcon": "0xe62f"
       },
       {
         "imgUrl": "assets/images/potatoes1.webp",
         "name": "坦洲农场",
         "location": "中山市坦洲镇",
-        "phone":'13250504940',
-        "nameIcon":"0xe66f",
-        "phoneIcon":"0xe616",
-        "tabIcon":"0xe60b",
-        "shopIcon":"0xe60c",
-        "localIcon":"0xe62f"
+        "phone": '13250504940',
+        "nameIcon": "0xe66f",
+        "phoneIcon": "0xe616",
+        "tabIcon": "0xe60b",
+        "shopIcon": "0xe60c",
+        "localIcon": "0xe62f"
       },
     ];
     return Container(
@@ -95,7 +95,6 @@ class _NearFarmState extends State<NearFarm> {
   Widget merchantDetail(data) {
     return GestureDetector(
         onTap: () {
-          // Navigator.pushNamed(context, 'merchant', arguments: '{"data":"$data"}');
           Navigator.pushNamed(context, 'merchant', arguments: data);
         },
         child: Container(

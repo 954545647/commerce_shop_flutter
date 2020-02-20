@@ -135,18 +135,19 @@ class _LoginState extends State<Login> {
                                           });
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
+                                              var res = data["data"];
                                               // 将用户信息注册到全局上
                                               user.login(
-                                                data["data"]["id"],
-                                                data["data"]["username"],
-                                                data["data"]["phone"],
+                                                id: res["id"],
+                                                username: res["username"],
+                                                phone: res["phone"],
                                               );
                                               // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
-                                              prefs.setString("token",
-                                                  data["data"]["token"]);
+                                              prefs.setString(
+                                                  "token", res["token"]);
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               Navigator.pushNamed(

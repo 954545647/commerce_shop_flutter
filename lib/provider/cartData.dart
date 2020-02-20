@@ -1,23 +1,50 @@
 import 'package:flutter/foundation.dart';
 
 class CartData with ChangeNotifier {
-  List<Cart> _cartInfo = [new Cart(1, "rx", 1, "1", "2")];
+  List<Cart> _cartInfo = [];
 
   get cartInfo => _cartInfo;
   get cartLen => _cartInfo.length;
 
+// 判断购物车是否已经保存该商品信息
+  has(userId, goodId) {
+    bool res = false;
+    _cartInfo.forEach((item) {
+      if (item.goodId == goodId && item.userId == userId) {
+        res = true;
+      }
+    });
+    return res;
+  }
+
   // 购物车新增商品
-  add(id, goodName, count, price, expressCost) {
-    // 判断当前的商品id是否已经在购物车了，如果在就直接增加数量不加购物车长度
-    _cartInfo.add(new Cart(id, goodName, count, price, expressCost));
+  add(userId, goodId, goodName, supplierId, count, price, expressCost) {
+    _cartInfo.add(new Cart(
+        userId, goodId, goodName, supplierId, count, price, expressCost));
+  }
+
+// 清空
+  clear() {
+    _cartInfo = [];
+  }
+
+// 获取当前用户购物车中所有商品的商家Id
+  getSupplierById(userId) {
+    List<int> supplierIds = [];
+    _cartInfo.forEach((item) {
+      if (item.userId == userId) {
+        supplierIds.add(item.supplierId);
+      }
+    });
+    return supplierIds;
   }
 
   // 移除商品
-  remove(id) {
+  remove(userId, goodId) {
     int index;
     // 先找出当前的购物车是否有该商品
     _cartInfo.forEach((item) {
-      if (item.id == id) {
+      if (item.userId == userId && item.goodId == goodId) {
         index = _cartInfo.indexOf(item);
       }
     });
@@ -28,17 +55,22 @@ class CartData with ChangeNotifier {
 }
 
 class Cart {
-  int id; // 商品id
+  int userId; // 用户id
+  int goodId; // 商品id
+  int supplierId; // 供应商id
   String goodName; // 商品名字
-  int count; // 商品数量
-  String price; // 商品单价
-  String expressCost; // 商品运费
+  int count; // 商品件数
+  String price; // 商品件数
+  String expressCost; // 商品件数
 
-  Cart(int id, String goodName, int count, String price, String expressCost) {
-    this.id = id;
+  Cart(int userId, int goodId, String goodName, int supplierId, int count,
+      String price, String expressCost) {
+    this.userId = userId;
+    this.goodId = goodId;
     this.goodName = goodName;
+    this.supplierId = supplierId;
     this.count = count;
-    this.price = price;
     this.expressCost = expressCost;
+    this.price = price;
   }
 }

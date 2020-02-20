@@ -4,6 +4,8 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class NewAddress extends StatefulWidget {
   @override
@@ -26,6 +28,8 @@ class _NewAddressState extends State<NewAddress> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserData>(context);
+    int userId = user.userInfo.id;
     return Material(
       child: Container(
         child: Column(
@@ -171,6 +175,8 @@ class _NewAddressState extends State<NewAddress> {
                                     location = "点我选择地区";
                                   });
                                   Toast.toast(context, msg: "添加成功");
+                                  // 更新Provider用户信息，新增地址
+                                  user.addAdress(userId, address);
                                 } else {
                                   Toast.toast(context, msg: data["msg"]);
                                 }
