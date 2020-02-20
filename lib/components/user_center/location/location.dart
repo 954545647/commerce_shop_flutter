@@ -13,7 +13,7 @@ class _LocationState extends State<Location> {
   @override
   void initState() {
     super.initState();
-    DioUtils.getInstance().post('address').then((val) {
+    DioUtils.getInstance().get('address').then((val) {
       if (val != null) {
         setState(() {
           addressList = val["data"];

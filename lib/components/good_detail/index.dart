@@ -25,20 +25,20 @@ class _GoodDetailsState extends State<GoodDetails> {
   @override
   void initState() {
     super.initState();
-    getAddress();
+    // getAddress();
     getCart();
   }
 
-// 获取地址
-  getAddress() {
-    DioUtils.getInstance().post("address").then((val) {
-      if (val != null && val["data"] != null) {
-        setState(() {
-          userAddress = val["data"];
-        });
-      }
-    });
-  }
+// // 获取地址
+//   getAddress() {
+//     DioUtils.getInstance().get("address").then((val) {
+//       if (val != null && val["data"] != null) {
+//         setState(() {
+//           userAddress = val["data"];
+//         });
+//       }
+//     });
+//   }
 
   // 获取购物车
   getCart() {
@@ -398,42 +398,42 @@ class _GoodDetailsState extends State<GoodDetails> {
   }
 
 // 选择地址
-  Widget location(argument) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        height: ScreenUtil().setHeight(140),
-        decoration: BoxDecoration(
-            border: Border(
-                bottom: BorderSide(
-                    width: 1, color: Color.fromRGBO(242, 242, 242, 1)))),
-        padding: EdgeInsets.fromLTRB(10, 15, 10, 0),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    height: ScreenUtil().setHeight(150),
-                    child: Text('送至', style: TextStyle(color: Colors.grey)),
-                  ),
-                  SizedBox(width: 25),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    margin: EdgeInsets.only(right: 10),
-                    height: ScreenUtil().setHeight(150),
-                    child: Icon(IconData(0xe62f, fontFamily: 'myIcons')),
-                  ),
-                  Container(
-                      height: ScreenUtil().setHeight(150),
-                      width: ScreenUtil().setWidth(500),
-                      child: Text(userAddress[0]["address"],
-                          maxLines: 2, overflow: TextOverflow.ellipsis))
-                ],
-              ),
-            ]),
-      ),
-    );
-  }
+  // Widget location(argument) {
+  //   return GestureDetector(
+  //     onTap: () {},
+  //     child: Container(
+  //       height: ScreenUtil().setHeight(140),
+  //       decoration: BoxDecoration(
+  //           border: Border(
+  //               bottom: BorderSide(
+  //                   width: 1, color: Color.fromRGBO(242, 242, 242, 1)))),
+  //       padding: EdgeInsets.fromLTRB(10, 15, 10, 0),
+  //       child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           children: <Widget>[
+  //             Row(
+  //               children: <Widget>[
+  //                 Container(
+  //                   height: ScreenUtil().setHeight(150),
+  //                   child: Text('送至', style: TextStyle(color: Colors.grey)),
+  //                 ),
+  //                 SizedBox(width: 25),
+  //                 Container(
+  //                   alignment: Alignment.topCenter,
+  //                   margin: EdgeInsets.only(right: 10),
+  //                   height: ScreenUtil().setHeight(150),
+  //                   child: Icon(IconData(0xe62f, fontFamily: 'myIcons')),
+  //                 ),
+  //                 Container(
+  //                     height: ScreenUtil().setHeight(150),
+  //                     width: ScreenUtil().setWidth(500),
+  //                     child: Text(userAddress[0]["address"],
+  //                         maxLines: 2, overflow: TextOverflow.ellipsis))
+  //               ],
+  //             ),
+  //           ]),
+  //     ),
+  //   );
+  // }
 }

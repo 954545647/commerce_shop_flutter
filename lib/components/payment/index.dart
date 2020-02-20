@@ -1,4 +1,4 @@
-// 购物车列表
+// 订单页面
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,7 +49,7 @@ class _PayMentState extends State<PayMent> {
                 children: <Widget>[
                   TopTitle(title: "提交订单", showArrow: true),
                   // 用户地址信息
-                  UserAdress(),
+                  UserAddress(),
                   // 订单信息
                   GoodSupplier(
                       cartInfo: cart,

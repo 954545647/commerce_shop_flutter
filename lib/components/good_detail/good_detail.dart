@@ -23,7 +23,6 @@ Widget gooodPrice(argument) {
   return Container(
     height: ScreenUtil().setHeight(130),
     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-    // decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[

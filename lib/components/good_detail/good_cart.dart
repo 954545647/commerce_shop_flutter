@@ -113,7 +113,7 @@ class _MyCartState extends State<MyCart> {
     userCart.forEach((good) {
       total = total + int.parse(good["price"]) * good["count"];
     });
-    return total;
+    return totalState ? total : 0;
   }
 
 // 每个数字的点击事件
@@ -126,7 +126,7 @@ class _MyCartState extends State<MyCart> {
       }
     } else if (data.isCommit()) {
       // 点击确认
-      onAffirmButton();
+      onAffirmButton(num);
       Navigator.pop(context);
     } else if (data.isClose()) {
       // 点击关闭
@@ -139,10 +139,10 @@ class _MyCartState extends State<MyCart> {
   }
 
   /// 密码键盘 确认按钮 事件
-  void onAffirmButton() {
+  void onAffirmButton(num) {
     var curGood = userCart[curItem];
-    int id = curGood["id"];
-    int count = int.parse(cartCount[curItem]);
+    int id = curGood["goodId"];
+    int count = int.parse(num);
     // 更新购物车
     updateCarts(id, count);
   }
@@ -201,7 +201,6 @@ class _MyCartState extends State<MyCart> {
                       GestureDetector(
                         onTap: () {
                           List goods = submitOrder();
-                          // cart.add(2, "444", 12, 12, "expressCost");
                           Navigator.pushNamed(context, "payment",
                               arguments: goods);
                         },

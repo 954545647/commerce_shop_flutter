@@ -4,8 +4,6 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
-import 'package:provider/provider.dart';
-import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class NewAddress extends StatefulWidget {
   @override
@@ -26,10 +24,44 @@ class _NewAddressState extends State<NewAddress> {
   FocusNode focusNode3 = new FocusNode();
   FocusScopeNode focusScopeNode;
 
+// 保存地址
+  saveAddress(isDefault) async {
+    String address = location + _detailController.text;
+    // 新增地址接口
+    var data = await DioUtils.getInstance().post("newAddress", data: {
+      "username": _userController.text,
+      "phone": _phoneController.text,
+      "province": province,
+      "city": city,
+      "area": area,
+      "address": address,
+      "isDefault": isDefault
+    });
+    if (data != null) {
+      if (data["errorCode"] == 0) {
+        // 收起键盘
+        FocusScope.of(context).requestFocus(FocusNode());
+        // 清空表单内容
+        _userController.clear();
+        _phoneController.clear();
+        _detailController.clear();
+        setState(() {
+          location = "点我选择地区";
+        });
+        Navigator.of(context).pop();
+        Toast.toast(context, msg: "添加成功");
+      } else {
+        Navigator.of(context).pop();
+        Toast.toast(context, msg: data["msg"]);
+      }
+    } else {
+      Navigator.of(context).pop();
+      Toast.toast(context, msg: "添加失败");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserData>(context);
-    int userId = user.userInfo.id;
     return Material(
       child: Container(
         child: Column(
@@ -151,38 +183,25 @@ class _NewAddressState extends State<NewAddress> {
                           onPressed: () async {
                             if ((_formKey.currentState as FormState)
                                 .validate()) {
-                              String address =
-                                  location + _detailController.text;
-                              var data = await DioUtils.getInstance()
-                                  .post("newAddress", data: {
-                                "username": _userController.text,
-                                "phone": _phoneController.text,
-                                "province": province,
-                                "city": city,
-                                "area": area,
-                                "address": address
-                              });
-                              if (data != null) {
-                                if (data["errorCode"] == 0) {
-                                  // 收起键盘
-                                  FocusScope.of(context)
-                                      .requestFocus(FocusNode());
-                                  // 清空表单内容
-                                  _userController.clear();
-                                  _phoneController.clear();
-                                  _detailController.clear();
-                                  setState(() {
-                                    location = "点我选择地区";
-                                  });
-                                  Toast.toast(context, msg: "添加成功");
-                                  // 更新Provider用户信息，新增地址
-                                  user.addAdress(userId, address);
-                                } else {
-                                  Toast.toast(context, msg: data["msg"]);
-                                }
-                              } else {
-                                Toast.toast(context, msg: "添加失败");
-                              }
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: Text("是否添加为默认地址"),
+                                        actions: <Widget>[
+                                          new FlatButton(
+                                            child: new Text("取消"),
+                                            onPressed: () {
+                                              saveAddress(false);
+                                            },
+                                          ),
+                                          new FlatButton(
+                                            child: new Text("确定"),
+                                            onPressed: () {
+                                              saveAddress(true);
+                                            },
+                                          ),
+                                        ],
+                                      ));
                             }
                           },
                         )

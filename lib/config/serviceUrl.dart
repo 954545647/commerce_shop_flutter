@@ -1,25 +1,35 @@
 // 路由列表
 const urlList = {
+  // 首页接口
   'homeSwiperImgList': 'home/homeSwiperImgList',
   'homeNewsList': 'home/homeNewsList',
   'hotGoods': 'home/hotGoods',
+  // 集市接口
   'goodsList': 'market/goodsList',
+  // 租地接口
   'leftList': 'rentLand/leftList',
+  // 登录注册接口
   'login': 'login',
   'register': 'register',
+  // 用户接口
   "changePass": "user/changePass",
   "address": "user/address",
+  "defaultAddress": "user/defaultAddress",
   "newAddress": "user/newAddress",
   "changeIntegral": "user/changeIntegral",
   "getUserSignDays": "user/getUserSignDays",
   "getUserInfo": "user/getUserInfo",
+  // 优惠卷接口
   "getAlls": "coupon/getAlls",
   "myCoupon": "coupon/myCoupon",
   "handleCoupon": "coupon/handleCoupon",
   "new": "coupon/new",
+  // 商品接口
   "getAllGoods": "goods/getAlls",
+  // 订单接口
   "getCarts": "order/getCarts",
   "handleCart": "order/handleCart",
   "updateCarts": "order/updateCarts",
+  // 商家接口
   "getAllSuppliers": "supplier/getAll",
 };
