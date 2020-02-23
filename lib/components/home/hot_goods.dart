@@ -68,11 +68,12 @@ class _HotGoodsState extends State<HotGoods> {
     var sales = item['sales'];
     var expressCost = item['expressCost'];
     var from = item['from'];
+    var supplierId = item['supplierId'];
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, 'homeGoodsDetail',
             arguments:
-                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","from":"$from"}');
+                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","supplierId":$supplierId,"from":"$from"}');
       },
       child: Container(
         height: ScreenUtil().setHeight(340),

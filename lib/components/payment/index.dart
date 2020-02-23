@@ -8,6 +8,8 @@ import './good_supplier.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
 
 class PayMent extends StatefulWidget {
   @override
@@ -15,20 +17,97 @@ class PayMent extends StatefulWidget {
 }
 
 class _PayMentState extends State<PayMent> {
+  List userCouponList = [];
+  int orderId; // 取消支付加入定时队列的id
+  String totalPrice; // 订单总价格
+  var chooseCoupon = {};
   @override
   void initState() {
+    getUserCoupons();
     super.initState();
   }
 
+// 获取用户优惠卷
+  getUserCoupons() {
+    DioUtils.getInstance().post("myCoupon").then((val) {
+      if (val != null && val["data"] != null) {
+        userCouponList = val["data"];
+        setState(() {});
+      }
+    });
+  }
+
 // 计算总数
-  String calTotalPrice(data) {
+  String calTotalPrice(data, {cut = 0}) {
     int total = 0;
     data.forEach((item) {
       total = total +
           int.parse(item.price) * item.count +
           int.parse(item.expressCost);
     });
-    return "$total";
+    if (cut == null) cut = 0;
+    total -= cut;
+    totalPrice = "$total";
+    setState(() {});
+    return totalPrice;
+  }
+
+// 处理订单数据
+  handleOrderData(goodLists, type) {
+    List data = [];
+    for (int i = 0; i < goodLists.length; i++) {
+      data.add(goodLists[i]["$type"]);
+    }
+    return data;
+  }
+
+  getSuppliersId(cartInfo, userId) {
+    List supplierIds = cartInfo.getSupplierById(userId); // 供应商id
+    return supplierIds;
+  }
+
+// 提交订单
+  submitOrder(
+      {couponId,
+      orderAmount,
+      payMoney,
+      address,
+      goodsId,
+      orderUsername,
+      status}) async {
+    await DioUtils.getInstance().post('newOrder', data: {
+      "couponId": couponId,
+      "orderAmount": orderAmount,
+      "payMoney": payMoney,
+      "address": address,
+      "goodsId": goodsId,
+      "orderUsername": orderUsername,
+      "status": status
+    }).then((val) {
+      if (val != null && val["data"] != null) {
+        val["data"].forEach((item) {
+          orderId = item["orderId"];
+        });
+        setState(() {});
+      }
+    });
+    // 更新购物车
+    await updateCarts();
+  }
+
+  // 更新购物车
+  updateCarts() async {
+    final cart = Provider.of<CartData>(context);
+    List cartIds = [];
+    cart.cartInfo.forEach((item) {
+      cartIds.add(item.cartId);
+    });
+    await DioUtils.getInstance().post('deleteCart', data: {"cartIds": cartIds});
+  }
+
+  // 开启定时任务
+  startTask() {
+    DioUtils.getInstance().post('startTask', data: {"orderId": orderId});
   }
 
   @override
@@ -55,6 +134,7 @@ class _PayMentState extends State<PayMent> {
                       cartInfo: cart,
                       userId: user.userInfo.id,
                       goodInfo: goodLists),
+                  useCoupon(),
                   SizedBox(
                     height: 60,
                   )
@@ -73,7 +153,8 @@ class _PayMentState extends State<PayMent> {
                       Container(
                         child: Row(
                           children: <Widget>[
-                            Text("总计：${calTotalPrice(cart.cartInfo)}"),
+                            Text(
+                                "总计：${calTotalPrice(cart.cartInfo, cut: chooseCoupon["used_amount"])}"),
                           ],
                         ),
                       ),
@@ -81,7 +162,74 @@ class _PayMentState extends State<PayMent> {
                         width: ScreenUtil().setWidth(180),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          var userInfo = user.userInfo;
+                          int cut = chooseCoupon["used_amount"] != null
+                              ? chooseCoupon["used_amount"]
+                              : 0;
+                          var couponId = chooseCoupon["id"] != null
+                              ? chooseCoupon["id"]
+                              : null;
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Center(child: Text("付款详情")),
+                                    content: Container(
+                                      height: 50,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text("付款人：${userInfo.username}"),
+                                          Text("付款金额：￥$totalPrice")
+                                        ],
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      new FlatButton(
+                                        child: new Text("取消"),
+                                        onPressed: () async {
+                                          await submitOrder(
+                                            couponId: couponId,
+                                            orderAmount:
+                                                int.parse(totalPrice) + cut,
+                                            payMoney: int.parse(totalPrice),
+                                            address: "xxx",
+                                            goodsId: handleOrderData(
+                                                goodLists, "goodId"),
+                                            orderUsername: userInfo.username,
+                                            status: 0,
+                                          );
+                                          // 开启定时器
+                                          startTask();
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  'allOrder',
+                                                  ModalRoute.withName('index'));
+                                        },
+                                      ),
+                                      new FlatButton(
+                                        child: new Text("确定"),
+                                        onPressed: () async {
+                                          await submitOrder(
+                                            couponId: couponId,
+                                            orderAmount:
+                                                int.parse(totalPrice) + cut,
+                                            payMoney: int.parse(totalPrice),
+                                            address: "xxx",
+                                            goodsId: handleOrderData(
+                                                goodLists, "goodId"),
+                                            orderUsername: userInfo.username,
+                                            status: 1,
+                                          );
+                                          // 路由回退到购物车页面
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil(
+                                                  'allOrder',
+                                                  ModalRoute.withName('index'));
+                                        },
+                                      ),
+                                    ],
+                                  ));
+                        },
                         child: Container(
                           width: ScreenUtil().setWidth(180),
                           height: 30,
@@ -101,6 +249,96 @@ class _PayMentState extends State<PayMent> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget useCoupon() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15), color: Colors.white),
+      height: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text("选择优惠卷"),
+          InkWell(
+            child: Icon(Icons.more_horiz),
+            onTap: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Container(
+                      color: Colors.white,
+                      height: 300,
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            height: 80,
+                            child: Text(
+                              "优惠卷列表",
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          couponList()
+                        ],
+                      )));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget couponList() {
+    List<Widget> list = [];
+    for (int i = 0; i < userCouponList.length; i++) {
+      list.add(couponItem(userCouponList[i], i));
+    }
+    if (list.length > 0) {
+      return Column(children: list);
+    } else {
+      return GestureDetector(
+        onTap: () {
+          // 前往领劵
+          Navigator.popAndPushNamed(context, "takeCoupon");
+        },
+        child: Container(
+          child: Text("前往领劵"),
+        ),
+      );
+    }
+  }
+
+  Widget couponItem(data, index) {
+    return GestureDetector(
+      onTap: () {
+        if (data["with_amount"] > int.parse(totalPrice)) {
+          Toast.toast(context, msg: "订单金额不足");
+        } else {
+          chooseCoupon = data;
+          setState(() {});
+          Navigator.pop(context);
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: ScreenUtil().setWidth(750),
+        height: 60,
+        decoration: BoxDecoration(border: Border.all(width: 1)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text(
+              data["name"],
+              style: TextStyle(color: Colors.red),
+            ),
+            Text(data["type"] == 0 ? "无门槛劵" : "促销商品劵")
+          ],
         ),
       ),
     );

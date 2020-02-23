@@ -86,7 +86,11 @@ class _UserAddressState extends State<UserAddress> {
             Icon(Icons.location_city, size: 30),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, "newAddress");
+                Navigator.pushNamed(context, "newAddress").then((val) {
+                  if (val == true) {
+                    getDefaultAddress();
+                  }
+                });
               },
               child: Container(
                 child: Text("点击前往添加地址"),

@@ -30,6 +30,10 @@ const urlList = {
   "getCarts": "order/getCarts",
   "handleCart": "order/handleCart",
   "updateCarts": "order/updateCarts",
+  "newOrder": "order/new",
+  "deleteCart": "order/deleteCart",
+  "startTask": "order/startTask",
   // 商家接口
   "getAllSuppliers": "supplier/getAll",
+  "getSupplierById": "supplier/getSupplierById",
 };

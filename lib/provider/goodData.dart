@@ -18,14 +18,16 @@ class GoodData with ChangeNotifier {
   }
 
   // 新增商品信息
-  add(id, goodName, stock, sales, expressCost, imgCover) {
-    stock = int.parse(stock);
-    sales = int.parse(sales);
+  add(
+    id,
+    supplierId,
+    goodName,
+    imgCover,
+  ) {
     if (has(id)) {
       return;
     } else {
-      _goodLists
-          .add(new Good(id, goodName, stock, sales, expressCost, imgCover));
+      _goodLists.add(new Good(id, supplierId, goodName, imgCover));
     }
   }
 
@@ -42,38 +44,23 @@ class GoodData with ChangeNotifier {
     }
     return result;
   }
-
-  // 获取商品某一数据
-  getStock(id) {
-    var result;
-    if (has(id)) {
-      _goodLists.forEach((item) {
-        if (item.id == id) {
-          result = item.stock;
-        }
-      });
-    } else {
-      return null;
-    }
-    return result;
-  }
 }
 
 class Good {
   int id; // 商品id
+  int supplierId; // 商家Id
   String goodName; // 商品名字
-  int stock; // 商品库存
-  String expressCost; // 商品运费
-  int sales; // 商品销量
   String imgCover; // 商品封面
 
-  Good(int id, String goodName, int stock, int sales, String expressCost,
-      String imgCover) {
+  Good(
+    int id,
+    int supplierId,
+    String goodName,
+    String imgCover,
+  ) {
     this.id = id;
     this.goodName = goodName;
-    this.stock = stock;
-    this.sales = sales;
-    this.expressCost = expressCost;
     this.imgCover = imgCover;
+    this.supplierId = supplierId;
   }
 }

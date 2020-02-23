@@ -20,6 +20,8 @@ import 'package:commerce_shop_flutter/components/user_center/location/newAddress
 import 'package:commerce_shop_flutter/components/common/loading.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
 import 'package:commerce_shop_flutter/components/payment/index.dart';
+import 'package:commerce_shop_flutter/components/good_detail/supplier.dart';
+import 'package:commerce_shop_flutter/components/order/all_order.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
@@ -68,6 +70,8 @@ class MyApp extends StatelessWidget {
           "loading": (context) => Loading(),
           "myCart": (context) => MyCart(),
           "payment": (context, {arguments}) => PayMent(),
+          "supplier": (context, {arguments}) => Supplier(),
+          "allOrder": (context, {arguments}) => AllOrder(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

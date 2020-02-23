@@ -21,3 +21,29 @@ void loginDialog(BuildContext context, String title) {
             ],
           ));
 }
+
+void payOrder(BuildContext context, String title, callback) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Container(
+              child: Text("haha"),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("取消"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text("确定"),
+                onPressed: () {
+                  print(callback);
+                  // callback();
+                },
+              ),
+            ],
+          ));
+}

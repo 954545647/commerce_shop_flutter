@@ -1,7 +1,7 @@
 // 商品供应商数据
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-import './order_item.dart';
+import './payment_item.dart';
 
 class GoodSupplier extends StatefulWidget {
   GoodSupplier({Key key, this.cartInfo, this.goodInfo, this.userId})
@@ -59,7 +59,7 @@ class _GoodSupplierState extends State<GoodSupplier> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(),
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Column(
         children: <Widget>[allGoods(supplierInfo)],
       ),

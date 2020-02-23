@@ -191,12 +191,17 @@ class _NewAddressState extends State<NewAddress> {
                                           new FlatButton(
                                             child: new Text("取消"),
                                             onPressed: () {
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
+
                                               saveAddress(false);
                                             },
                                           ),
                                           new FlatButton(
                                             child: new Text("确定"),
                                             onPressed: () {
+                                              FocusScope.of(context)
+                                                  .requestFocus(FocusNode());
                                               saveAddress(true);
                                             },
                                           ),

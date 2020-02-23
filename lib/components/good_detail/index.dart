@@ -9,6 +9,7 @@ import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/goodData.dart';
 import 'package:commerce_shop_flutter/utils/diaLog.dart';
 
 class GoodDetails extends StatefulWidget {
@@ -20,28 +21,18 @@ class _GoodDetailsState extends State<GoodDetails> {
   TextEditingController _numController = TextEditingController();
   List userAddress = []; // 用户地址
   List orderCart = []; // 用户购物车
+  var supplierInfo = {}; // 商家信息
   int cartNum = 0; // 购物车数量
   int buyCount = 1; // 购物数量
   @override
   void initState() {
     super.initState();
-    // getAddress();
     getCart();
   }
 
-// // 获取地址
-//   getAddress() {
-//     DioUtils.getInstance().get("address").then((val) {
-//       if (val != null && val["data"] != null) {
-//         setState(() {
-//           userAddress = val["data"];
-//         });
-//       }
-//     });
-//   }
-
   // 获取购物车
   getCart() {
+    print("da----------");
     DioUtils.getInstance().post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         orderCart = val["data"];
@@ -58,7 +49,7 @@ class _GoodDetailsState extends State<GoodDetails> {
       "goodName": goodName,
       "price": price,
       "count": buyCount,
-      "expressCount": expressCost
+      "expressCost": expressCost
     }).then((val) {
       if (val != null && val["data"] != null) {
         getCart();
@@ -66,17 +57,32 @@ class _GoodDetailsState extends State<GoodDetails> {
     });
   }
 
+// 获取商家信息
+  getSupplierInfo(supplierId) async {
+    await DioUtils.getInstance()
+        .post("getSupplierById", data: {"supplierId": supplierId}).then((val) {
+      if (val != null && val["data"] != null) {
+        supplierInfo = val["data"];
+        setState(() {});
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    var args = ModalRoute.of(context).settings.arguments;
     final userInfo = Provider.of<UserData>(context);
+    final goodInfo = Provider.of<GoodData>(context);
     bool ifLogin = userInfo.isLogin; // 用户是否登录
     // 获取路由参数
-    var args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> argument = json.decode(args);
     var id = argument["id"];
     var goodName = argument["name"];
     var price = argument["price"].toString();
     var expressCost = argument["expressCost"].toString();
+    var supplierId = argument["supplierId"];
+    var imgCover = argument["imgCover"];
+    goodInfo.add(id, supplierId, goodName, imgCover);
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -94,6 +100,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                 goodDetail(argument),
                 // 商品规格（尺码、地址）
                 goodSpecification(argument),
+                // 商品评价
                 goodEvaluate(argument),
               ],
             ),
@@ -110,8 +117,11 @@ class _GoodDetailsState extends State<GoodDetails> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () {
-                        //
+                      onTap: () async {
+                        // 先获取数据
+                        await getSupplierInfo(supplierId);
+                        Navigator.pushNamed(context, "supplier",
+                            arguments: supplierInfo);
                       },
                       child: Container(
                         width: ScreenUtil().setWidth(100),
@@ -126,7 +136,13 @@ class _GoodDetailsState extends State<GoodDetails> {
                         if (!ifLogin) {
                           loginDialog(context, "请先登录");
                         } else {
-                          Navigator.pushNamed(context, "myCart");
+                          Navigator.pushNamed(context, "myCart").then((val) {
+                            print("路由返回的值$val");
+                            if (val) {
+                              // 更新购物车
+                              getCart();
+                            }
+                          });
                         }
                       },
                       child: Container(
@@ -242,9 +258,10 @@ class _GoodDetailsState extends State<GoodDetails> {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
+          isScrollControlled: true,
           context: context,
           builder: (context) => Container(
-            height: 330 + MediaQuery.of(context).viewInsets.bottom,
+            height: MediaQuery.of(context).viewInsets.bottom + 330,
             padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),

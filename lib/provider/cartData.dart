@@ -18,9 +18,9 @@ class CartData with ChangeNotifier {
   }
 
   // 购物车新增商品
-  add(userId, goodId, goodName, supplierId, count, price, expressCost) {
-    _cartInfo.add(new Cart(
-        userId, goodId, goodName, supplierId, count, price, expressCost));
+  add(userId, cartId, goodId, goodName, supplierId, count, price, expressCost) {
+    _cartInfo.add(new Cart(userId, cartId, goodId, goodName, supplierId, count,
+        price, expressCost));
   }
 
 // 清空
@@ -56,6 +56,7 @@ class CartData with ChangeNotifier {
 
 class Cart {
   int userId; // 用户id
+  int cartId; // 购物车id
   int goodId; // 商品id
   int supplierId; // 供应商id
   String goodName; // 商品名字
@@ -63,9 +64,10 @@ class Cart {
   String price; // 商品件数
   String expressCost; // 商品件数
 
-  Cart(int userId, int goodId, String goodName, int supplierId, int count,
-      String price, String expressCost) {
+  Cart(int userId, int cartId, int goodId, String goodName, int supplierId,
+      int count, String price, String expressCost) {
     this.userId = userId;
+    this.cartId = cartId;
     this.goodId = goodId;
     this.goodName = goodName;
     this.supplierId = supplierId;

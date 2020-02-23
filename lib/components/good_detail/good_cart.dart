@@ -44,6 +44,7 @@ class _MyCartState extends State<MyCart> {
           cartCount.add(item["count"].toString());
         });
         setState(() {});
+        print("购物车的数据$userCart");
       }
     });
   }
@@ -95,6 +96,7 @@ class _MyCartState extends State<MyCart> {
         // 往Provider中添加当前商品数据
         cart.add(
             userId,
+            curData["id"],
             curData["goodId"],
             curData["goodName"],
             curData["supplierId"],
@@ -107,13 +109,27 @@ class _MyCartState extends State<MyCart> {
     return selectedGoods;
   }
 
+  bool ifChoose() {
+    bool result = false;
+    cartState.forEach((item) {
+      if (item == true) {
+        result = true;
+      }
+    });
+    return result;
+  }
+
   // 获取总价格
   int getTotalPrice() {
     int total = 0;
-    userCart.forEach((good) {
-      total = total + int.parse(good["price"]) * good["count"];
-    });
-    return totalState ? total : 0;
+    // 计算有勾选中的价格
+    for (int i = 0; i < userCart.length; i++) {
+      if (cartState[i] == true) {
+        var good = userCart[i];
+        total = total + int.parse(good["price"]) * good["count"];
+      }
+    }
+    return ifChoose() ? total : 0;
   }
 
 // 每个数字的点击事件
@@ -158,7 +174,7 @@ class _MyCartState extends State<MyCart> {
             children: <Widget>[
               ListView(
                 children: <Widget>[
-                  TopTitle(title: "购物车", showArrow: true),
+                  TopTitle(title: "购物车", showArrow: true, ifRefresh: true),
                   cartList(),
                 ],
               ),
