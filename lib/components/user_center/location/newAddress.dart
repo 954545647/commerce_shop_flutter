@@ -4,6 +4,8 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class NewAddress extends StatefulWidget {
   @override
@@ -62,6 +64,7 @@ class _NewAddressState extends State<NewAddress> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserData>(context);
     return Material(
       child: Container(
         child: Column(
@@ -193,7 +196,10 @@ class _NewAddressState extends State<NewAddress> {
                                             onPressed: () {
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
-
+                                              String address = location +
+                                                  _detailController.text;
+                                              user.addAdress(
+                                                  user.userInfo.id, address);
                                               saveAddress(false);
                                             },
                                           ),
@@ -202,6 +208,10 @@ class _NewAddressState extends State<NewAddress> {
                                             onPressed: () {
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
+                                              String address = location +
+                                                  _detailController.text;
+                                              user.addAdress(
+                                                  user.userInfo.id, address);
                                               saveAddress(true);
                                             },
                                           ),

@@ -167,7 +167,6 @@ class _RegisterState extends State<Register> {
                                       }).then((val) {
                                         Toast.toast(context,
                                             msg: "短信已发送，请查收手机短信");
-                                        print(val);
                                       });
                                     }
                                   },

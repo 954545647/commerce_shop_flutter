@@ -27,12 +27,15 @@ const urlList = {
   // 商品接口
   "getAllGoods": "goods/getAlls",
   // 订单接口
-  "getCarts": "order/getCarts",
-  "handleCart": "order/handleCart",
-  "updateCarts": "order/updateCarts",
   "newOrder": "order/new",
-  "deleteCart": "order/deleteCart",
   "startTask": "order/startTask",
+  "allOrders": "order/all",
+  "modifyOrderStatus": "order/modify",
+  // 购物车接口
+  "deleteCart": "cart/delete",
+  "handleCart": "cart/handle",
+  "getCarts": "cart/getAlls",
+  "updateCarts": "cart/update",
   // 商家接口
   "getAllSuppliers": "supplier/getAll",
   "getSupplierById": "supplier/getSupplierById",

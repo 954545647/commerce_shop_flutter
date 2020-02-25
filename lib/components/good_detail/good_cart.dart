@@ -39,12 +39,12 @@ class _MyCartState extends State<MyCart> {
         // 创建一个数组，用来关联每一件商品在购物车中的选择状态
         cartState = List<bool>(userCart.length);
         cartState.fillRange(0, userCart.length, false);
-        totalState = cartState.every((state) => state == true);
+        totalState =
+            cartState.every((state) => state == true) && cartState.length > 0;
         userCart.forEach((item) {
           cartCount.add(item["count"].toString());
         });
         setState(() {});
-        print("购物车的数据$userCart");
       }
     });
   }
@@ -109,6 +109,7 @@ class _MyCartState extends State<MyCart> {
     return selectedGoods;
   }
 
+// 是否有选中商品
   bool ifChoose() {
     bool result = false;
     cartState.forEach((item) {
@@ -216,9 +217,16 @@ class _MyCartState extends State<MyCart> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          List goods = submitOrder();
-                          Navigator.pushNamed(context, "payment",
-                              arguments: goods);
+                          bool res = ifChoose();
+                          if (userCart.length > 0 && res) {
+                            List goods = submitOrder();
+                            Navigator.pushNamed(context, "payment",
+                                arguments: goods);
+                          } else if (!res) {
+                            Toast.toast(context, msg: "还没选中任何商品！");
+                          } else {
+                            Toast.toast(context, msg: "当前购物车为空,赶紧去购物吧");
+                          }
                         },
                         child: Container(
                           width: ScreenUtil().setWidth(200),
@@ -245,13 +253,24 @@ class _MyCartState extends State<MyCart> {
   // 购物车列表
   Widget cartList() {
     List<Widget> list = [SizedBox(height: 20)];
-    for (int i = 0; i < userCart.length; i++) {
-      list.add(goodInfo(userCart[i], i));
+    if (userCart.length > 0) {
+      for (int i = 0; i < userCart.length; i++) {
+        list.add(goodInfo(userCart[i], i));
+      }
+      list.add(SizedBox(height: 50));
+      return Column(
+        children: list,
+      );
+    } else {
+      return Container(
+        height: 300,
+        alignment: Alignment.center,
+        child: Text(
+          "当前购物车为空，赶紧去购物吧！",
+          style: TextStyle(fontSize: 20),
+        ),
+      );
     }
-    list.add(SizedBox(height: 50));
-    return Column(
-      children: list,
-    );
   }
 
 // 购物车单品

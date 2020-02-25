@@ -11,7 +11,7 @@ class TakeCoupon extends StatefulWidget {
 }
 
 class _TakeCouponState extends State<TakeCoupon> {
-  List couponList = [];
+  List couponList = []; // 未拥有的优惠卷
   List myCouponId = [];
 
   @override
@@ -20,6 +20,7 @@ class _TakeCouponState extends State<TakeCoupon> {
     getCoupon();
   }
 
+// 获取优惠卷
   getCoupon() {
     DioUtils.getInstance().post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
@@ -32,9 +33,9 @@ class _TakeCouponState extends State<TakeCoupon> {
         });
       }
     });
+    // 从系统中全部优惠卷筛选出自己未拥有的优惠卷
     DioUtils.getInstance().post("getAlls").then((val) {
       if (val != null && val["data"] != null) {
-        // print("我的优惠卷id$myCouponId");
         var list = [];
         val["data"].forEach((item) {
           // 未领取的优惠卷
@@ -97,7 +98,6 @@ class _TakeCouponState extends State<TakeCoupon> {
                 Text(
                   "￥${data["used_amount"]}",
                   style: TextStyle(
-                      // color: Color.fromRGBO(201, 66, 45, 1),
                       color: Colors.red,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
@@ -141,7 +141,6 @@ class _TakeCouponState extends State<TakeCoupon> {
                     }
                     // 已经领取了
                     if (val != null && val["errorCode"] != null) {
-                      print(val);
                       var errorCode = val["errorCode"];
                       print(errorCode);
                       if (errorCode != 0) {

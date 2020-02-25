@@ -21,31 +21,25 @@ class _UserWealthState extends State<UserWealth> {
           children: <Widget>[
             ListItem(
               title: "我的积分",
-              onChanged: () {
-                print("544");
-              },
+              onChanged: () {},
               iconName: "0xe684",
+              jumpRoute: "integralDetail",
             ),
             ListItem(
               title: "优惠卷",
-              onChanged: () {
-                print("444");
-              },
+              onChanged: () {},
               iconName: "0xe60e",
+              jumpRoute: "takeCoupon",
             ),
             ListItem(
               title: "收货地址",
-              onChanged: () {
-                print("");
-              },
+              onChanged: () {},
               iconName: "0xe778",
               jumpRoute: "location",
             ),
             ListItem(
               title: "设置",
-              onChanged: () {
-                print("");
-              },
+              onChanged: () {},
               iconName: "0xe733",
               jumpRoute: "setting",
             ),

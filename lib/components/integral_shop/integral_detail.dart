@@ -44,7 +44,6 @@ class _IntegralDetailState extends State<IntegralDetail> {
   }
 
   Widget integralDetail() {
-    print(integralList.length);
     if (integralList.length > 0) {
       return Container(
         child: Column(

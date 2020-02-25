@@ -75,6 +75,7 @@ class _PayMentState extends State<PayMent> {
       goodsId,
       orderUsername,
       status}) async {
+    final user = Provider.of<UserData>(context);
     await DioUtils.getInstance().post('newOrder', data: {
       "couponId": couponId,
       "orderAmount": orderAmount,
@@ -85,9 +86,10 @@ class _PayMentState extends State<PayMent> {
       "status": status
     }).then((val) {
       if (val != null && val["data"] != null) {
-        val["data"].forEach((item) {
-          orderId = item["orderId"];
-        });
+        if (val["data"]["status"] == 1) {
+          orderId = val["data"]["id"];
+          user.addUnpayOrder(user.userInfo.id, orderId);
+        }
         setState(() {});
       }
     });
@@ -163,6 +165,10 @@ class _PayMentState extends State<PayMent> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          if (user.userInfo.address == "") {
+                            Toast.toast(context, msg: "请选择收获地址");
+                            return;
+                          }
                           var userInfo = user.userInfo;
                           int cut = chooseCoupon["used_amount"] != null
                               ? chooseCoupon["used_amount"]
@@ -192,17 +198,17 @@ class _PayMentState extends State<PayMent> {
                                             orderAmount:
                                                 int.parse(totalPrice) + cut,
                                             payMoney: int.parse(totalPrice),
-                                            address: "xxx",
+                                            address: user.userInfo.address,
                                             goodsId: handleOrderData(
                                                 goodLists, "goodId"),
                                             orderUsername: userInfo.username,
-                                            status: 0,
+                                            status: 1,
                                           );
                                           // 开启定时器
                                           startTask();
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(
-                                                  'allOrder',
+                                                  'unpayOrder',
                                                   ModalRoute.withName('index'));
                                         },
                                       ),
@@ -218,7 +224,7 @@ class _PayMentState extends State<PayMent> {
                                             goodsId: handleOrderData(
                                                 goodLists, "goodId"),
                                             orderUsername: userInfo.username,
-                                            status: 1,
+                                            status: 2,
                                           );
                                           // 路由回退到购物车页面
                                           Navigator.of(context)
@@ -254,6 +260,7 @@ class _PayMentState extends State<PayMent> {
     );
   }
 
+// 优惠卷
   Widget useCoupon() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -265,6 +272,10 @@ class _PayMentState extends State<PayMent> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text("选择优惠卷"),
+          Text(
+            chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
+            style: TextStyle(color: Colors.red, fontSize: 18),
+          ),
           InkWell(
             child: Icon(Icons.more_horiz),
             onTap: () {
@@ -273,18 +284,39 @@ class _PayMentState extends State<PayMent> {
                   builder: (context) => Container(
                       color: Colors.white,
                       height: 300,
-                      child: Column(
+                      child: Stack(
                         children: <Widget>[
-                          Container(
-                            alignment: Alignment.center,
-                            height: 80,
-                            child: Text(
-                              "优惠卷列表",
-                              style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.w600),
-                            ),
+                          ListView(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                height: 80,
+                                child: Text(
+                                  "优惠卷列表",
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              couponList()
+                            ],
                           ),
-                          couponList()
+                          Positioned(
+                            right: 20,
+                            top: 30,
+                            child: InkWell(
+                              onTap: () {
+                                // 前往领劵
+                                Navigator.popAndPushNamed(context, "takeCoupon")
+                                    .then((val) {
+                                  if (val) {
+                                    getUserCoupons();
+                                  }
+                                });
+                              },
+                              child: Icon(Icons.more_horiz),
+                            ),
+                          )
                         ],
                       )));
             },
@@ -305,7 +337,11 @@ class _PayMentState extends State<PayMent> {
       return GestureDetector(
         onTap: () {
           // 前往领劵
-          Navigator.popAndPushNamed(context, "takeCoupon");
+          Navigator.popAndPushNamed(context, "takeCoupon").then((val) {
+            if (val) {
+              getUserCoupons();
+            }
+          });
         },
         child: Container(
           child: Text("前往领劵"),
@@ -328,8 +364,11 @@ class _PayMentState extends State<PayMent> {
       child: Container(
         alignment: Alignment.center,
         width: ScreenUtil().setWidth(750),
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
         height: 60,
-        decoration: BoxDecoration(border: Border.all(width: 1)),
+        decoration: BoxDecoration(
+            border: Border.all(width: 1),
+            borderRadius: BorderRadius.circular(15)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[

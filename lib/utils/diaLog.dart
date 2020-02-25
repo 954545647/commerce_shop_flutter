@@ -39,10 +39,7 @@ void payOrder(BuildContext context, String title, callback) {
               ),
               new FlatButton(
                 child: new Text("确定"),
-                onPressed: () {
-                  print(callback);
-                  // callback();
-                },
+                onPressed: () {},
               ),
             ],
           ));

@@ -23,7 +23,6 @@ class _SignInState extends State<SignIn> {
       setState(() {
         signDays = val;
       });
-      print(signDays);
     });
   }
 

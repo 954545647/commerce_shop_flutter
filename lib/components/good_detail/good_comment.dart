@@ -39,9 +39,7 @@ Widget evaluate(argument) {
             ],
           ),
           InkWell(
-            onTap: () {
-              print('444');
-            },
+            onTap: () {},
             child: Row(
               children: <Widget>[
                 Text('查看全部', style: TextStyle(color: Colors.grey)),
@@ -70,9 +68,7 @@ Widget labels(argument) {
 // 单个标签
 Widget singleLabels(item) {
   return InkWell(
-    onTap: () {
-      print(item);
-    },
+    onTap: () {},
     child: Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(right: 10),

@@ -32,7 +32,6 @@ class _GoodDetailsState extends State<GoodDetails> {
 
   // 获取购物车
   getCart() {
-    print("da----------");
     DioUtils.getInstance().post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         orderCart = val["data"];
@@ -137,7 +136,6 @@ class _GoodDetailsState extends State<GoodDetails> {
                           loginDialog(context, "请先登录");
                         } else {
                           Navigator.pushNamed(context, "myCart").then((val) {
-                            print("路由返回的值$val");
                             if (val) {
                               // 更新购物车
                               getCart();
@@ -179,7 +177,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                                     right: 14,
                                     top: 4,
                                   )
-                                : Container()
+                                : Container(height: 0.0, width: 0.0)
                           ],
                         ),
                       ),

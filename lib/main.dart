@@ -13,7 +13,7 @@ import 'package:commerce_shop_flutter/components/welcome/Login.dart';
 import 'package:commerce_shop_flutter/components/welcome/Register.dart';
 import 'package:commerce_shop_flutter/components/coupon/index.dart';
 import 'package:commerce_shop_flutter/components/coupon/take_coupon.dart';
-import 'package:commerce_shop_flutter/components/user_center/Setting.dart';
+import 'package:commerce_shop_flutter/components/user_center/setting/setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
@@ -22,6 +22,9 @@ import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
 import 'package:commerce_shop_flutter/components/payment/index.dart';
 import 'package:commerce_shop_flutter/components/good_detail/supplier.dart';
 import 'package:commerce_shop_flutter/components/order/all_order.dart';
+import 'package:commerce_shop_flutter/components/order/unpay_order.dart';
+import 'package:commerce_shop_flutter/components/order/finish_order.dart';
+import 'package:commerce_shop_flutter/components/order/cancel_order.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
@@ -72,6 +75,9 @@ class MyApp extends StatelessWidget {
           "payment": (context, {arguments}) => PayMent(),
           "supplier": (context, {arguments}) => Supplier(),
           "allOrder": (context, {arguments}) => AllOrder(),
+          "unpayOrder": (context, {arguments}) => UnpayOrder(),
+          "finishOrder": (context, {arguments}) => FinishOrder(),
+          "cancelOrder": (context, {arguments}) => CancelOrder(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

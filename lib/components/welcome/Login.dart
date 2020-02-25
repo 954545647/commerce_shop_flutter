@@ -17,6 +17,27 @@ class _LoginState extends State<Login> {
   TextEditingController _unameController = new TextEditingController();
   TextEditingController _pwdController = new TextEditingController();
   GlobalKey _formKey = new GlobalKey<FormState>();
+  String userAddress;
+
+  @override
+  void initState() {
+    getUserAddress();
+    super.initState();
+  }
+
+  // 获取用户地址
+  getUserAddress() {
+    DioUtils.getInstance().get('address').then((val) {
+      if (val != null && val["data"] != null) {
+        if (val["data"].length == 0) {
+          userAddress = "";
+        } else {
+          userAddress = val["data"][0]["address"];
+        }
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,10 +159,11 @@ class _LoginState extends State<Login> {
                                               var res = data["data"];
                                               // 将用户信息注册到全局上
                                               user.login(
-                                                id: res["id"],
-                                                username: res["username"],
-                                                phone: res["phone"],
-                                              );
+                                                  id: res["id"],
+                                                  username: res["username"],
+                                                  phone: res["phone"],
+                                                  address: userAddress,
+                                                  unpayOrder: []);
                                               // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences

@@ -18,9 +18,26 @@ List parseTimeList(List list) {
   return result;
 }
 
+// 截取时间的前10位
 String parseSingleTime(String time) {
   var str = time.toString().substring(0, 10);
   return str;
+}
+
+// 截取详细时间
+String parseDetailTime(String time) {
+  String str1 = time.toString().substring(0, 10);
+  String str2 = time.toString().substring(11, 19);
+  return "$str1 $str2";
+}
+
+// 设置过期时间
+String pastTime(String time) {
+  DateTime curTime = DateTime.parse("$time");
+  DateTime newTime = curTime.add(new Duration(minutes: 5));
+  String str1 = newTime.toString().substring(0, 10);
+  String str2 = newTime.toString().substring(11, 19);
+  return "$str1 $str2";
 }
 
 // 判断积分来源

@@ -1,16 +1,16 @@
-// 订单主页
+// 已取消订单页
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
 
-class AllOrder extends StatefulWidget {
+class CancelOrder extends StatefulWidget {
   @override
-  _AllOrderState createState() => _AllOrderState();
+  _CancelOrderState createState() => _CancelOrderState();
 }
 
-class _AllOrderState extends State<AllOrder> {
+class _CancelOrderState extends State<CancelOrder> {
   List orderList = [];
   @override
   void initState() {
@@ -22,7 +22,11 @@ class _AllOrderState extends State<AllOrder> {
   getOrders() {
     DioUtils.getInstance().get("allOrders").then((val) {
       if (val != null && val["data"] != null) {
-        orderList = val["data"];
+        val["data"].forEach((data) {
+          if (data["status"] == 3) {
+            orderList.add(data);
+          }
+        });
         setState(() {});
       }
     });
@@ -37,7 +41,7 @@ class _AllOrderState extends State<AllOrder> {
       child: Container(
         child: ListView(
           children: <Widget>[
-            TopTitle(title: "全部订单", showArrow: true),
+            TopTitle(title: "已失效", showArrow: true),
             orderLists()
           ],
         ),
@@ -57,8 +61,8 @@ class _AllOrderState extends State<AllOrder> {
       );
     } else {
       return Container(
-        alignment: Alignment.center,
         height: 500,
+        alignment: Alignment.center,
         child: Text("暂无订单"),
       );
     }
@@ -67,6 +71,7 @@ class _AllOrderState extends State<AllOrder> {
   Widget orderItem(data) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20), color: Colors.white),
       child: Column(children: goodList(data, data["Order_Details"])),
@@ -83,7 +88,6 @@ class _AllOrderState extends State<AllOrder> {
 
   Widget goodItem(orderInfo, orderDetail, len, index) {
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
       height: len > 1 ? double.parse("${len * 60}") : 150,
       child: Row(
         children: <Widget>[
@@ -121,52 +125,19 @@ class _AllOrderState extends State<AllOrder> {
                       : Text("")
                 ],
               ),
-              // 已经取消
-              orderInfo["status"] == 1 && index + 1 == len
-                  ? Positioned(
-                      right: 30,
-                      top: 20,
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        child: Icon(
-                          IconData(0xe644, fontFamily: 'myIcons'),
-                          size: 80,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    )
-                  // 已经完成
-                  : orderInfo["status"] == 2 && index + 1 == len
-                      ? Positioned(
-                          right: 30,
-                          top: 20,
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            child: Icon(
-                              IconData(0xe7e5, fontFamily: 'myIcons'),
-                              size: 100,
-                              color: Colors.red,
-                            ),
-                          ),
-                        )
-                      // 失效
-                      : orderInfo["status"] == 3 && index + 1 == len
-                          ? Positioned(
-                              right: 20,
-                              top: 20,
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  IconData(0xe60f, fontFamily: 'myIcons'),
-                                  size: 80,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            )
-                          : Container(height: 0.0, width: 0.0)
+              Positioned(
+                right: 20,
+                top: 20,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  child: Icon(
+                    IconData(0xe60f, fontFamily: 'myIcons'),
+                    size: 80,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
             ],
           )
         ],
