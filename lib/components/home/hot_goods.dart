@@ -12,6 +12,12 @@ class _HotGoodsState extends State<HotGoods> {
   bool ifShowLoading = true;
   @override
   void initState() {
+    getAllGoods();
+    super.initState();
+  }
+
+// 获取所有商品
+  getAllGoods() {
     DioUtils.getInstance().post('getAllGoods').then((val) {
       if (val != null && val["data"] != null) {
         setState(() {
@@ -20,7 +26,11 @@ class _HotGoodsState extends State<HotGoods> {
         });
       }
     });
-    super.initState();
+  }
+
+// 保存当前点击商品的id
+  saveGoodId(goodId) {
+    DioUtils.getInstance().post('saveId', data: {"goodId": goodId});
   }
 
   @override
@@ -71,6 +81,7 @@ class _HotGoodsState extends State<HotGoods> {
     var supplierId = item['supplierId'];
     return GestureDetector(
       onTap: () {
+        saveGoodId(id);
         Navigator.pushNamed(context, 'homeGoodsDetail',
             arguments:
                 '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","supplierId":$supplierId,"from":"$from"}');

@@ -29,7 +29,7 @@ class _UserWealthState extends State<UserWealth> {
               title: "优惠卷",
               onChanged: () {},
               iconName: "0xe60e",
-              jumpRoute: "takeCoupon",
+              jumpRoute: "coupon",
             ),
             ListItem(
               title: "收货地址",

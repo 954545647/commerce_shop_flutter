@@ -137,36 +137,23 @@ class _AllOrderState extends State<AllOrder> {
                       ),
                     )
                   // 已经完成
-                  : orderInfo["status"] == 2 && index + 1 == len
+
+                  // 失效
+                  : orderInfo["status"] == 3 && index + 1 == len
                       ? Positioned(
-                          right: 30,
+                          right: 20,
                           top: 20,
                           child: Container(
                             width: 50,
                             height: 50,
                             child: Icon(
-                              IconData(0xe7e5, fontFamily: 'myIcons'),
-                              size: 100,
-                              color: Colors.red,
+                              IconData(0xe60f, fontFamily: 'myIcons'),
+                              size: 80,
+                              color: Colors.grey,
                             ),
                           ),
                         )
-                      // 失效
-                      : orderInfo["status"] == 3 && index + 1 == len
-                          ? Positioned(
-                              right: 20,
-                              top: 20,
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                child: Icon(
-                                  IconData(0xe60f, fontFamily: 'myIcons'),
-                                  size: 80,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            )
-                          : Container(height: 0.0, width: 0.0)
+                      : Container(height: 0.0, width: 0.0)
             ],
           )
         ],

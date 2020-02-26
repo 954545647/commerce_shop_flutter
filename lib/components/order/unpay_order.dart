@@ -42,7 +42,7 @@ class _UnpayOrderState extends State<UnpayOrder> {
       child: Container(
         child: ListView(
           children: <Widget>[
-            TopTitle(title: "代付款", showArrow: true),
+            TopTitle(title: "代付款", showArrow: true, ifRefresh: true),
             orderLists()
           ],
         ),

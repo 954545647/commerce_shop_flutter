@@ -26,6 +26,10 @@ const urlList = {
   "new": "coupon/new",
   // 商品接口
   "getAllGoods": "goods/getAlls",
+  "updateGood": "goods/update",
+  "getGoodInfo": "goods/getInfo",
+  "saveId": "goods/saveId",
+  "getId": "goods/getId",
   // 订单接口
   "newOrder": "order/new",
   "startTask": "order/startTask",

@@ -21,7 +21,7 @@ class _TakeCouponState extends State<TakeCoupon> {
   }
 
 // 获取优惠卷
-  getCoupon() {
+  getCoupon() async {
     DioUtils.getInstance().post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         var list = [];
@@ -50,6 +50,23 @@ class _TakeCouponState extends State<TakeCoupon> {
     });
   }
 
+  handleCoupon(couponData) {
+    DioUtils.getInstance().post("handleCoupon",
+        data: {"couponId": couponData["id"]}).then((val) async {
+      await getCoupon();
+      if (val != null && val["data"] != null) {
+        Toast.toast(context, msg: "领取成功");
+      }
+      // 已经领取了
+      if (val != null && val["errorCode"] != null) {
+        var errorCode = val["errorCode"];
+        if (errorCode != 0) {
+          Toast.toast(context, msg: val["msg"]);
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,22 +83,31 @@ class _TakeCouponState extends State<TakeCoupon> {
   }
 
   Widget _buildRoot() {
-    return Container(
-        child: Expanded(
-      child: ListView.builder(
-        itemCount: couponList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return couponInfo(couponList[index]);
-        },
-      ),
-    ));
+    if (couponList.length > 0) {
+      return Container(
+          child: Expanded(
+        child: ListView.builder(
+          itemCount: couponList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return couponInfo(couponList[index]);
+          },
+        ),
+      ));
+    } else {
+      return Container(
+        height: 500,
+        alignment: Alignment.center,
+        child: Text("暂时没卷，请稍后再来!", style: TextStyle(fontSize: 18)),
+      );
+    }
   }
 
 // 优惠卷信息
-  Widget couponInfo(data) {
+  Widget couponInfo(couponData) {
     return Container(
       height: 100,
-      margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
+      margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
+      padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
       decoration: BoxDecoration(
           border: Border.all(width: 1),
           color: Colors.white,
@@ -96,13 +122,13 @@ class _TakeCouponState extends State<TakeCoupon> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "￥${data["used_amount"]}",
+                  "￥${couponData["used_amount"]}",
                   style: TextStyle(
                       color: Colors.red,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
-                Text("满${data["with_amount"]}可用",
+                Text("满${couponData["with_amount"]}可用",
                     style: TextStyle(
                       // color: Color.fromRGBO(159, 74, 68, 1),
                       color: Colors.red,
@@ -116,14 +142,14 @@ class _TakeCouponState extends State<TakeCoupon> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(data["name"]),
-                Text(data["type"] == 0 ? "无门槛优惠卷" : "促销商品可用",
+                Text(couponData["name"]),
+                Text(couponData["type"] == 0 ? "无门槛优惠卷" : "促销商品可用",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500))
               ],
             ),
           ),
           Container(
-              width: 120,
+              width: 110,
               padding: EdgeInsets.only(right: 5),
               child: FlatButton(
                 color: Colors.red,
@@ -134,20 +160,7 @@ class _TakeCouponState extends State<TakeCoupon> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 onPressed: () {
-                  DioUtils.getInstance().post("handleCoupon",
-                      data: {"couponId": data["id"]}).then((val) {
-                    if (val != null && val["data"] != null) {
-                      getCoupon();
-                    }
-                    // 已经领取了
-                    if (val != null && val["errorCode"] != null) {
-                      var errorCode = val["errorCode"];
-                      print(errorCode);
-                      if (errorCode != 0) {
-                        Toast.toast(context, msg: val["msg"]);
-                      }
-                    }
-                  });
+                  handleCoupon(couponData);
                 },
               ))
         ],

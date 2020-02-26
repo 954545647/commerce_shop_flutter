@@ -25,6 +25,9 @@ class _OrderListState extends State<OrderList> {
   getOrders() {
     DioUtils.getInstance().get("allOrders").then((val) {
       if (val != null && val["data"] != null) {
+        unpayOrders = [];
+        pastOrders = [];
+        finishOrders = [];
         val["data"].forEach((data) {
           if (data["status"] == 1) {
             unpayOrders.add(data);
@@ -130,7 +133,11 @@ class _OrderListState extends State<OrderList> {
               ),
               onTap: () {
                 isLogin
-                    ? Navigator.pushNamed(context, "unpayOrder")
+                    ? Navigator.pushNamed(context, "unpayOrder").then((val) {
+                        if (val) {
+                          getOrders();
+                        }
+                      })
                     : Navigator.pushNamed(context, "login");
               }),
           GestureDetector(

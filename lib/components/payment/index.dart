@@ -27,11 +27,36 @@ class _PayMentState extends State<PayMent> {
     super.initState();
   }
 
-// 获取用户优惠卷
+// 获取用户优惠卷（只获取未使用的）
   getUserCoupons() {
     DioUtils.getInstance().post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
-        userCouponList = val["data"];
+        userCouponList = [];
+        val["data"].forEach((data) {
+          if (data["use_state"] == 0) {
+            userCouponList.add(data);
+          }
+        });
+        setState(() {});
+      }
+    });
+  }
+
+// 更新商品信息（销量，库存）
+  updateGoodInfo(goodInfo) {
+    DioUtils.getInstance()
+        .post("updateGood", data: {"goodInfo": goodInfo}).then((val) {
+      if (val != null && val["data"] != null) {
+        setState(() {});
+      }
+    });
+  }
+
+  // 修改用户优惠卷状态
+  modifyCouponStatus() {
+    DioUtils.getInstance().post("handleCoupon",
+        data: {"couponId": chooseCoupon["id"], "orderId": orderId}).then((val) {
+      if (val != null && val["data"] != null) {
         setState(() {});
       }
     });
@@ -53,7 +78,7 @@ class _PayMentState extends State<PayMent> {
   }
 
 // 处理订单数据
-  handleOrderData(goodLists, type) {
+  List handleOrderData(goodLists, type) {
     List data = [];
     for (int i = 0; i < goodLists.length; i++) {
       data.add(goodLists[i]["$type"]);
@@ -61,7 +86,18 @@ class _PayMentState extends State<PayMent> {
     return data;
   }
 
-  getSuppliersId(cartInfo, userId) {
+// 处理更新商品所需信息
+  List handleUpdateGoodInfo(goodLists) {
+    List list = [];
+    for (var i = 0; i < goodLists.length; i++) {
+      var cur = goodLists[i];
+      list.add({"goodId": cur["goodId"], "count": cur["count"]});
+    }
+    return list;
+  }
+
+// 获取供应商id
+  List getSuppliersId(cartInfo, userId) {
     List supplierIds = cartInfo.getSupplierById(userId); // 供应商id
     return supplierIds;
   }
@@ -86,8 +122,8 @@ class _PayMentState extends State<PayMent> {
       "status": status
     }).then((val) {
       if (val != null && val["data"] != null) {
+        orderId = val["data"]["id"];
         if (val["data"]["status"] == 1) {
-          orderId = val["data"]["id"];
           user.addUnpayOrder(user.userInfo.id, orderId);
         }
         setState(() {});
@@ -117,6 +153,8 @@ class _PayMentState extends State<PayMent> {
     List goodLists = ModalRoute.of(context).settings.arguments;
     final cart = Provider.of<CartData>(context);
     final user = Provider.of<UserData>(context);
+    List goodsId = handleOrderData(goodLists, "goodId");
+    List goodInfo = handleUpdateGoodInfo(goodLists);
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -199,11 +237,14 @@ class _PayMentState extends State<PayMent> {
                                                 int.parse(totalPrice) + cut,
                                             payMoney: int.parse(totalPrice),
                                             address: user.userInfo.address,
-                                            goodsId: handleOrderData(
-                                                goodLists, "goodId"),
+                                            goodsId: goodsId,
                                             orderUsername: userInfo.username,
                                             status: 1,
                                           );
+                                          // 修改商品信息
+                                          updateGoodInfo(goodInfo);
+                                          // 修改优惠卷状态
+                                          modifyCouponStatus();
                                           // 开启定时器
                                           startTask();
                                           Navigator.of(context)
@@ -220,12 +261,14 @@ class _PayMentState extends State<PayMent> {
                                             orderAmount:
                                                 int.parse(totalPrice) + cut,
                                             payMoney: int.parse(totalPrice),
-                                            address: "xxx",
-                                            goodsId: handleOrderData(
-                                                goodLists, "goodId"),
+                                            address: user.userInfo.address,
+                                            goodsId: goodsId,
                                             orderUsername: userInfo.username,
                                             status: 2,
                                           );
+                                          updateGoodInfo(goodInfo);
+                                          // 修改优惠卷状态
+                                          modifyCouponStatus();
                                           // 路由回退到购物车页面
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(
@@ -344,7 +387,12 @@ class _PayMentState extends State<PayMent> {
           });
         },
         child: Container(
-          child: Text("前往领劵"),
+          alignment: Alignment.center,
+          height: 50,
+          child: Text(
+            "点击前往领劵",
+            style: TextStyle(fontSize: 20),
+          ),
         ),
       );
     }

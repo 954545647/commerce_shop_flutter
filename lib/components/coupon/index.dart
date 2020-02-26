@@ -39,7 +39,6 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
             unUseList.add(item);
           }
         });
-        print("已经使用$useList,还没使用$unUseList");
         setState(() {
           hasLoad = true;
           couponList = val["data"];

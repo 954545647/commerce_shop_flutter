@@ -74,7 +74,7 @@ Widget goodDesc(argument) {
   return Container(
     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
     child: Text(
-      argument['desc'].toString(),
+      argument['descript'].toString(),
       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
@@ -84,7 +84,9 @@ Widget goodDesc(argument) {
 
 // 商品销量
 Widget goodSales(argument) {
-  var carriage = argument['expressCost'] == 0 ? '免运费' : argument['expressCost'];
+  String carriage =
+      argument["expressCost"] == 0 ? '0' : argument["expressCost"].toString();
+  String sales = argument["sales"].toString();
   return Container(
     height: ScreenUtil().setHeight(80),
     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -95,9 +97,9 @@ Widget goodSales(argument) {
           '快递:$carriage',
           style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)),
         ),
-        Text('月销:${argument['sales']}',
+        Text('月销:$sales',
             style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1))),
-        Text(argument['from'],
+        Text(argument["from"].toString(),
             style: TextStyle(color: Color.fromRGBO(139, 133, 133, 1)))
       ],
     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/pages/index.dart';
 
 class UnpayDialog extends StatelessWidget {
   final String title;
@@ -45,8 +46,6 @@ class UnpayDialog extends StatelessWidget {
   Widget buildCard(BuildContext context) {
     final user = Provider.of<UserData>(context);
     int userId = user.userInfo.id;
-    print("未支付订单${user.userInfo.unpayOrder}");
-    print(curItem);
     String address = user.userInfo.address;
     return Positioned(
       top: 60,
@@ -94,8 +93,13 @@ class UnpayDialog extends StatelessWidget {
                       payOrder(user.userInfo.unpayOrder[curItem]);
                       // 删除Provider中对应未支付
                       user.deleteUnpayOrder(userId, curItem);
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          'allOrder', ModalRoute.withName('index'));
+                      // Navigator.of(context).pushNamedAndRemoveUntil(
+                      //     'unpayOrder', ModalRoute.withName('index'));
+                      Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) {
+                          return new IndexPage();
+                        },
+                      ));
                     },
                     child: Container(
                       child: Text('支付'),
