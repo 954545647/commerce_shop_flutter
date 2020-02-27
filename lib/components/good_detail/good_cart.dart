@@ -38,7 +38,7 @@ class _MyCartState extends State<MyCart> {
         userCart = val["data"];
         // 创建一个数组，用来关联每一件商品在购物车中的选择状态
         cartState = List<bool>(userCart.length);
-        cartState.fillRange(0, userCart.length, false);
+        cartState.fillRange(0, userCart.length - 1, false);
         totalState =
             cartState.every((state) => state == true) && cartState.length > 0;
         userCart.forEach((item) {

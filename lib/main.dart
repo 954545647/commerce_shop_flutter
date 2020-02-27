@@ -25,6 +25,8 @@ import 'package:commerce_shop_flutter/components/order/all_order.dart';
 import 'package:commerce_shop_flutter/components/order/unpay_order.dart';
 import 'package:commerce_shop_flutter/components/order/finish_order.dart';
 import 'package:commerce_shop_flutter/components/order/cancel_order.dart';
+import 'package:commerce_shop_flutter/components/farm/farm_detail.dart';
+import 'package:commerce_shop_flutter/components/farm/farm_order.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
@@ -78,6 +80,8 @@ class MyApp extends StatelessWidget {
           "unpayOrder": (context, {arguments}) => UnpayOrder(),
           "finishOrder": (context, {arguments}) => FinishOrder(),
           "cancelOrder": (context, {arguments}) => CancelOrder(),
+          "farmDetail": (context, {arguments}) => FarmDetail(),
+          "farmOrder": (context, {arguments}) => FarmOrder(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

@@ -1,25 +1,24 @@
-// 订单页面
+// 农场订单
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import './user_adress.dart';
-import './good_supplier.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
 import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/components/payment/user_adress.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
-class PayMent extends StatefulWidget {
+class FarmOrder extends StatefulWidget {
   @override
-  _PayMentState createState() => _PayMentState();
+  _FarmOrderState createState() => _FarmOrderState();
 }
 
-class _PayMentState extends State<PayMent> {
+class _FarmOrderState extends State<FarmOrder> {
   List userCouponList = []; // 用户优惠卷列表
   int orderId; // 取消支付加入定时队列的id
-  String totalPrice; // 订单总价格
+  int totalPrice = 0; // 订单总价格
   var chooseCoupon = {}; // 选中的优惠卷
   @override
   void initState() {
@@ -60,21 +59,6 @@ class _PayMentState extends State<PayMent> {
         setState(() {});
       }
     });
-  }
-
-// 计算总数
-  String calTotalPrice(data, {cut = 0}) {
-    int total = 0;
-    data.forEach((item) {
-      total = total +
-          int.parse(item.price) * item.count +
-          int.parse(item.expressCost);
-    });
-    if (cut == null) cut = 0;
-    total -= cut;
-    totalPrice = "$total";
-    setState(() {});
-    return totalPrice;
   }
 
 // 处理订单数据
@@ -150,11 +134,11 @@ class _PayMentState extends State<PayMent> {
 
   @override
   Widget build(BuildContext context) {
-    List goodLists = ModalRoute.of(context).settings.arguments;
-    final cart = Provider.of<CartData>(context);
+    Map orderInfos = ModalRoute.of(context).settings.arguments;
+    int total = orderInfos["total"];
     final user = Provider.of<UserData>(context);
-    List goodsId = handleOrderData(goodLists, "goodId");
-    List goodInfo = handleUpdateGoodInfo(goodLists);
+    // List goodsId = handleOrderData(goodLists, "goodId");
+    // List goodInfo = handleUpdateGoodInfo(goodLists);
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -169,12 +153,8 @@ class _PayMentState extends State<PayMent> {
                   TopTitle(title: "提交订单", showArrow: true),
                   // 用户地址信息
                   UserAddress(),
-                  // 订单信息
-                  GoodSupplier(
-                      cartInfo: cart,
-                      userId: user.userInfo.id,
-                      goodInfo: goodLists),
-                  useCoupon(),
+                  farmInfo(orderInfos),
+                  useCoupon(total),
                   SizedBox(
                     height: 60,
                   )
@@ -190,14 +170,7 @@ class _PayMentState extends State<PayMent> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                                "总计：${calTotalPrice(cart.cartInfo, cut: chooseCoupon["used_amount"])}"),
-                          ],
-                        ),
-                      ),
+                      totalPrice == 0 ? Text("总计：$total") : Text("$totalPrice"),
                       SizedBox(
                         width: ScreenUtil().setWidth(180),
                       ),
@@ -208,12 +181,6 @@ class _PayMentState extends State<PayMent> {
                             return;
                           }
                           var userInfo = user.userInfo;
-                          int cut = chooseCoupon["used_amount"] != null
-                              ? chooseCoupon["used_amount"]
-                              : 0;
-                          var couponId = chooseCoupon["id"] != null
-                              ? chooseCoupon["id"]
-                              : null;
                           showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -230,51 +197,11 @@ class _PayMentState extends State<PayMent> {
                                     actions: <Widget>[
                                       new FlatButton(
                                         child: new Text("取消"),
-                                        onPressed: () async {
-                                          await submitOrder(
-                                            couponId: couponId,
-                                            orderAmount:
-                                                int.parse(totalPrice) + cut,
-                                            payMoney: int.parse(totalPrice),
-                                            address: user.userInfo.address,
-                                            goodsId: goodsId,
-                                            orderUsername: userInfo.username,
-                                            status: 1,
-                                          );
-                                          // 修改商品信息
-                                          updateGoodInfo(goodInfo);
-                                          // 修改优惠卷状态
-                                          modifyCouponStatus();
-                                          // 开启定时器
-                                          startTask();
-                                          Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  'unpayOrder',
-                                                  ModalRoute.withName('index'));
-                                        },
+                                        onPressed: () async {},
                                       ),
                                       new FlatButton(
                                         child: new Text("确定"),
-                                        onPressed: () async {
-                                          await submitOrder(
-                                            couponId: couponId,
-                                            orderAmount:
-                                                int.parse(totalPrice) + cut,
-                                            payMoney: int.parse(totalPrice),
-                                            address: user.userInfo.address,
-                                            goodsId: goodsId,
-                                            orderUsername: userInfo.username,
-                                            status: 2,
-                                          );
-                                          updateGoodInfo(goodInfo);
-                                          // 修改优惠卷状态
-                                          modifyCouponStatus();
-                                          // 路由回退到购物车页面
-                                          Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  'allOrder',
-                                                  ModalRoute.withName('index'));
-                                        },
+                                        onPressed: () async {},
                                       ),
                                     ],
                                   ));
@@ -303,8 +230,92 @@ class _PayMentState extends State<PayMent> {
     );
   }
 
+// 农场信息
+  Widget farmInfo(data) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: 50,
+            alignment: Alignment.center,
+            child: Text(
+              "农场信息",
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                data["farmName"],
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(width: 5),
+              Text(
+                "x${data["areaNum"]}",
+                style: TextStyle(fontSize: 16),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+            child: cropList(data["crops"]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget cropList(data) {
+    List<Widget> list = [];
+    for (var i = 0; i < data.length; i++) {
+      var curData = data[i];
+      if (curData["count"] > 0) {
+        list.add(cropItem(curData));
+      }
+    }
+    return Container(
+      height: 100,
+      child: ListView(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        children: list,
+      ),
+    );
+  }
+
+  Widget cropItem(data) {
+    return Container(
+      height: 50,
+      width: 100,
+      child: Column(
+        children: <Widget>[
+          Image.network(
+            data["img"],
+            width: 80,
+            height: 50,
+            fit: BoxFit.contain,
+          ),
+          Text(data["name"]),
+          Text(data["count"].toString()),
+        ],
+      ),
+    );
+  }
+
 // 优惠卷
-  Widget useCoupon() {
+  Widget useCoupon(total) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -341,7 +352,7 @@ class _PayMentState extends State<PayMent> {
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
-                              couponList()
+                              couponList(total)
                             ],
                           ),
                           Positioned(
@@ -369,10 +380,10 @@ class _PayMentState extends State<PayMent> {
     );
   }
 
-  Widget couponList() {
+  Widget couponList(total) {
     List<Widget> list = [];
     for (int i = 0; i < userCouponList.length; i++) {
-      list.add(couponItem(userCouponList[i], i));
+      list.add(couponItem(userCouponList[i], i, total));
     }
     if (list.length > 0) {
       return Column(children: list);
@@ -398,13 +409,14 @@ class _PayMentState extends State<PayMent> {
     }
   }
 
-  Widget couponItem(data, index) {
+  Widget couponItem(data, index, total) {
     return GestureDetector(
       onTap: () {
-        if (data["with_amount"] > int.parse(totalPrice)) {
+        if (data["with_amount"] > total) {
           Toast.toast(context, msg: "订单金额不足");
         } else {
           chooseCoupon = data;
+          totalPrice = total - data["used_amount"];
           setState(() {});
           Navigator.pop(context);
         }

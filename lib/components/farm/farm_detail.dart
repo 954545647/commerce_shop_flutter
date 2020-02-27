@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/style.dart' as config;
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
-import 'package:commerce_shop_flutter/utils/dio.dart';
+// import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class FarmDetail extends StatefulWidget {
   @override
@@ -12,13 +12,12 @@ class FarmDetail extends StatefulWidget {
 
 class _FarmDetailState extends State<FarmDetail> {
   ScrollController _controller = ScrollController();
-  List userCouponList = []; // 用户优惠卷列表
-  var chooseCoupon = {}; // 选中的优惠卷
   double _opacity = 0.0;
   int areaNum = 1; // 选择土地的块数
   List cropNum = []; // 农作物的个数
   int cropTotal = 0; // 农作物的总个数
   int total = 0; // 下单总价
+  var orderInfo = {}; // 订单详情
   @override
   void initState() {
     super.initState();
@@ -37,21 +36,7 @@ class _FarmDetailState extends State<FarmDetail> {
     });
   }
 
-// 获取用户优惠卷（只获取未使用的）
-  getUserCoupons() {
-    DioUtils.getInstance().post("myCoupon").then((val) {
-      if (val != null && val["data"] != null) {
-        userCouponList = [];
-        val["data"].forEach((data) {
-          if (data["use_state"] == 0) {
-            userCouponList.add(data);
-          }
-        });
-        setState(() {});
-      }
-    });
-  }
-
+// 解析标签
   splitTags(tags) {
     List<Widget> list = [];
     List tagList = tags.split(";");
@@ -101,17 +86,37 @@ class _FarmDetailState extends State<FarmDetail> {
     return total;
   }
 
+// 处理订单信息
+  handleOrderInfo(data) {
+    List lists = [];
+    for (var i = 0; i < data.length; i++) {
+      var curData = data[i];
+      lists.add({
+        "name": curData["cropName"],
+        "count": cropNum[i],
+        "img": curData["imgCover"]
+      });
+    }
+    orderInfo["crops"] = lists;
+    orderInfo["total"] = total;
+    orderInfo["areaNum"] = areaNum;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Map arguments = ModalRoute.of(context).settings.arguments;
-    print(arguments["cropInfo"]);
-    cropNum = List<int>(arguments["cropInfo"].length);
-    cropNum.fillRange(0, arguments["cropInfo"].length, 0);
+    int len = arguments["cropInfo"].length;
+    cropNum = List<int>(len);
+    cropNum.fillRange(0, len, 0);
+    String farmName = arguments["farmName"];
+    orderInfo["farmName"] = farmName;
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
         child: Container(
+          // height: 1000,
           child: Stack(
             children: <Widget>[
               SingleChildScrollView(
@@ -133,7 +138,7 @@ class _FarmDetailState extends State<FarmDetail> {
                       child: Row(children: splitTags(arguments["tags"])),
                     ),
                     SizedBox(height: 10),
-                    textContainer("${arguments["farmName"]}",
+                    textContainer("$farmName",
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                     // 地址
                     Container(
@@ -143,6 +148,8 @@ class _FarmDetailState extends State<FarmDetail> {
                       child: Text("${arguments["address"]}",
                           style: TextStyle(fontSize: 18), maxLines: 2),
                     ),
+                    SizedBox(height: 10),
+                    // 农作物规格数量
                     GestureDetector(
                       onTap: () {
                         showModalBottomSheet(
@@ -276,9 +283,30 @@ class _FarmDetailState extends State<FarmDetail> {
                         child: Text("请选择规格数量"),
                       ),
                     ),
-                    useCoupon(),
-                    Container(height: 800, child: Text("data"))
+                    SizedBox(
+                      height: 300,
+                    )
                   ],
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    if (getTotalNum() == 0) {
+                      Toast.toast(context, msg: "还没选择农作物");
+                      return;
+                    }
+                    handleOrderInfo(arguments["cropInfo"]);
+                    Navigator.pushNamed(context, "farmOrder",
+                        arguments: orderInfo);
+                  },
+                  child: Container(
+                      alignment: Alignment.center,
+                      height: ScreenUtil().setHeight(120),
+                      width: ScreenUtil().setWidth(750),
+                      color: Colors.white,
+                      child: Text("提交订单")),
                 ),
               ),
               this._opacity > 0
@@ -319,6 +347,7 @@ class _FarmDetailState extends State<FarmDetail> {
     );
   }
 
+// 农作物列表
   Widget cropList(data, setSta) {
     List<Widget> list = [];
     for (var i = 0; i < data.length; i++) {
@@ -397,134 +426,6 @@ class _FarmDetailState extends State<FarmDetail> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  // 优惠卷
-  Widget useCoupon() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: Colors.white),
-      height: 60,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("选择优惠卷"),
-          Text(
-            chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
-            style: TextStyle(color: Colors.red, fontSize: 18),
-          ),
-          InkWell(
-            child: Icon(Icons.more_horiz),
-            onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Container(
-                      color: Colors.white,
-                      height: 300,
-                      child: Stack(
-                        children: <Widget>[
-                          ListView(
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                height: 80,
-                                child: Text(
-                                  "优惠卷列表",
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              couponList()
-                            ],
-                          ),
-                          Positioned(
-                            right: 20,
-                            top: 30,
-                            child: InkWell(
-                              onTap: () {
-                                // 前往领劵
-                                Navigator.popAndPushNamed(context, "takeCoupon")
-                                    .then((val) {
-                                  if (val) {
-                                    getUserCoupons();
-                                  }
-                                });
-                              },
-                              child: Icon(Icons.more_horiz),
-                            ),
-                          )
-                        ],
-                      )));
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget couponList() {
-    List<Widget> list = [];
-    for (int i = 0; i < userCouponList.length; i++) {
-      list.add(couponItem(userCouponList[i], i));
-    }
-    if (list.length > 0) {
-      return Column(children: list);
-    } else {
-      return GestureDetector(
-        onTap: () {
-          // 前往领劵
-          Navigator.popAndPushNamed(context, "takeCoupon").then((val) {
-            if (val) {
-              getUserCoupons();
-            }
-          });
-        },
-        child: Container(
-          alignment: Alignment.center,
-          height: 50,
-          child: Text(
-            "点击前往领劵",
-            style: TextStyle(fontSize: 20),
-          ),
-        ),
-      );
-    }
-  }
-
-  Widget couponItem(data, index) {
-    return GestureDetector(
-      onTap: () {
-        if (data["with_amount"] > total) {
-          Toast.toast(context, msg: "订单金额不足");
-        } else {
-          chooseCoupon = data;
-          setState(() {});
-          Navigator.pop(context);
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: ScreenUtil().setWidth(750),
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        height: 60,
-        decoration: BoxDecoration(
-            border: Border.all(width: 1),
-            borderRadius: BorderRadius.circular(15)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text(
-              data["name"],
-              style: TextStyle(color: Colors.red),
-            ),
-            Text(data["type"] == 0 ? "无门槛劵" : "促销商品劵")
-          ],
-        ),
       ),
     );
   }

@@ -43,4 +43,7 @@ const urlList = {
   // 商家接口
   "getAllSuppliers": "supplier/getAll",
   "getSupplierById": "supplier/getSupplierById",
+  // 农场接口
+  "getFarmsInfo": "farm/getInfo",
+  "getAllFarmsInfo": "farm/getAlls",
 };

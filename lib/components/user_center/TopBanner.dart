@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/configuration.dart' as config;
+import 'package:commerce_shop_flutter/config/style.dart' as config;
 import 'package:commerce_shop_flutter/components/user_center/UserInfo.dart';
 
 class TopBanner extends StatefulWidget {
