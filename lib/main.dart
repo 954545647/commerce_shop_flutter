@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:commerce_shop_flutter/components/good_detail/index.dart';
-import 'package:commerce_shop_flutter/components/home/hot_news.dart';
+import 'package:commerce_shop_flutter/components/home/news/hot_news.dart';
 import 'package:commerce_shop_flutter/components/home/news/news_detail.dart';
+import 'package:commerce_shop_flutter/components/home/monitor/monitor.dart';
 import 'package:commerce_shop_flutter/components/sign_in/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/integral_detail.dart';
@@ -82,6 +83,7 @@ class MyApp extends StatelessWidget {
           "cancelOrder": (context, {arguments}) => CancelOrder(),
           "farmDetail": (context, {arguments}) => FarmDetail(),
           "farmOrder": (context, {arguments}) => FarmOrder(),
+          "monitor": (context, {arguments}) => Monitor(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

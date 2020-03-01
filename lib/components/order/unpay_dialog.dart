@@ -21,6 +21,11 @@ class UnpayDialog extends StatelessWidget {
         .post("modifyOrderStatus", data: {"orderId": orderId});
   }
 
+// 修改用户的积分
+  modifyUserPoint() {
+    DioUtils.getInstance().post("changeIntegral", data: {"source": 2});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -45,7 +50,6 @@ class UnpayDialog extends StatelessWidget {
 
   Widget buildCard(BuildContext context) {
     final user = Provider.of<UserData>(context);
-    int userId = user.userInfo.id;
     String address = user.userInfo.address;
     return Positioned(
       top: 60,
@@ -90,11 +94,11 @@ class UnpayDialog extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      payOrder(user.userInfo.unpayOrder[curItem]);
+                      payOrder(data["id"]);
                       // 删除Provider中对应未支付
-                      user.deleteUnpayOrder(userId, curItem);
-                      // Navigator.of(context).pushNamedAndRemoveUntil(
-                      //     'unpayOrder', ModalRoute.withName('index'));
+                      // user.deleteUnpayOrder(userId, curItem);
+                      // 更改用户积分
+                      modifyUserPoint();
                       Navigator.of(context).push(new MaterialPageRoute(
                         builder: (context) {
                           return new IndexPage();

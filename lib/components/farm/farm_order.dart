@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import 'package:commerce_shop_flutter/provider/cartData.dart';
-import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/components/payment/user_adress.dart';
+import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
@@ -41,95 +40,32 @@ class _FarmOrderState extends State<FarmOrder> {
     });
   }
 
-// 更新商品信息（销量，库存）
-  updateGoodInfo(goodInfo) {
-    DioUtils.getInstance()
-        .post("updateGood", data: {"goodInfo": goodInfo}).then((val) {
-      if (val != null && val["data"] != null) {
-        setState(() {});
-      }
-    });
-  }
-
-  // 修改用户优惠卷状态
-  modifyCouponStatus() {
-    DioUtils.getInstance().post("handleCoupon",
-        data: {"couponId": chooseCoupon["id"], "orderId": orderId}).then((val) {
-      if (val != null && val["data"] != null) {
-        setState(() {});
-      }
-    });
-  }
-
-// 处理订单数据
-  List handleOrderData(goodLists, type) {
-    List data = [];
-    for (int i = 0; i < goodLists.length; i++) {
-      data.add(goodLists[i]["$type"]);
-    }
-    return data;
-  }
-
-// 处理更新商品所需信息
-  List handleUpdateGoodInfo(goodLists) {
-    List list = [];
-    for (var i = 0; i < goodLists.length; i++) {
-      var cur = goodLists[i];
-      list.add({"goodId": cur["goodId"], "count": cur["count"]});
-    }
-    return list;
-  }
-
-// 获取供应商id
-  List getSuppliersId(cartInfo, userId) {
-    List supplierIds = cartInfo.getSupplierById(userId); // 供应商id
-    return supplierIds;
-  }
-
-// 提交订单
-  submitOrder(
-      {couponId,
-      orderAmount,
-      payMoney,
-      address,
-      goodsId,
-      orderUsername,
-      status}) async {
+// 新增农场订单
+  newFarmOrder(orderInfos) {
     final user = Provider.of<UserData>(context);
-    await DioUtils.getInstance().post('newOrder', data: {
-      "couponId": couponId,
-      "orderAmount": orderAmount,
-      "payMoney": payMoney,
-      "address": address,
-      "goodsId": goodsId,
-      "orderUsername": orderUsername,
-      "status": status
-    }).then((val) {
-      if (val != null && val["data"] != null) {
-        orderId = val["data"]["id"];
-        if (val["data"]["status"] == 1) {
-          user.addUnpayOrder(user.userInfo.id, orderId);
-        }
-        setState(() {});
-      }
+    DioUtils.getInstance().post("newFarmOrder", data: {
+      "couponId": chooseCoupon["id"],
+      "orderAmount": orderInfos["total"],
+      "payMoney": totalPrice == 0 ? orderInfos["total"] : totalPrice,
+      "farmId": orderInfos["farmId"],
+      "cropsInfos": handleCropInfos(orderInfos["crops"]),
+      "address": user.userInfo.address,
+      "orderUsername": user.userInfo.username,
     });
-    // 更新购物车
-    await updateCarts();
   }
 
-  // 更新购物车
-  updateCarts() async {
-    final cart = Provider.of<CartData>(context);
-    List cartIds = [];
-    cart.cartInfo.forEach((item) {
-      cartIds.add(item.cartId);
-    });
-    await DioUtils.getInstance().post('deleteCart', data: {"cartIds": cartIds});
-  }
-
-  // 开启定时任务
-  startTask() {
-    DioUtils.getInstance().post('startTask', data: {"orderId": orderId});
+  handleCropInfos(data) {
+    List orderInfos = [];
+    for (var i = 0; i < data.length; i++) {
+      orderInfos.add({
+        "id": data[i]["id"],
+        "imgCover": data[i]["imgCover"],
+        "goodName": data[i]["name"],
+        "count": data[i]["count"],
+        "price": data[i]["price"],
+      });
+    }
+    return orderInfos;
   }
 
   @override
@@ -137,8 +73,7 @@ class _FarmOrderState extends State<FarmOrder> {
     Map orderInfos = ModalRoute.of(context).settings.arguments;
     int total = orderInfos["total"];
     final user = Provider.of<UserData>(context);
-    // List goodsId = handleOrderData(goodLists, "goodId");
-    // List goodInfo = handleUpdateGoodInfo(goodLists);
+    var userInfo = user.userInfo;
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -180,7 +115,9 @@ class _FarmOrderState extends State<FarmOrder> {
                             Toast.toast(context, msg: "请选择收获地址");
                             return;
                           }
-                          var userInfo = user.userInfo;
+                          var payMoney = totalPrice == 0
+                              ? orderInfos["total"]
+                              : totalPrice;
                           showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -190,18 +127,24 @@ class _FarmOrderState extends State<FarmOrder> {
                                       child: Column(
                                         children: <Widget>[
                                           Text("付款人：${userInfo.username}"),
-                                          Text("付款金额：￥$totalPrice")
+                                          Text("付款金额：￥$payMoney")
                                         ],
                                       ),
                                     ),
                                     actions: <Widget>[
                                       new FlatButton(
                                         child: new Text("取消"),
-                                        onPressed: () async {},
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                       new FlatButton(
                                         child: new Text("确定"),
-                                        onPressed: () async {},
+                                        onPressed: () {
+                                          newFarmOrder(orderInfos);
+                                          Navigator.popAndPushNamed(
+                                              context, "index");
+                                        },
                                       ),
                                     ],
                                   ));
@@ -302,7 +245,7 @@ class _FarmOrderState extends State<FarmOrder> {
       child: Column(
         children: <Widget>[
           Image.network(
-            data["img"],
+            data["imgCover"],
             width: 80,
             height: 50,
             fit: BoxFit.contain,

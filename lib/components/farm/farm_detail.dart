@@ -88,18 +88,22 @@ class _FarmDetailState extends State<FarmDetail> {
 
 // 处理订单信息
   handleOrderInfo(data) {
+    var cropInfo = data["cropInfo"];
     List lists = [];
-    for (var i = 0; i < data.length; i++) {
-      var curData = data[i];
+    for (var i = 0; i < cropInfo.length; i++) {
+      var curData = cropInfo[i];
       lists.add({
+        "id": curData["id"],
         "name": curData["cropName"],
         "count": cropNum[i],
-        "img": curData["imgCover"]
+        "imgCover": curData["imgCover"],
+        "price": curData["price"],
       });
     }
     orderInfo["crops"] = lists;
     orderInfo["total"] = total;
     orderInfo["areaNum"] = areaNum;
+    orderInfo["farmId"] = data["id"];
     setState(() {});
   }
 
@@ -111,6 +115,7 @@ class _FarmDetailState extends State<FarmDetail> {
     cropNum.fillRange(0, len, 0);
     String farmName = arguments["farmName"];
     orderInfo["farmName"] = farmName;
+    total = 0;
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -297,7 +302,7 @@ class _FarmDetailState extends State<FarmDetail> {
                       Toast.toast(context, msg: "还没选择农作物");
                       return;
                     }
-                    handleOrderInfo(arguments["cropInfo"]);
+                    handleOrderInfo(arguments);
                     Navigator.pushNamed(context, "farmOrder",
                         arguments: orderInfo);
                   },

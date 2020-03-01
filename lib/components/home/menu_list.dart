@@ -76,13 +76,13 @@ class MenuListItemViewModel {
 const List<MenuListItemViewModel> menuListData = [
   MenuListItemViewModel(
       title: '实时监控',
-      path: 'signIn',
+      path: 'monitor',
       icon: Icon(
         MenuIcons.monitoring,
         size: 25,
         color: Colors.lightBlue,
       ),
-      shouldLogin: true),
+      shouldLogin: false),
   // MenuListItemViewModel(
   //   title: '租地种植',
   //   path: 'rentLand',

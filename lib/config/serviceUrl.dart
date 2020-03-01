@@ -46,4 +46,5 @@ const urlList = {
   // 农场接口
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
+  "newFarmOrder": "farm/newOrder",
 };

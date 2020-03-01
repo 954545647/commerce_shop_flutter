@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/utils/diaLog.dart';
 
 class Farm extends StatelessWidget {
   final farmInfo;
-  Farm({this.farmInfo});
+  final bool isLogin;
+  Farm({this.farmInfo, this.isLogin});
   @override
   Widget build(BuildContext context) {
     var farmDetail = farmInfo["farmInfo"];
@@ -54,8 +56,12 @@ class Farm extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, "farmDetail",
-                        arguments: farmDetail);
+                    if (isLogin) {
+                      Navigator.pushNamed(context, "farmDetail",
+                          arguments: farmDetail);
+                    } else {
+                      loginDialog(context, "请前往登录");
+                    }
                   },
                   child: Container(
                     alignment: Alignment.center,

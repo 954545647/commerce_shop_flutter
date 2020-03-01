@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import './farm.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:provider/provider.dart';
 
 class FarmList extends StatefulWidget {
   @override
@@ -28,11 +30,13 @@ class _FarmListState extends State<FarmList> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserData>(context);
+    bool isLogin = user.isLogin;
     return Container(
       child: SingleChildScrollView(
         child: Column(
             children: farmList.map((farmInfo) {
-          return Farm(farmInfo: farmInfo);
+          return Farm(farmInfo: farmInfo, isLogin: isLogin);
         }).toList()),
       ),
     );

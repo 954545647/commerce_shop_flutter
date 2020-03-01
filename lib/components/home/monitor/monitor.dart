@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+// import 'dart:async';
 
 class Monitor extends StatefulWidget {
   @override
@@ -12,6 +14,10 @@ class Monitor extends StatefulWidget {
 class _MonitorState extends State<Monitor> {
   VideoPlayerController videoPlayerController;
   ChewieController chewieController;
+  IjkMediaController controller = IjkMediaController();
+  String tmpt1 = "rtmp://202.69.69.180:443/webcast/bshdlive-pccaidi";
+  String tmpt2 = "rtmp://202.69.69.180:443/webcast/bshdlive-pc";
+  // bool loading = true;
   @override
   void initState() {
     super.initState();
@@ -24,12 +30,21 @@ class _MonitorState extends State<Monitor> {
       autoPlay: true,
       looping: true,
     );
+    this.initPlayer();
+  }
+
+  initPlayer() async {
+    await controller.setNetworkDataSource(
+        'rtmp://202.69.69.180:443/webcast/bshdlive-pc',
+        autoPlay: true);
+    await controller.play();
   }
 
   @override
   void dispose() {
     videoPlayerController.dispose();
     chewieController.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -61,7 +76,11 @@ class _MonitorState extends State<Monitor> {
                   );
                 });
               },
-            )
+            ),
+            Container(
+              height: 200, // 设置高度
+              child: IjkPlayer(mediaController: controller),
+            ),
           ],
         ),
       ),

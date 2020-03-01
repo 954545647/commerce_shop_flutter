@@ -22,7 +22,7 @@ class _TakeCouponState extends State<TakeCoupon> {
 
 // 获取优惠卷
   getCoupon() async {
-    DioUtils.getInstance().post("myCoupon").then((val) {
+    await DioUtils.getInstance().post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         var list = [];
         val["data"].forEach((item) {
@@ -34,7 +34,7 @@ class _TakeCouponState extends State<TakeCoupon> {
       }
     });
     // 从系统中全部优惠卷筛选出自己未拥有的优惠卷
-    DioUtils.getInstance().post("getAlls").then((val) {
+    await DioUtils.getInstance().post("getAlls").then((val) {
       if (val != null && val["data"] != null) {
         var list = [];
         val["data"].forEach((item) {
@@ -50,10 +50,9 @@ class _TakeCouponState extends State<TakeCoupon> {
     });
   }
 
-  handleCoupon(couponData) {
-    DioUtils.getInstance().post("handleCoupon",
-        data: {"couponId": couponData["id"]}).then((val) async {
-      await getCoupon();
+  handleCoupon(couponData) async {
+    await DioUtils.getInstance()
+        .post("handleCoupon", data: {"couponId": couponData["id"]}).then((val) {
       if (val != null && val["data"] != null) {
         Toast.toast(context, msg: "领取成功");
       }
@@ -65,6 +64,8 @@ class _TakeCouponState extends State<TakeCoupon> {
         }
       }
     });
+    // 更新优惠卷数据
+    await getCoupon();
   }
 
   @override
@@ -130,7 +131,6 @@ class _TakeCouponState extends State<TakeCoupon> {
                 ),
                 Text("满${couponData["with_amount"]}可用",
                     style: TextStyle(
-                      // color: Color.fromRGBO(159, 74, 68, 1),
                       color: Colors.red,
                       fontSize: 18,
                     ))
@@ -159,8 +159,8 @@ class _TakeCouponState extends State<TakeCoupon> {
                 child: Text("立即领取"),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
-                onPressed: () {
-                  handleCoupon(couponData);
+                onPressed: () async {
+                  await handleCoupon(couponData);
                 },
               ))
         ],

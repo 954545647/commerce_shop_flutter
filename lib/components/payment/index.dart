@@ -62,6 +62,11 @@ class _PayMentState extends State<PayMent> {
     });
   }
 
+// 修改用户的积分
+  modifyUserPoint() {
+    DioUtils.getInstance().post("changeIntegral", data: {"source": 2});
+  }
+
 // 计算总数
   String calTotalPrice(data, {cut = 0}) {
     int total = 0;
@@ -111,7 +116,7 @@ class _PayMentState extends State<PayMent> {
       goodsId,
       orderUsername,
       status}) async {
-    final user = Provider.of<UserData>(context);
+    // final user = Provider.of<UserData>(context);
     await DioUtils.getInstance().post('newOrder', data: {
       "couponId": couponId,
       "orderAmount": orderAmount,
@@ -123,9 +128,9 @@ class _PayMentState extends State<PayMent> {
     }).then((val) {
       if (val != null && val["data"] != null) {
         orderId = val["data"]["id"];
-        if (val["data"]["status"] == 1) {
-          user.addUnpayOrder(user.userInfo.id, orderId);
-        }
+        // if (val["data"]["status"] == 1) {
+        //   user.addUnpayOrder(user.userInfo.id, orderId);
+        // }
         setState(() {});
       }
     });
@@ -145,6 +150,7 @@ class _PayMentState extends State<PayMent> {
 
   // 开启定时任务
   startTask() {
+    print(orderId);
     DioUtils.getInstance().post('startTask', data: {"orderId": orderId});
   }
 
@@ -269,6 +275,7 @@ class _PayMentState extends State<PayMent> {
                                           updateGoodInfo(goodInfo);
                                           // 修改优惠卷状态
                                           modifyCouponStatus();
+                                          modifyUserPoint();
                                           // 路由回退到购物车页面
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil(

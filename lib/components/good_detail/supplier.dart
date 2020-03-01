@@ -30,6 +30,9 @@ class _SupplierState extends State<Supplier> {
                 children: <Widget>[
                   Image.network(
                     cover,
+                    fit: BoxFit.fill,
+                    width: ScreenUtil().setWidth(750),
+                    height: ScreenUtil().setHeight(400),
                   ),
                   Container(
                     width: ScreenUtil().setWidth(160),
