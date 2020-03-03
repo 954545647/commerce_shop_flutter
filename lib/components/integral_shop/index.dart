@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import 'package:commerce_shop_flutter/components/common/good_banner.dart';
-// import 'package:flutter_custom_calendar/flutter_custom_calendar.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class IntegralMall extends StatefulWidget {
@@ -27,11 +25,12 @@ class _IntegralMallState extends State<IntegralMall> {
     // 获取积分商城数据
   }
 
-  var imageList = [
-    'assets/images/potatoes1.webp',
-    'assets/images/potatoes2.webp',
-    'assets/images/potatoes3.webp',
-  ];
+  // var imageList = [
+  //   'assets/images/potatoes1.webp',
+  //   'assets/images/potatoes2.webp',
+  //   'assets/images/potatoes3.webp',
+  // ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +44,7 @@ class _IntegralMallState extends State<IntegralMall> {
             // 积分详情
             intergalDetail(),
             // 商品轮播图
-            GoodBanner(imageList: imageList, height: 300),
+            // GoodBanner(imageList: imageList, height: 300),
             // 积分类型
             intergalType(),
             // 兑换热门商品
@@ -61,8 +60,8 @@ class _IntegralMallState extends State<IntegralMall> {
   Widget intergalDetail() {
     return Container(
       height: ScreenUtil().setHeight(100),
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(color: Colors.red))),
+      decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -125,7 +124,7 @@ class _IntegralMallState extends State<IntegralMall> {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-      margin: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -202,21 +201,6 @@ class _IntegralMallState extends State<IntegralMall> {
         'imgUrl': 'assets/images/potatoes1.webp',
         'title': '土豆',
         'integral': '200'
-      },
-      {
-        'imgUrl': 'assets/images/potatoes1.webp',
-        'title': '土豆',
-        'integral': '70'
-      },
-      {
-        'imgUrl': 'assets/images/potatoes1.webp',
-        'title': '土豆',
-        'integral': '70'
-      },
-      {
-        'imgUrl': 'assets/images/potatoes1.webp',
-        'title': '土豆',
-        'integral': '70'
       },
       {
         'imgUrl': 'assets/images/potatoes1.webp',

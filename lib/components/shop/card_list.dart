@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/shop/goods_card.dart';
-import 'package:commerce_shop_flutter/model/goodsCardModel.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class CardList extends StatefulWidget {
@@ -14,12 +12,15 @@ class _CardListState extends State<CardList> {
   @override
   void initState() {
     super.initState();
-    DioUtils.getInstance().get('goodsList').then((val) {
-      if (val != null &&
-          val["data"] != null &&
-          val["data"]["goodsList"] != null) {
+    getGoodList();
+  }
+
+// 获取商品信息
+  getGoodList() {
+    DioUtils.getInstance().post('getAllGoods').then((val) {
+      if (val != null && val["data"] != null) {
         setState(() {
-          goodsList = val['data']['goodsList'];
+          goodsList = val['data'];
         });
       }
     });
@@ -29,13 +30,12 @@ class _CardListState extends State<CardList> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        height: ScreenUtil().setHeight(1000),
-        child: ListView(
+          child: SingleChildScrollView(
+        child: Column(
             children: goodsList.map((item) {
-          GoodsCardModel goodsModel = GoodsCardModel.fromJson(item);
-          return GoodsCard(data: goodsModel);
+          return GoodsCard(data: item);
         }).toList()),
-      ),
+      )),
     );
   }
 }

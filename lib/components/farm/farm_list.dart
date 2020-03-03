@@ -13,8 +13,8 @@ class _FarmListState extends State<FarmList> {
   List farmList = [];
   @override
   void initState() {
-    getFarmList();
     super.initState();
+    getFarmList();
   }
 
 // 获取农场信息

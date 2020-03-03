@@ -47,4 +47,5 @@ const urlList = {
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
   "newFarmOrder": "farm/newOrder",
+  "myFarms": "farm/myFarm",
 };

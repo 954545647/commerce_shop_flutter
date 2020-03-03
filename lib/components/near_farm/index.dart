@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/common_title.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/good_banner.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class NearFarm extends StatefulWidget {
   @override
@@ -10,10 +11,25 @@ class NearFarm extends StatefulWidget {
 }
 
 class _NearFarmState extends State<NearFarm> {
+  List supplierLists = [];
+  @override
+  void initState() {
+    super.initState();
+    getSuppliers();
+  }
+
+  getSuppliers() {
+    DioUtils.getInstance().get('getAllSuppliers').then((val) {
+      if (val != null) {
+        supplierLists = val["data"];
+        setState(() {});
+      }
+    });
+  }
+
   var imageList = [
-    'assets/images/potatoes1.webp',
-    'assets/images/potatoes2.webp',
-    'assets/images/potatoes3.webp',
+    'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2822313456,3392103754&fm=26&gp=0.jpg',
+    'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=847580354,2285435867&fm=26&gp=0.jpg',
   ];
   @override
   Widget build(BuildContext context) {
@@ -46,45 +62,10 @@ class _NearFarmState extends State<NearFarm> {
 
   // 商家列表
   Widget merchantLists() {
-    var lists = [
-      {
-        "imgUrl": "assets/images/potatoes1.webp",
-        "name": "智慧农场",
-        "location": "重庆市渝中区",
-        "phone": '13250504940',
-        "nameIcon": "0xe66f",
-        "phoneIcon": "0xe616",
-        "tabIcon": "0xe60b",
-        "shopIcon": "0xe60c",
-        "localIcon": "0xe62f"
-      },
-      {
-        "imgUrl": "assets/images/potatoes1.webp",
-        "name": "华农农场",
-        "location": "广东省广州市",
-        "phone": '13250504940',
-        "nameIcon": "0xe66f",
-        "phoneIcon": "0xe616",
-        "tabIcon": "0xe60b",
-        "shopIcon": "0xe60c",
-        "localIcon": "0xe62f"
-      },
-      {
-        "imgUrl": "assets/images/potatoes1.webp",
-        "name": "坦洲农场",
-        "location": "中山市坦洲镇",
-        "phone": '13250504940',
-        "nameIcon": "0xe66f",
-        "phoneIcon": "0xe616",
-        "tabIcon": "0xe60b",
-        "shopIcon": "0xe60c",
-        "localIcon": "0xe62f"
-      },
-    ];
     return Container(
       margin: EdgeInsets.all(15),
       child: Column(
-        children: lists.map((item) {
+        children: supplierLists.map((item) {
           return merchantDetail(item);
         }).toList(),
       ),
@@ -106,11 +87,11 @@ class _NearFarmState extends State<NearFarm> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Image.asset(
-                data['imgUrl'],
+              Image.network(
+                data['cover'],
                 width: ScreenUtil().setWidth(240),
                 height: ScreenUtil().setHeight(240),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
@@ -119,13 +100,13 @@ class _NearFarmState extends State<NearFarm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      data['name'],
+                      data['supplierName'],
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     SizedBox(height: 10),
                     Text(
-                      data['location'],
+                      data['address'],
                       style: TextStyle(color: Colors.grey),
                     )
                   ],

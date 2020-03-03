@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
-import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
+// import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
@@ -122,7 +122,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                   // 商品规格（尺码、地址）
                   goodSpecification(argument),
                   // 商品评价
-                  goodEvaluate(argument),
+                  // goodEvaluate(argument),
                 ],
               ),
               Positioned(

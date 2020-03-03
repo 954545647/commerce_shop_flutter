@@ -132,6 +132,7 @@ class _RegisterState extends State<Register> {
                             children: <Widget>[
                               TextFormField(
                                   controller: _phoneController,
+                                  keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       labelText: "手机号",
                                       hintText: "关联您的手机号码",
@@ -215,37 +216,34 @@ class _RegisterState extends State<Register> {
                                                 "phone": _phoneController.text,
                                                 "verifyCode":
                                                     _checkCodeController.text
-                                              }).then((val) {
+                                              }).then((val) async {
                                             print(
                                                 "验证码：${_checkCodeController.text},验证结果：${val["msg"]}");
                                             if (val != null &&
                                                 val["code"] == 200) {
-                                              setState(() {
-                                                _verufyCodeTrue = true;
+                                              _verufyCodeTrue = true;
+                                              setState(() {});
+                                              var data =
+                                                  await DioUtils.getInstance()
+                                                      .post("register", data: {
+                                                "username":
+                                                    _unameController.text,
+                                                "password": _pwdController.text,
+                                                "phone": _phoneController.text
                                               });
+                                              if (data != null &&
+                                                  data["errorCode"] == 0) {
+                                                Navigator.pushNamed(
+                                                    context, 'login');
+                                              } else {
+                                                Toast.toast(context,
+                                                    msg: data["msg"]);
+                                              }
                                             } else {
                                               Toast.toast(context,
                                                   msg: "验证码错误");
                                             }
                                           });
-                                        }
-                                        // 如果验证码正确
-                                        if (_verufyCodeTrue) {
-                                          var data =
-                                              await DioUtils.getInstance()
-                                                  .post("register", data: {
-                                            "username": _unameController.text,
-                                            "password": _pwdController.text,
-                                            "phone": _phoneController.text
-                                          });
-                                          if (data != null &&
-                                              data["errorCode"] == 0) {
-                                            Navigator.pushNamed(
-                                                context, 'login');
-                                          } else {
-                                            Toast.toast(context,
-                                                msg: data["msg"]);
-                                          }
                                         }
                                       }
                                     },

@@ -1,5 +1,6 @@
 // 用户的Provider数据
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserData with ChangeNotifier {
   bool _isLogin = false;
@@ -10,6 +11,7 @@ class UserData with ChangeNotifier {
 
 // 登录
   login({id, username, phone, address, unpayOrder}) {
+    print("$id,$address,$username");
     _isLogin = true;
     _userInfo = new User(
         id: id,
@@ -42,8 +44,13 @@ class UserData with ChangeNotifier {
   }
 
 // 退出
-  logout() {
+  logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    print("开始退出登录${_userInfo.address}");
     _isLogin = false;
+    _userInfo = {};
+    print("退出登录啦$_userInfo");
     notifyListeners();
   }
 }

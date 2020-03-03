@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:commerce_shop_flutter/config/service_method.dart';
 import 'package:commerce_shop_flutter/components/shop/card_list.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 
@@ -16,7 +15,13 @@ class _MarketState extends State<Market> {
         context: context,
         removeTop: true,
         child: Column(
-          children: <Widget>[TopTitle(title: '认养'), CardList()],
+          children: <Widget>[
+            TopTitle(title: '认养'),
+            Expanded(
+              flex: 1,
+              child: CardList(),
+            )
+          ],
         ),
       ),
     );

@@ -55,11 +55,7 @@ class _PayMentState extends State<PayMent> {
   // 修改用户优惠卷状态
   modifyCouponStatus() {
     DioUtils.getInstance().post("handleCoupon",
-        data: {"couponId": chooseCoupon["id"], "orderId": orderId}).then((val) {
-      if (val != null && val["data"] != null) {
-        setState(() {});
-      }
-    });
+        data: {"couponId": chooseCoupon["couponId"], "orderId": orderId});
   }
 
 // 修改用户的积分
@@ -116,7 +112,6 @@ class _PayMentState extends State<PayMent> {
       goodsId,
       orderUsername,
       status}) async {
-    // final user = Provider.of<UserData>(context);
     await DioUtils.getInstance().post('newOrder', data: {
       "couponId": couponId,
       "orderAmount": orderAmount,
@@ -128,9 +123,6 @@ class _PayMentState extends State<PayMent> {
     }).then((val) {
       if (val != null && val["data"] != null) {
         orderId = val["data"]["id"];
-        // if (val["data"]["status"] == 1) {
-        //   user.addUnpayOrder(user.userInfo.id, orderId);
-        // }
         setState(() {});
       }
     });
@@ -150,7 +142,6 @@ class _PayMentState extends State<PayMent> {
 
   // 开启定时任务
   startTask() {
-    print(orderId);
     DioUtils.getInstance().post('startTask', data: {"orderId": orderId});
   }
 

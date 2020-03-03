@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
-import '../../model/goodsCardModel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
-class GoodsCard extends StatelessWidget {
-  final GoodsCardModel data;
-
+class GoodsCard extends StatefulWidget {
+  final data;
   GoodsCard({Key key, this.data}) : super(key: key);
+  @override
+  _GoodsCardState createState() => _GoodsCardState();
+}
+
+class _GoodsCardState extends State<GoodsCard> {
+  // 保存当前点击商品的id
+  saveGoodId(goodId) {
+    DioUtils.getInstance().post('saveId', data: {"goodId": goodId});
+  }
 
   @override
   Widget build(BuildContext context) {
+    var id = widget.data['id'];
+    var name = widget.data['goodName'];
+    var price = widget.data['price'];
+    var desc = widget.data['descript'];
+    var stock = widget.data['stock'];
+    var imgCover = widget.data['imgCover'];
+    var sales = widget.data['sales'];
+    var expressCost = widget.data['expressCost'];
+    var from = widget.data['from'];
+    var supplierId = widget.data['supplierId'];
     return Container(
       margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -22,13 +40,21 @@ class GoodsCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          this.renderCover(),
-          this.renderGoodsInfo(),
-          this.renderGoodsDetail(),
-        ],
+      child: GestureDetector(
+        onTap: () {
+          saveGoodId(widget.data["id"]);
+          Navigator.pushNamed(context, 'homeGoodsDetail',
+              arguments:
+                  '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","supplierId":$supplierId,"from":"$from"}');
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            this.renderCover(),
+            this.renderGoodsInfo(),
+            this.renderGoodsDetail(),
+          ],
+        ),
       ),
     );
   }
@@ -44,7 +70,7 @@ class GoodsCard extends StatelessWidget {
             topRight: Radius.circular(8),
           ),
           child: Image.network(
-            data.coverUrl,
+            widget.data["imgCover"],
             height: 200,
             fit: BoxFit.fitWidth,
           ),
@@ -80,12 +106,12 @@ class GoodsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            data.userName,
+            widget.data["goodName"],
             textAlign: TextAlign.left,
             style: TextStyle(fontSize: 20.0),
           ),
           Text(
-            '介绍: ${data.description}',
+            '介绍: ${widget.data["descript"]}',
             textAlign: TextAlign.left,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -107,9 +133,15 @@ class GoodsCard extends StatelessWidget {
       )),
       child: Row(
         children: <Widget>[
-          Expanded(child: renderGoodsDetailItem('认养价格', data.price)),
-          Expanded(child: renderGoodsDetailItem('生命周期', data.growth)),
-          Expanded(child: renderGoodsDetailItem('剩余数量', data.stock))
+          Expanded(
+              child: renderGoodsDetailItem(
+                  '认养价格', widget.data["price"].toString())),
+          Expanded(
+              child:
+                  renderGoodsDetailItem('销量', widget.data["sales"].toString())),
+          Expanded(
+              child:
+                  renderGoodsDetailItem('库存', widget.data["stock"].toString()))
         ],
       ),
     );
@@ -117,7 +149,7 @@ class GoodsCard extends StatelessWidget {
 
   // 商品详情
   Widget renderGoodsDetailItem(String type, data) {
-    if (type == '剩余数量') {
+    if (type == '库存') {
       return Container(
         child: Column(
           children: <Widget>[Text(type), Text(data)],

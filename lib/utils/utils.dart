@@ -12,8 +12,10 @@ String parseTime(DateTime time) {
 List parseTimeList(List list) {
   List result = [];
   for (var item in list) {
-    var str = item["createdAt"].toString().substring(0, 10);
-    result.add(str);
+    if (item["source"] == 1) {
+      var str = item["createdAt"].toString().substring(0, 10);
+      result.add(str);
+    }
   }
   return result;
 }

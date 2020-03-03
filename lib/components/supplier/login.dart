@@ -7,12 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 
-class Login extends StatefulWidget {
+class SupplierLogin extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SupplierLoginState createState() => _SupplierLoginState();
 }
 
-class _LoginState extends State<Login> {
+class _SupplierLoginState extends State<SupplierLogin> {
   // 定义 Controller
   TextEditingController _unameController = new TextEditingController();
   TextEditingController _pwdController = new TextEditingController();

@@ -143,6 +143,8 @@ class _NewAddressState extends State<NewAddress> {
                                                   141, 141, 141, 1)),
                                         ),
                                         onTap: () async {
+                                          FocusScope.of(context)
+                                              .requestFocus(FocusNode());
                                           Result result =
                                               await CityPickers.showCityPicker(
                                             context: context,

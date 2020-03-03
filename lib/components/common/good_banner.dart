@@ -38,7 +38,7 @@ class _GoodBannerState extends State<GoodBanner> {
       height: ScreenUtil().setHeight(height),
       child: Swiper(
         itemBuilder: (BuildContext context, int index) {
-          return Image.asset(
+          return Image.network(
             '${imageList[index]}',
             fit: BoxFit.fill,
           );

@@ -110,15 +110,7 @@ const List<MenuListItemViewModel> menuListData = [
         color: Colors.deepOrangeAccent,
       ),
       shouldLogin: false),
-  MenuListItemViewModel(
-      title: '拼团商城',
-      path: 'signIn',
-      icon: Icon(
-        MenuIcons.assemble,
-        size: 29,
-        color: Colors.deepOrangeAccent,
-      ),
-      shouldLogin: false),
+
   MenuListItemViewModel(
       title: '每日签到',
       path: 'signIn',
@@ -156,7 +148,16 @@ const List<MenuListItemViewModel> menuListData = [
       ),
       shouldLogin: true),
   MenuListItemViewModel(
-      title: '客服中心',
+      title: '拼团商城',
+      path: 'signIn',
+      icon: Icon(
+        MenuIcons.assemble,
+        size: 29,
+        color: Colors.deepOrangeAccent,
+      ),
+      shouldLogin: false),
+  MenuListItemViewModel(
+      title: '商家入驻',
       path: 'signIn',
       icon: Icon(
         MenuIcons.customerService,

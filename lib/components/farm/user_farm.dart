@@ -1,32 +1,28 @@
-// 已完成主页
+// 我的土地
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
 
-class FinishOrder extends StatefulWidget {
+class MyFarm extends StatefulWidget {
   @override
-  _FinishOrderState createState() => _FinishOrderState();
+  _MyFarmState createState() => _MyFarmState();
 }
 
-class _FinishOrderState extends State<FinishOrder> {
-  List orderList = [];
+class _MyFarmState extends State<MyFarm> {
+  List farmList = [];
   @override
   void initState() {
     super.initState();
-    getOrders();
+    getMyFarms();
   }
 
   // 获取全部订单
-  getOrders() {
-    DioUtils.getInstance().get("allOrders").then((val) {
+  getMyFarms() {
+    DioUtils.getInstance().get("myFarms").then((val) {
       if (val != null && val["data"] != null) {
-        val["data"].forEach((data) {
-          if (data["status"] == 2) {
-            orderList.add(data);
-          }
-        });
+        farmList = val["data"];
         setState(() {});
       }
     });
@@ -41,19 +37,19 @@ class _FinishOrderState extends State<FinishOrder> {
       child: Container(
         child: ListView(
           children: <Widget>[
-            TopTitle(title: "已完成", showArrow: true),
-            orderLists()
+            TopTitle(title: "我的土地", showArrow: true),
+            myFarm()
           ],
         ),
       ),
     ));
   }
 
-  Widget orderLists() {
+  Widget myFarm() {
     List<Widget> list = [];
-    if (orderList.length > 0) {
-      for (var i = 0; i < orderList.length; i++) {
-        list.add(orderItem(orderList[i]));
+    if (farmList.length > 0) {
+      for (var i = 0; i < farmList.length; i++) {
+        list.add(farmItem(farmList[i]));
       }
       list.add(SizedBox(height: 30));
       return Column(
@@ -61,61 +57,61 @@ class _FinishOrderState extends State<FinishOrder> {
       );
     } else {
       return Container(
-        height: 500,
         alignment: Alignment.center,
-        child: Text("暂无订单"),
+        height: 500,
+        child: Text("暂无租地"),
       );
     }
   }
 
-  Widget orderItem(data) {
+  Widget farmItem(data) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20), color: Colors.white),
-      child: Column(children: goodList(data, data["Order_Details"])),
+      child: Column(children: farmInfo(data, data["Farm_Order_Details"])),
     );
   }
 
-  goodList(orderInfo, orderDetail) {
+  farmInfo(orderInfo, orderDetail) {
     List<Widget> list = [];
     for (int i = 0; i < orderDetail.length; i++) {
-      list.add(goodItem(orderInfo, orderDetail[i], orderDetail.length, i));
+      list.add(farmItemInfo(orderInfo, orderDetail[i], orderDetail.length, i));
     }
     return list;
   }
 
-  Widget goodItem(orderInfo, orderDetail, len, index) {
+  Widget farmItemInfo(orderInfo, orderDetail, len, index) {
     return Container(
+      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
       height: len > 1 ? double.parse("${len * 60}") : 150,
       child: Row(
         children: <Widget>[
           Image.network(
-            orderDetail["good_cover"],
+            orderDetail["crop_cover"],
             width: 140,
             height: 100,
             fit: BoxFit.fill,
           ),
-          SizedBox(width: 40),
+          SizedBox(width: 50),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Row(
                 children: <Widget>[
                   Text(
-                    orderDetail["good_name"],
+                    orderDetail["crop_name"],
                     style: TextStyle(fontSize: 20),
                   ),
                   Text(
-                    "x${orderDetail["good_count"]}",
+                    "x${orderDetail["crop_count"]}",
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(
-                    width: 20,
+                    width: 30,
                   ),
                   Text(
-                    "￥${orderDetail["good_price"]}",
+                    "￥${orderDetail["crop_price"]}",
                     style: TextStyle(fontSize: 20, color: Colors.red),
                   ),
                 ],

@@ -8,43 +8,64 @@ class UserWealth extends StatefulWidget {
 }
 
 class _UserWealthState extends State<UserWealth> {
+  List funList = [
+    ListItem(
+      title: "我的地块",
+      onChanged: () {},
+      iconName: "0xe62a",
+      jumpRoute: "myFarm",
+    ),
+    ListItem(
+      title: "我的积分",
+      onChanged: () {},
+      iconName: "0xe610",
+      jumpRoute: "integralDetail",
+    ),
+    ListItem(
+      title: "优惠卷",
+      onChanged: () {},
+      iconName: "0xe60e",
+      jumpRoute: "coupon",
+    ),
+    ListItem(
+      title: "收货地址",
+      onChanged: () {},
+      iconName: "0xe778",
+      jumpRoute: "location",
+    ),
+    ListItem(
+      title: "修改密码",
+      onChanged: () {},
+      iconName: "0xe611",
+      jumpRoute: "password",
+    ),
+    ListItem(
+      title: "设置",
+      onChanged: () {},
+      iconName: "0xe733",
+      jumpRoute: "setting",
+    ),
+  ];
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: ScreenUtil().setWidth(700),
-        // height: ScreenUtil().setHeight(120),
-        padding: EdgeInsets.all(15.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0), color: Colors.white),
-        child: Row(
-          children: <Widget>[
-            ListItem(
-              title: "我的积分",
-              onChanged: () {},
-              iconName: "0xe684",
-              jumpRoute: "integralDetail",
-            ),
-            ListItem(
-              title: "优惠卷",
-              onChanged: () {},
-              iconName: "0xe60e",
-              jumpRoute: "coupon",
-            ),
-            ListItem(
-              title: "收货地址",
-              onChanged: () {},
-              iconName: "0xe778",
-              jumpRoute: "location",
-            ),
-            ListItem(
-              title: "设置",
-              onChanged: () {},
-              iconName: "0xe733",
-              jumpRoute: "setting",
-            ),
-          ],
+    return Container(
+      width: ScreenUtil.getInstance().setWidth(750),
+      height: ScreenUtil.getInstance().setHeight(560),
+      margin: EdgeInsets.fromLTRB(20, 20, 15, 0),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(15)),
+      child: GridView.builder(
+        itemCount: funList.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
+          childAspectRatio: 1,
         ),
+        physics: NeverScrollableScrollPhysics(), // 禁止回弹
+        itemBuilder: (context, index) {
+          return funList[index];
+        },
       ),
     );
   }

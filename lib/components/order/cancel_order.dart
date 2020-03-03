@@ -97,7 +97,7 @@ class _CancelOrderState extends State<CancelOrder> {
             height: 100,
             fit: BoxFit.fill,
           ),
-          SizedBox(width: 50),
+          SizedBox(width: 40),
           Stack(
             children: <Widget>[
               Column(
@@ -109,8 +109,12 @@ class _CancelOrderState extends State<CancelOrder> {
                         orderDetail["good_name"],
                         style: TextStyle(fontSize: 20),
                       ),
+                      Text(
+                        "x${orderDetail["good_count"]}",
+                        style: TextStyle(fontSize: 20),
+                      ),
                       SizedBox(
-                        width: 30,
+                        width: 20,
                       ),
                       Text(
                         "￥${orderDetail["good_price"]}",
