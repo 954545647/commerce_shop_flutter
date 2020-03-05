@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:commerce_shop_flutter/config/config.dart';
 
 // 封装通用接口
-Future getData(url, {data}) async {
+Future getData(url, {data, String baseUrl: BASEURL2}) async {
   try {
     Response response;
     Dio dio = new Dio();
-    url = BASEURL2 + url;
+    url = baseUrl + url;
     if (data == null) {
       // get请求
       response = await dio.get(url);

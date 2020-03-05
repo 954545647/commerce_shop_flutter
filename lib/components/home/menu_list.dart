@@ -158,7 +158,7 @@ const List<MenuListItemViewModel> menuListData = [
       shouldLogin: false),
   MenuListItemViewModel(
       title: '商家入驻',
-      path: 'signIn',
+      path: 'sLogin',
       icon: Icon(
         MenuIcons.customerService,
         size: 29,

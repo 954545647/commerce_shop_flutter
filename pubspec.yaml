@@ -38,13 +38,18 @@ dependencies:
   # 本地存储
   shared_preferences: "^0.5.6"
   # 城市选择
-  city_pickers: ^0.0.1
+  city_pickers: ^0.1.30
   # 视频播放
   video_player: ^0.10.8+1
   # 视频播放（UI）
   chewie: ^0.9.8+1
   # 直播流
   flutter_ijkplayer: ^0.3.5+1
+  # 图片上传
+  image_picker: "0.6.1"
+  # multi_image_picker: ^4.6.1
+  # 文件路径
+  path_provider: ^1.6.5
 
 dev_dependencies:
   flutter_test:

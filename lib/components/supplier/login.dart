@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:commerce_shop_flutter/provider/userData.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 
@@ -24,26 +20,11 @@ class _SupplierLoginState extends State<SupplierLogin> {
     super.initState();
   }
 
-  // 获取用户地址
-  getUserAddress() async {
-    await DioUtils.getInstance().get('address').then((val) {
-      if (val != null && val["data"] != null) {
-        if (val["data"].length == 0) {
-          userAddress = "";
-        } else {
-          userAddress = val["data"][0]["address"];
-        }
-        setState(() {});
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
-    final user = Provider.of<UserData>(context);
     return Material(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -66,7 +47,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
               left: 5.0,
               top: 90.0,
               child: Text(
-                'Login',
+                '商家登录',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.0,
@@ -122,7 +103,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                       ),
                                     ),
                                     onTap: () {
-                                      Navigator.pushNamed(context, 'register');
+                                      Navigator.pushNamed(context, 'sRegister');
                                     },
                                   ),
                                   GestureDetector(
@@ -139,38 +120,16 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                             size: 30, color: Colors.white),
                                       ),
                                       onTap: () async {
-                                        /*
-                                        Form.of(context).validate(); // 不行
-                                        这里的 context 是 Login 的 context
-                                        而Form.of(context)是根据所指定context向根去查找
-                                        而 FormState 是在 Login 的子树中，所以查找不到
-                                      */
                                         if ((_formKey.currentState as FormState)
                                             .validate()) {
                                           var data =
                                               await DioUtils.getInstance()
-                                                  .post('login', data: {
+                                                  .post('slogin', data: {
                                             "username": _unameController.text,
                                             "password": _pwdController.text
                                           });
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
-                                              var res = data["data"];
-
-                                              // 将token保存到本地缓存中
-                                              SharedPreferences prefs =
-                                                  await SharedPreferences
-                                                      .getInstance();
-                                              prefs.setString(
-                                                  "token", res["token"]);
-                                              await getUserAddress();
-                                              // 将用户信息注册到全局上
-                                              user.login(
-                                                  id: res["id"],
-                                                  username: res["username"],
-                                                  phone: res["phone"],
-                                                  address: userAddress,
-                                                  unpayOrder: []);
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               Navigator.pushNamed(

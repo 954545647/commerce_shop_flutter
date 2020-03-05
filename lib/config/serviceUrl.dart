@@ -43,9 +43,13 @@ const urlList = {
   // 商家接口
   "getAllSuppliers": "supplier/getAll",
   "getSupplierById": "supplier/getSupplierById",
+  "sregister": "supplier/register",
+  "slogin": "supplier/login",
   // 农场接口
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
   "newFarmOrder": "farm/newOrder",
   "myFarms": "farm/myFarm",
+  // 通用接口
+  "upload": "supplier/upload"
 };

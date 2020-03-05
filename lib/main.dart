@@ -30,8 +30,9 @@ import 'package:commerce_shop_flutter/components/farm/farm_detail.dart';
 import 'package:commerce_shop_flutter/components/farm/farm_order.dart';
 import 'package:commerce_shop_flutter/components/farm/user_farm.dart';
 // import 'package:commerce_shop_flutter/components/supplier/index.dart';
-// import 'package:commerce_shop_flutter/components/supplier/login.dart';
+import 'package:commerce_shop_flutter/components/supplier/login.dart';
 import 'package:commerce_shop_flutter/components/supplier/register.dart';
+import 'package:commerce_shop_flutter/components/supplier/nextStep.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
@@ -89,6 +90,9 @@ class MyApp extends StatelessWidget {
           "farmOrder": (context, {arguments}) => FarmOrder(),
           "monitor": (context, {arguments}) => Monitor(),
           "myFarm": (context, {arguments}) => MyFarm(),
+          "sLogin": (context, {arguments}) => SupplierLogin(),
+          "sRegister": (context, {arguments}) => SupplierRegister(),
+          "nextStep": (context, {arguments}) => NextStep(),
         },
         // initialRoute: '/welcome',
         home: Welcome());
