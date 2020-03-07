@@ -30,6 +30,7 @@ const urlList = {
   "getGoodInfo": "goods/getInfo",
   "saveId": "goods/saveId",
   "getId": "goods/getId",
+  "newGood": "goods/new",
   // 订单接口
   "newOrder": "order/new",
   "startTask": "order/startTask",
@@ -49,7 +50,10 @@ const urlList = {
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
   "newFarmOrder": "farm/newOrder",
-  "myFarms": "farm/myFarm",
+  "myFarms": "farm/userFarmOrder",
+  "newFarm": "farm/newFarm",
+  "supplierFarm": "farm/supplierFarm",
+  "newCrop": "farm/newCrop",
   // 通用接口
   "upload": "supplier/upload"
 };

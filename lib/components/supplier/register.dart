@@ -177,57 +177,51 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                       : "验证码为6位数字";
                                 }),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    GestureDetector(
-                                      child: Container(
-                                        height: ScreenUtil().setHeight(100),
-                                        width: ScreenUtil().setWidth(100),
-                                        margin: EdgeInsets.only(top: 30.0),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(60.0),
-                                            color:
-                                                Color.fromRGBO(208, 1, 27, 1)),
-                                        child: Icon(Icons.keyboard_arrow_right,
-                                            size: 30, color: Colors.white),
-                                      ),
-                                      onTap: () async {
-                                        if ((_formKey.currentState as FormState)
-                                            .validate()) {
-                                          if (!_verufyCodeTrue) {
-                                            // 先校验验证码
-                                            getData("user/checkVerifyCode",
-                                                data: {
-                                                  "phone":
-                                                      _phoneController.text,
-                                                  "verifyCode":
-                                                      _checkCodeController.text
-                                                }).then((val) async {
-                                              print(
-                                                  "验证码：${_checkCodeController.text},验证结果：${val["msg"]}");
-                                              if (val != null &&
-                                                  val["code"] == 200) {
-                                                _verufyCodeTrue = true;
-                                                setState(() {});
-                                              }
-                                            });
-                                          }
-                                          Navigator.pushNamed(
-                                              context, "nextStep",
-                                              arguments: {
-                                                "username":
-                                                    _unameController.text,
-                                                "password": _pwdController.text,
-                                                "phone": _phoneController.text
-                                              });
-                                        }
-                                      },
-                                    )
-                                  ],
+                                SizedBox(
+                                  width: 100,
                                 ),
+                                GestureDetector(
+                                  child: Container(
+                                    height: ScreenUtil().setHeight(100),
+                                    width: ScreenUtil().setWidth(100),
+                                    margin: EdgeInsets.only(top: 30.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(60.0),
+                                        color: Color.fromRGBO(208, 1, 27, 1)),
+                                    child: Icon(Icons.keyboard_arrow_right,
+                                        size: 30, color: Colors.white),
+                                  ),
+                                  onTap: () async {
+                                    if ((_formKey.currentState as FormState)
+                                        .validate()) {
+                                      if (!_verufyCodeTrue) {
+                                        // 先校验验证码
+                                        getData("user/checkVerifyCode", data: {
+                                          "phone": _phoneController.text,
+                                          "verifyCode":
+                                              _checkCodeController.text
+                                        }).then((val) async {
+                                          print(
+                                              "验证码：${_checkCodeController.text},验证结果：${val["msg"]}");
+                                          if (val != null &&
+                                              val["code"] == 200) {
+                                            _verufyCodeTrue = true;
+                                            setState(() {});
+                                          }
+                                        });
+                                      }
+                                      Navigator.pushNamed(context, "nextStep",
+                                          arguments: {
+                                            "username": _unameController.text,
+                                            "password": _pwdController.text,
+                                            "phone": _phoneController.text
+                                          });
+                                    }
+                                  },
+                                )
                               ],
                             )
                           ],
@@ -251,7 +245,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                         ))),
               ),
               SizedBox(
-                height: 40,
+                height: 80,
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class HotGoods extends StatefulWidget {
   @override
@@ -94,9 +95,8 @@ class _HotGoodsState extends State<HotGoods> {
                 bottom: BorderSide(color: Color.fromRGBO(242, 242, 242, 1)))),
         padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
         child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Image.network(imgCover.toString(),
+            Image.network("${Config.apiHost}$imgCover",
                 width: ScreenUtil().setWidth(300),
                 height: ScreenUtil().setHeight(300),
                 fit: BoxFit.cover),

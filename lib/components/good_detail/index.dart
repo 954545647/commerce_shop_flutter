@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
 import 'package:commerce_shop_flutter/utils/diaLog.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class GoodDetails extends StatefulWidget {
   @override
@@ -250,7 +251,11 @@ class _GoodDetailsState extends State<GoodDetails> {
 
 //  商品图片展示
   Widget goodBanner(argument) {
-    return Image.network(argument["imgCover"]);
+    return Image.network(
+      "${Config.apiHost}${argument["imgCover"]}",
+      height: 300,
+      fit: BoxFit.fill,
+    );
   }
 
 // 商品规格（尺码+地址）

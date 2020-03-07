@@ -44,3 +44,36 @@ void payOrder(BuildContext context, String title, callback) {
             ],
           ));
 }
+
+void commonDialog(
+    {BuildContext context,
+    String title,
+    String detail = "",
+    String route,
+    Function method,
+    bool needSkip = true}) {
+  showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+            title: Text(title),
+            content: Text(detail),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("取消"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text("确定"),
+                onPressed: () {
+                  method();
+                  Navigator.of(context).pop();
+                  if (needSkip) {
+                    Navigator.pushNamed(context, route);
+                  }
+                },
+              ),
+            ],
+          ));
+}

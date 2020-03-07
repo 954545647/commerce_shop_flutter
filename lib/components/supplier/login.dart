@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
 
 class SupplierLogin extends StatefulWidget {
   @override
@@ -20,11 +22,20 @@ class _SupplierLoginState extends State<SupplierLogin> {
     super.initState();
   }
 
+  // 清空表单
+  void reset() {
+    _unameController.text = "";
+    _pwdController.text = "";
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
+    final supplier = Provider.of<SupplierData>(context);
+
     return Material(
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
@@ -41,7 +52,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                       size: 30.0,
                     ),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.pushNamed(context, "index");
                     })),
             Positioned(
               left: 5.0,
@@ -130,10 +141,20 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                           });
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
+                                              var res = data["data"];
+                                              // 关闭键盘
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
+                                              // 注册商家全局信息
+                                              supplier.login(
+                                                id: res["id"],
+                                              );
+                                              // 清空表单
+                                              reset();
+                                              // 跳转路由
                                               Navigator.pushNamed(
-                                                  context, 'index');
+                                                  context, 'supplierCenter',
+                                                  arguments: {"id": res["id"]});
                                             } else {
                                               Toast.toast(context,
                                                   msg: data["msg"]);

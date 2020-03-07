@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/diaLog.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class Farm extends StatelessWidget {
   final farmInfo;
@@ -27,7 +28,8 @@ class Farm extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
-                        image: NetworkImage(farmDetail["imgCover"]),
+                        image: NetworkImage(
+                            "${Config.apiHost}${farmDetail["imgCover"]}"),
                         fit: BoxFit.fill))),
             SizedBox(height: 10),
             Text(

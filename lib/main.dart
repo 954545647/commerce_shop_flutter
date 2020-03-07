@@ -29,21 +29,28 @@ import 'package:commerce_shop_flutter/components/order/cancel_order.dart';
 import 'package:commerce_shop_flutter/components/farm/farm_detail.dart';
 import 'package:commerce_shop_flutter/components/farm/farm_order.dart';
 import 'package:commerce_shop_flutter/components/farm/user_farm.dart';
-// import 'package:commerce_shop_flutter/components/supplier/index.dart';
+import 'package:commerce_shop_flutter/components/supplier/index.dart';
 import 'package:commerce_shop_flutter/components/supplier/login.dart';
 import 'package:commerce_shop_flutter/components/supplier/register.dart';
 import 'package:commerce_shop_flutter/components/supplier/nextStep.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/publish_good.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/publish_land.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/publish_crop.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
 
 void main() {
+  Config.env = Env.DEV; //设定运行环境的环境变量
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: UserData()), // 用户数据
       ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
       ChangeNotifierProvider.value(value: CartData()), // 购物车数据
+      ChangeNotifierProvider.value(value: SupplierData()), // 商家数据
     ],
     child: MyApp(),
   ));
@@ -93,6 +100,10 @@ class MyApp extends StatelessWidget {
           "sLogin": (context, {arguments}) => SupplierLogin(),
           "sRegister": (context, {arguments}) => SupplierRegister(),
           "nextStep": (context, {arguments}) => NextStep(),
+          "supplierCenter": (context, {arguments}) => SupplierCenter(),
+          "publishGood": (context, {arguments}) => PublishGood(),
+          "publishLand": (context, {arguments}) => PublishLand(),
+          "publishCrop": (context, {arguments}) => PublishCrop(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

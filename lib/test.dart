@@ -1,4 +1,6 @@
 void main(List<String> args) {
-  String str = "";
-  print(str.length);
+  var str;
+  if (str == null) {
+    print("object");
+  }
 }

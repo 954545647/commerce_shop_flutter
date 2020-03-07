@@ -1,6 +1,7 @@
 // 通用标题
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class OrderItem extends StatelessWidget {
   final data;
@@ -23,7 +24,7 @@ class OrderItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Image.network(
-            imgCover,
+            "${Config.apiHost}$imgCover",
             fit: BoxFit.fill,
             width: 150,
             height: 100,

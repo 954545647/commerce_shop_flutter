@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class FarmOrder extends StatefulWidget {
   @override
@@ -245,7 +246,7 @@ class _FarmOrderState extends State<FarmOrder> {
       child: Column(
         children: <Widget>[
           Image.network(
-            data["imgCover"],
+            "${Config.apiHost}${data["imgCover"]}",
             width: 80,
             height: 50,
             fit: BoxFit.contain,

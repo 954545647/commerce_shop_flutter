@@ -30,7 +30,7 @@ class _NextStepState extends State<NextStep> {
     _idCardController.dispose();
   }
 
-  enter(data) async {
+  Future enter(data) async {
     await DioUtils.getInstance().post("newSupplier", data: {
       "username": data["username"],
       "password": data["password"],
@@ -38,8 +38,6 @@ class _NextStepState extends State<NextStep> {
       "idNum": _idCardController.text,
       "frontImg": serverFrontImg,
       "backImg": serverBackImg
-    }).then((val) {
-      print(val);
     });
   }
 
@@ -146,7 +144,7 @@ class _NextStepState extends State<NextStep> {
                       "backImg": serverBackImg
                     }).then((val) {
                       if (val != null && val["data"] != null) {
-                        Navigator.pushNamed(context, "index");
+                        Navigator.pushNamed(context, "sLogin");
                       } else {
                         Toast.toast(context, msg: val["msg"]);
                       }

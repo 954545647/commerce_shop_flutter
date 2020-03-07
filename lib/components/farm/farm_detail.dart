@@ -4,6 +4,7 @@ import 'package:commerce_shop_flutter/config/style.dart' as config;
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 // import 'package:commerce_shop_flutter/utils/dio.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class FarmDetail extends StatefulWidget {
   @override
@@ -132,7 +133,7 @@ class _FarmDetailState extends State<FarmDetail> {
                       width: ScreenUtil().setWidth(750),
                       height: ScreenUtil().setHeight(450),
                       child: Image.network(
-                        arguments["imgCover"],
+                        "${Config.apiHost}${arguments["imgCover"]}",
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -378,7 +379,7 @@ class _FarmDetailState extends State<FarmDetail> {
       child: Column(
         children: <Widget>[
           Image.network(
-            data["imgCover"],
+            "${Config.apiHost}${data["imgCover"]}",
             width: ScreenUtil().setWidth(160),
             height: ScreenUtil().setHeight(140),
             fit: BoxFit.cover,

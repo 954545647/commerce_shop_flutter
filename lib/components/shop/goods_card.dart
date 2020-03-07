@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class GoodsCard extends StatefulWidget {
   final data;
@@ -70,9 +71,9 @@ class _GoodsCardState extends State<GoodsCard> {
             topRight: Radius.circular(8),
           ),
           child: Image.network(
-            widget.data["imgCover"],
+            "${Config.apiHost}${widget.data["imgCover"]}",
             height: 200,
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.fill,
           ),
         ),
         Positioned(
