@@ -20,7 +20,7 @@ class _MonitorState extends State<Monitor> {
   // IjkMediaController controller = IjkMediaController();
   // String tmpt1 = "rtmp://202.69.69.180:443/webcast/bshdlive-pccaidi";
   // String tmpt2 = "rtmp://202.69.69.180:443/webcast/bshdlive-pc";
-  // bool loading = true;
+
   @override
   void initState() {
     super.initState();
@@ -71,23 +71,42 @@ class _MonitorState extends State<Monitor> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: ListView(
-          children: <Widget>[
-            // 标题
-            TopTitle(title: '实时监控', showArrow: true),
-            // Container(
-            //   height: 200, // 设置高度
-            //   child: IjkPlayer(mediaController: controller),
-            // ),
-            farmList(),
-          ],
+    try {
+      return Scaffold(
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView(
+            children: <Widget>[
+              // 标题
+              TopTitle(title: '实时监控', showArrow: true),
+              // Container(
+              //   height: 200, // 设置高度
+              //   child: IjkPlayer(mediaController: controller),
+              // ),
+              farmList(),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      return Scaffold(
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: ListView(
+            children: <Widget>[
+              // 标题
+              TopTitle(title: '实时监控', showArrow: true),
+              // Container(
+              //   height: 200, // 设置高度
+              //   child: IjkPlayer(mediaController: controller),
+              // ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget farmList() {
@@ -100,41 +119,48 @@ class _MonitorState extends State<Monitor> {
 
   Widget farmItem(data, index) {
     var cur = data["farmInfo"];
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, "farmDetail", arguments: cur);
-      },
-      child: Container(
-        height: 300,
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-              alignment: Alignment.center,
-              height: 30,
-              child: Text(
-                cur["farmName"],
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    try {
+      return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(context, "farmDetail", arguments: cur);
+        },
+        child: Container(
+          height: 300,
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                alignment: Alignment.center,
+                height: 30,
+                child: Text(
+                  cur["farmName"],
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "farmDetail", arguments: cur);
-              },
-              child: Container(
-                height: 200,
-                child: Chewie(
-                    controller: ChewieController(
-                  videoPlayerController: monitorList[index],
-                  aspectRatio: 2,
-                  autoPlay: true,
-                  looping: false,
-                )),
-              ),
-            )
-          ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, "farmDetail", arguments: cur);
+                },
+                child: Container(
+                  height: 200,
+                  child: Chewie(
+                      controller: ChewieController(
+                    videoPlayerController: monitorList[index],
+                    aspectRatio: 2,
+                    autoPlay: true,
+                    looping: false,
+                  )),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      return Container(
+        height: 100,
+        child: Text("视频地址出错"),
+      );
+    }
   }
 }

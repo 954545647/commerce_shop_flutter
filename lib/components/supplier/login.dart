@@ -150,7 +150,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                                 id: res["id"],
                                               );
                                               // 清空表单
-                                              reset();
+                                              // reset();
                                               // 跳转路由
                                               Navigator.pushNamed(
                                                   context, 'supplierCenter',

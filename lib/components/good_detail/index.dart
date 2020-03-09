@@ -85,6 +85,7 @@ class _GoodDetailsState extends State<GoodDetails> {
         setState(() {});
       }
     });
+    print(supplierInfo);
   }
 
   @override

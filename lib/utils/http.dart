@@ -8,6 +8,7 @@ Future getData(url, {data, String baseUrl: BASEURL2}) async {
     Response response;
     Dio dio = new Dio();
     url = baseUrl + url;
+    print(url);
     if (data == null) {
       // get请求
       response = await dio.get(url);

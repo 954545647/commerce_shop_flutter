@@ -217,8 +217,6 @@ class _RegisterState extends State<Register> {
                                                 "verifyCode":
                                                     _checkCodeController.text
                                               }).then((val) async {
-                                            print(
-                                                "验证码：${_checkCodeController.text},验证结果：${val["msg"]}");
                                             if (val != null &&
                                                 val["code"] == 200) {
                                               _verufyCodeTrue = true;
@@ -241,7 +239,7 @@ class _RegisterState extends State<Register> {
                                               }
                                             } else {
                                               Toast.toast(context,
-                                                  msg: "验证码错误");
+                                                  msg: val["msg"]);
                                             }
                                           });
                                         }

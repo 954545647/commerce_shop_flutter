@@ -105,6 +105,7 @@ class _FarmDetailState extends State<FarmDetail> {
     orderInfo["total"] = total;
     orderInfo["areaNum"] = areaNum;
     orderInfo["farmId"] = data["id"];
+    orderInfo["supplierId"] = data["supplierId"];
     setState(() {});
   }
 

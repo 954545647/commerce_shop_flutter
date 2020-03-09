@@ -148,8 +148,8 @@ const List<MenuListItemViewModel> menuListData = [
       ),
       shouldLogin: true),
   MenuListItemViewModel(
-      title: '拼团商城',
-      path: 'signIn',
+      title: '客服中心',
+      path: 'service',
       icon: Icon(
         MenuIcons.assemble,
         size: 29,

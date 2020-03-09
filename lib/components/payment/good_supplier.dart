@@ -103,7 +103,7 @@ class _GoodSupplierState extends State<GoodSupplier> {
                 SizedBox(
                   width: 10,
                 ),
-                Text(supplierData["supplierName"])
+                Text(supplierData["username"])
               ],
             ),
           ),

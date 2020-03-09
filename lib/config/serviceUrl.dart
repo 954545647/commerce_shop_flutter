@@ -18,6 +18,7 @@ const urlList = {
   "newAddress": "user/newAddress",
   "changeIntegral": "user/changeIntegral",
   "getUserSignDays": "user/getUserSignDays",
+  "myFarms": "user/farmOrder",
   "getUserInfo": "user/getUserInfo",
   // 优惠卷接口
   "getAlls": "coupon/getAlls",
@@ -46,13 +47,14 @@ const urlList = {
   "getSupplierById": "supplier/getSupplierById",
   "sregister": "supplier/register",
   "slogin": "supplier/login",
+  "supplierFarm": "supplier/farms",
+  "supplierGood": "supplier/goods",
+  "supplierOrders": "supplier/orders",
   // 农场接口
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
   "newFarmOrder": "farm/newOrder",
-  "myFarms": "farm/userFarmOrder",
   "newFarm": "farm/newFarm",
-  "supplierFarm": "farm/supplierFarm",
   "newCrop": "farm/newCrop",
   // 通用接口
   "upload": "supplier/upload"

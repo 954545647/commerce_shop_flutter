@@ -50,6 +50,8 @@ dependencies:
   # multi_image_picker: ^4.6.1
   # 文件路径
   path_provider: ^1.6.5
+  # 通信
+  socket_io_client: ^0.9.8
 
 dev_dependencies:
   flutter_test:

@@ -146,6 +146,7 @@ class _PublishGoodState extends State<PublishGood> {
           TopTitle(
             title: "发布商品",
             showArrow: true,
+            ifRefresh: true,
           ),
           Container(
             decoration: BoxDecoration(

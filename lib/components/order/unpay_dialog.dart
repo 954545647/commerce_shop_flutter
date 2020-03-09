@@ -3,6 +3,7 @@ import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class UnpayDialog extends StatelessWidget {
   final String title;
@@ -147,7 +148,7 @@ class UnpayDialog extends StatelessWidget {
           Row(
             children: <Widget>[
               Image.network(
-                data["good_cover"],
+                "${Config.apiHost}${data["good_cover"]}",
                 width: 120,
                 height: 80,
                 fit: BoxFit.fill,

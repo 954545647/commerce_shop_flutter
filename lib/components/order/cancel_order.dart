@@ -4,6 +4,7 @@ import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class CancelOrder extends StatefulWidget {
   @override
@@ -92,7 +93,7 @@ class _CancelOrderState extends State<CancelOrder> {
       child: Row(
         children: <Widget>[
           Image.network(
-            orderDetail["good_cover"],
+            "${Config.apiHost}${orderDetail["good_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,

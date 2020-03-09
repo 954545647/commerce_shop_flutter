@@ -36,24 +36,28 @@ import 'package:commerce_shop_flutter/components/supplier/nextStep.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_good.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_land.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_crop.dart';
+import 'package:commerce_shop_flutter/components/chitchat/service.dart';
 import "package:commerce_shop_flutter/config/config.dart";
+import "package:commerce_shop_flutter/config/global.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
 import 'package:commerce_shop_flutter/provider/goodData.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
+// import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 void main() {
   Config.env = Env.DEV; //设定运行环境的环境变量
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider.value(value: UserData()), // 用户数据
-      ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
-      ChangeNotifierProvider.value(value: CartData()), // 购物车数据
-      ChangeNotifierProvider.value(value: SupplierData()), // 商家数据
-    ],
-    child: MyApp(),
-  ));
+  Global.init().then((e) => runApp(MultiProvider(
+        providers: [
+          ChangeNotifierProvider.value(value: UserData()), // 用户数据
+          ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
+          ChangeNotifierProvider.value(value: CartData()), // 购物车数据
+          ChangeNotifierProvider.value(value: SupplierData()), // 商家数据
+          Provider<MySocketIO>.value(value: new MySocketIO(e["socketIO"])),
+        ],
+        child: MyApp(),
+      )));
 }
 
 class MyApp extends StatelessWidget {
@@ -104,6 +108,7 @@ class MyApp extends StatelessWidget {
           "publishGood": (context, {arguments}) => PublishGood(),
           "publishLand": (context, {arguments}) => PublishLand(),
           "publishCrop": (context, {arguments}) => PublishCrop(),
+          "service": (context, {arguments}) => Service(),
         },
         // initialRoute: '/welcome',
         home: Welcome());

@@ -198,6 +198,9 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                     if ((_formKey.currentState as FormState)
                                         .validate()) {
                                       if (!_verufyCodeTrue) {
+                                        print(_phoneController.text);
+                                        print(_checkCodeController.text);
+                                        print("hahhaha");
                                         // 先校验验证码
                                         getData("user/checkVerifyCode", data: {
                                           "phone": _phoneController.text,

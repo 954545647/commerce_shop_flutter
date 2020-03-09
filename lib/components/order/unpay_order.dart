@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/order/unpay_dialog.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class UnpayOrder extends StatefulWidget {
   @override
@@ -103,7 +104,7 @@ class _UnpayOrderState extends State<UnpayOrder> {
         child: Row(
           children: <Widget>[
             Image.network(
-              orderDetail["good_cover"],
+              "${Config.apiHost}${orderDetail["good_cover"]}",
               width: 140,
               height: 100,
               fit: BoxFit.fill,

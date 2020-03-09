@@ -144,6 +144,7 @@ class _NextStepState extends State<NextStep> {
                       "backImg": serverBackImg
                     }).then((val) {
                       if (val != null && val["data"] != null) {
+                        Toast.toast(context, msg: "入驻成功");
                         Navigator.pushNamed(context, "sLogin");
                       } else {
                         Toast.toast(context, msg: val["msg"]);

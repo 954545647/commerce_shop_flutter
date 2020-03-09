@@ -52,6 +52,7 @@ class _FarmOrderState extends State<FarmOrder> {
       "cropsInfos": handleCropInfos(orderInfos["crops"]),
       "address": user.userInfo.address,
       "orderUsername": user.userInfo.username,
+      "supplierId": orderInfos["supplierId"]
     });
   }
 

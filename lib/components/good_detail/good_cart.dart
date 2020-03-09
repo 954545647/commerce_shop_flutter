@@ -11,6 +11,7 @@ import 'package:commerce_shop_flutter/components/common/input/pay_password.dart'
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
+import "package:commerce_shop_flutter/config/config.dart";
 
 class MyCart extends StatefulWidget {
   @override
@@ -305,7 +306,7 @@ class _MyCartState extends State<MyCart> {
           ),
           SizedBox(width: 20),
           Image.network(
-            imgCover,
+            "${Config.apiHost}$imgCover",
             fit: BoxFit.fill,
             width: 150,
             height: 120,

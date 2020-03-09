@@ -1,26 +1,47 @@
 // 商品管理
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class GoodManage extends StatefulWidget {
+  GoodManage(this.info);
+  final info;
   @override
   _GoodManageState createState() => _GoodManageState();
 }
 
 class _GoodManageState extends State<GoodManage> {
-  List orderList = []; // 全部订单
-  List unpayOrders = []; // 未支付订单
-  List pastOrders = []; // 过期订单
-  List finishOrders = []; // 完成订单
+  int hasBeenOn = 0; // 已经上架
+  int notBeenOn = 0; // 下架
+  int goodCount = 0; // 商品数量
   @override
   void initState() {
     super.initState();
-    getOrders();
+    getAllGoods();
   }
 
   // 获取全部订单
-  getOrders() {}
+  getAllGoods() {
+    if (widget.info != null && widget.info["id"] != null) {
+      DioUtils.getInstance()
+          .post("supplierGood", data: {"id": widget.info["id"]}).then((val) {
+        if (val != null && val["data"] != null) {
+          hasBeenOn = 0;
+          notBeenOn = 0;
+          goodCount = 0;
+          val["data"].forEach((item) {
+            if (item["status"] == 0) {
+              notBeenOn++;
+            } else {
+              hasBeenOn++;
+            }
+            goodCount++;
+          });
+          setState(() {});
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +79,8 @@ class _GoodManageState extends State<GoodManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Text(hasBeenOn.toString(),
+                            style: TextStyle(fontSize: 18.0)),
                         Text(
                           '出售中',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -72,7 +94,8 @@ class _GoodManageState extends State<GoodManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Text(notBeenOn.toString(),
+                            style: TextStyle(fontSize: 18.0)),
                         Text(
                           '已下架',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -86,7 +109,8 @@ class _GoodManageState extends State<GoodManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Text(goodCount.toString(),
+                            style: TextStyle(fontSize: 18.0)),
                         Text(
                           '全部商品',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -99,7 +123,11 @@ class _GoodManageState extends State<GoodManage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "publishGood");
+                      Navigator.pushNamed(context, "publishGood").then((val) {
+                        if (val) {
+                          getAllGoods();
+                        }
+                      });
                     },
                     child: Container(
                       decoration: BoxDecoration(
