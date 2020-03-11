@@ -15,7 +15,7 @@ void loginDialog(BuildContext context, String title) {
               new FlatButton(
                 child: new Text("确定"),
                 onPressed: () {
-                  Navigator.pushNamed(context, "login");
+                  Navigator.popAndPushNamed(context, "login");
                 },
               ),
             ],
@@ -51,12 +51,18 @@ void commonDialog(
     String detail = "",
     String route,
     Function method,
+    bool shouldExecute = true,
     bool needSkip = true}) {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
             title: Text(title),
-            content: Text(detail),
+            content: detail != ""
+                ? Text(detail)
+                : Container(
+                    width: 0,
+                    height: 0,
+                  ),
             actions: <Widget>[
               new FlatButton(
                 child: new Text("取消"),
@@ -67,7 +73,9 @@ void commonDialog(
               new FlatButton(
                 child: new Text("确定"),
                 onPressed: () {
-                  method();
+                  if (shouldExecute) {
+                    method();
+                  }
                   Navigator.of(context).pop();
                   if (needSkip) {
                     Navigator.pushNamed(context, route);

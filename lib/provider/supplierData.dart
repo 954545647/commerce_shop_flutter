@@ -12,7 +12,7 @@ class SupplierData with ChangeNotifier {
 // 登录
   login({id, username, phone}) {
     _isLogin = true;
-    _supplierInfo = new User(id: id, username: username, phone: phone);
+    _supplierInfo = new Supplier(id: id, username: username, phone: phone);
     notifyListeners();
   }
 
@@ -27,11 +27,11 @@ class SupplierData with ChangeNotifier {
   }
 }
 
-class User {
+class Supplier {
   int id; // 用户id
   String username;
   String phone;
-  User({int id, String username, String phone}) {
+  Supplier({int id, String username, String phone}) {
     this.id = id;
     this.username = username;
     this.phone = phone;

@@ -79,7 +79,7 @@ class _GoodDetailsState extends State<GoodDetails> {
 // 获取商家信息
   getSupplierInfo(supplierId) async {
     await DioUtils.getInstance()
-        .post("getSupplierById", data: {"supplierId": supplierId}).then((val) {
+        .post("SgetSupplierById", data: {"supplierId": supplierId}).then((val) {
       if (val != null && val["data"] != null) {
         supplierInfo = val["data"];
         setState(() {});

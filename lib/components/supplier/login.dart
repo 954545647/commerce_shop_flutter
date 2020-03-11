@@ -4,6 +4,7 @@ import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SupplierLogin extends StatefulWidget {
   @override
@@ -22,6 +23,14 @@ class _SupplierLoginState extends State<SupplierLogin> {
     super.initState();
   }
 
+  // 登录
+  Future login() async {
+    return DioUtils.getInstance().post('Sslogin', data: {
+      "username": _unameController.text,
+      "password": _pwdController.text
+    });
+  }
+
   // 清空表单
   void reset() {
     _unameController.text = "";
@@ -38,6 +47,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
 
     return Material(
       child: Container(
+        color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Stack(
           children: <Widget>[
@@ -47,12 +57,12 @@ class _SupplierLoginState extends State<SupplierLogin> {
                 top: 25.0,
                 child: InkWell(
                     child: Icon(
-                      Icons.close,
+                      Icons.chevron_left,
                       color: Colors.black,
-                      size: 30.0,
+                      size: 35.0,
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, "index");
+                      Navigator.popAndPushNamed(context, "index");
                     })),
             Positioned(
               left: 5.0,
@@ -114,7 +124,8 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                       ),
                                     ),
                                     onTap: () {
-                                      Navigator.pushNamed(context, 'sRegister');
+                                      Navigator.pushNamed(
+                                          context, 'Ssregister');
                                     },
                                   ),
                                   GestureDetector(
@@ -133,15 +144,17 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                       onTap: () async {
                                         if ((_formKey.currentState as FormState)
                                             .validate()) {
-                                          var data =
-                                              await DioUtils.getInstance()
-                                                  .post('slogin', data: {
-                                            "username": _unameController.text,
-                                            "password": _pwdController.text
-                                          });
+                                          var data = await login();
+
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               var res = data["data"];
+                                              // 将token保存到本地缓存中
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              prefs.setString(
+                                                  "stoken", res["token"]);
                                               // 关闭键盘
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
@@ -151,9 +164,10 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                                   username: res["username"],
                                                   phone: res["phone"]);
                                               // 清空表单
-                                              // reset();
+                                              reset();
                                               // 跳转路由
-                                              Navigator.pushNamed(
+                                              print(res);
+                                              Navigator.pushReplacementNamed(
                                                   context, 'supplierCenter',
                                                   arguments: {"id": res["id"]});
                                             } else {

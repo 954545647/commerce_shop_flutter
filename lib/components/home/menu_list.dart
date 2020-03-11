@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/menuIcon.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
 import 'package:commerce_shop_flutter/utils/diaLog.dart';
 
 class MenuList extends StatelessWidget {
@@ -24,6 +25,7 @@ class MenuList extends StatelessWidget {
 // 菜单列表单独子项
   Widget menuListItem(data, context) {
     final user = Provider.of<UserData>(context);
+    final supplier = Provider.of<SupplierData>(context);
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(bottom: 10.0),
@@ -34,8 +36,18 @@ class MenuList extends StatelessWidget {
               onTap: () {
                 // 如果需要登录
                 if (data.shouldLogin) {
-                  // 如果没有登录
-                  if (!user.isLogin) {
+                  if (data.path == "supplierCenter") {
+                    if (supplier.isLogin) {
+                      Navigator.pushNamed(context, data.path);
+                    } else {
+                      commonDialog(
+                          context: context,
+                          title: "请先登录",
+                          route: "sLogin",
+                          shouldExecute: false);
+                      return;
+                    }
+                  } else if (!user.isLogin) {
                     loginDialog(context, "请先登录！");
                   } else {
                     Navigator.pushNamed(context, data.path);
@@ -158,11 +170,11 @@ const List<MenuListItemViewModel> menuListData = [
       shouldLogin: true),
   MenuListItemViewModel(
       title: '商家入驻',
-      path: 'sLogin',
+      path: 'supplierCenter',
       icon: Icon(
         MenuIcons.customerService,
         size: 29,
         color: Colors.deepOrangeAccent,
       ),
-      shouldLogin: false),
+      shouldLogin: true),
 ];

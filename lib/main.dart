@@ -21,16 +21,6 @@ void main() {
     ],
     child: MyApp(),
   ));
-  // Global.init().then((e) => runApp(MultiProvider(
-  //       providers: [
-  //         ChangeNotifierProvider.value(value: UserData()), // 用户数据
-  //         ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
-  //         ChangeNotifierProvider.value(value: CartData()), // 购物车数据
-  //         ChangeNotifierProvider.value(value: SupplierData()), // 商家数据
-  //         Provider<MySocketIO>.value(value: new MySocketIO(e["socketIO"])),
-  //       ],
-  //       child: MyApp(),
-  //     )));
 }
 
 class MyApp extends StatelessWidget {

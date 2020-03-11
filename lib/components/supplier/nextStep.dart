@@ -61,12 +61,15 @@ class _NextStepState extends State<NextStep> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Icon(Icons.ac_unit),
+                        child: Icon(
+                          Icons.chevron_left,
+                          size: 35,
+                        ),
                       ),
                       Text("入驻凭证",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 30.0,
+                              fontSize: 28.0,
                               fontWeight: FontWeight.bold))
                     ],
                   )),
@@ -134,7 +137,7 @@ class _NextStepState extends State<NextStep> {
                       Toast.toast(context, msg: "请上传身份证反面");
                       return;
                     }
-                    await DioUtils.getInstance().post("sregister", data: {
+                    await DioUtils.getInstance().post("Ssregister", data: {
                       "username": userInfo["username"],
                       "password": userInfo["password"],
                       "phone": userInfo["phone"],
@@ -144,7 +147,9 @@ class _NextStepState extends State<NextStep> {
                     }).then((val) {
                       if (val != null && val["data"] != null) {
                         Toast.toast(context, msg: "入驻成功");
-                        Navigator.pushNamed(context, "sLogin");
+                        // Navigator.pushReplacementNamed(context, "sLogin");
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            'sLogin', (Route<dynamic> route) => false);
                       } else {
                         Toast.toast(context, msg: val["msg"]);
                       }

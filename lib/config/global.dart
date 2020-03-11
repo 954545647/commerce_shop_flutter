@@ -31,10 +31,10 @@ class MessageInfo {
 
 class Global {
   //初始化全局信息，会在APP启动时执行
-  static Future init() async {
-    IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
-      "transports": ['websocket'],
-    });
-    return {"socketIO": mysocket};
-  }
+  // static Future init() async {
+  //   IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
+  //     "transports": ['websocket'],
+  //   });
+  //   return {"socketIO": mysocket};
+  // }
 }

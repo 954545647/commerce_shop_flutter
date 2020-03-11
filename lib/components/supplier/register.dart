@@ -41,16 +41,37 @@ class _SupplierRegisterState extends State<SupplierRegister> {
         _seconds = countdown;
         _cancelTimer();
       }
-      setState(() {});
     });
   }
 
+  // 跳转注册下一步
   void jumpNextStep() {
     Navigator.pushNamed(context, "nextStep", arguments: {
       "username": _unameController.text,
       "password": _pwdController.text,
       "phone": _phoneController.text
     });
+  }
+
+  // 检查名字是否存在
+  Future<bool> _checkNameExit() async {
+    bool ifExit = false;
+    var data = await DioUtils.getInstance()
+        .post("SsupplierIfExit", data: {"username": _unameController.text});
+    if (data != null && data["code"] == 200) {
+      ifExit = true;
+    }
+    return ifExit;
+  }
+
+  void checkNameExit() async {
+    bool ifExit = await _checkNameExit();
+    if (ifExit) {
+      Toast.toast(context, msg: "商家名字已经存在");
+      return;
+    } else {
+      jumpNextStep();
+    }
   }
 
   // 取消倒计时的计时器。
@@ -148,7 +169,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                   top: 10,
                                   child: RaisedButton(
                                     child: Text(_verifyStr),
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_phoneController.text == "") {
                                         Toast.toast(context, msg: "请先填写手机号码");
                                       } else if (_isAvailableGetVCode ==
@@ -156,10 +177,10 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                         Toast.toast(context,
                                             msg: "一分钟只能获取一次验证码");
                                       } else {
-                                        _startTimer();
                                         getData("user/sendSms", data: {
                                           "phone": _phoneController.text
                                         }).then((val) {
+                                          _startTimer();
                                           Toast.toast(context,
                                               msg: "短信已发送，请查收手机短信");
                                         });
@@ -170,6 +191,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                               ],
                             ),
                             TextFormField(
+                                keyboardType: TextInputType.number,
                                 controller: _checkCodeController,
                                 decoration: InputDecoration(
                                     labelText: "验证码",
@@ -217,8 +239,8 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                           if (val != null &&
                                               val["code"] == 200) {
                                             _verufyCodeTrue = true;
-                                            jumpNextStep();
-                                            setState(() {});
+                                            // 判断商家名称是否存在
+                                            checkNameExit();
                                           } else {
                                             Toast.toast(context,
                                                 msg: val["msg"]);
@@ -226,7 +248,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                         });
                                       }
                                       if (_verufyCodeTrue) {
-                                        jumpNextStep();
+                                        checkNameExit();
                                       }
                                     }
                                   },
@@ -242,7 +264,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, "sLogin");
+                  Navigator.popAndPushNamed(context, "sLogin");
                 },
                 child: Container(
                     alignment: Alignment.center,

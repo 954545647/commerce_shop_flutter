@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
 
 class OrderManage extends StatefulWidget {
-  OrderManage(this.info);
-  final info;
+  // OrderManage(this.info);
+  // final info;
   @override
   _OrderManageState createState() => _OrderManageState();
 }
@@ -14,25 +16,31 @@ class _OrderManageState extends State<OrderManage> {
   List unpayOrders = []; // 未支付订单
   List goodOrders = []; // 认养订单
   List farmOrders = []; // 租地订单
+  SupplierData supplierData;
   @override
   void initState() {
     super.initState();
-    getOrders();
+    _initSupplierData();
+  }
+
+  Future<void> _initSupplierData() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      supplierData = Provider.of<SupplierData>(context);
+      await getOrders();
+    });
   }
 
   // 获取全部订单
   getOrders() {
-    if (widget.info != null && widget.info["id"] != null) {
-      DioUtils.getInstance().post("supplierOrders",
-          data: {"supplierId": widget.info["id"]}).then((val) {
-        if (val != null && val["data"] != null) {
-          var data = val["data"];
-          goodOrders = data["goodOrderList"];
-          farmOrders = data["farmOrderList"];
-          setState(() {});
-        }
-      });
-    }
+    DioUtils.getInstance().post("SsupplierOrders",
+        data: {"supplierId": supplierData.supplierInfo.id}).then((val) {
+      if (val != null && val["data"] != null) {
+        var data = val["data"];
+        goodOrders = data["goodOrderList"];
+        farmOrders = data["farmOrderList"];
+        setState(() {});
+      }
+    });
   }
 
   @override

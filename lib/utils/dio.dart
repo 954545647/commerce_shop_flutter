@@ -7,7 +7,7 @@ class DioUtils {
   static DioUtils _instance;
   Dio _dio;
   BaseOptions _baseOptions;
-
+  bool isClient = false; // 是顾客业务
   // 获取DIO实例
   static DioUtils getInstance() {
     if (_instance == null) {
@@ -19,6 +19,7 @@ class DioUtils {
   // dio 初始化配置
   DioUtils() {
     print("我DIO初始化");
+    print("isClient$isClient");
     //请求参数配置
     _baseOptions = new BaseOptions(
       baseUrl: BASEURL,
@@ -56,6 +57,7 @@ class DioUtils {
   get(url, {data, options}) async {
     // print('get request path ------$url-------请求参数$data');
     Response response;
+    isClient = url[0] == "S" ? false : true;
     try {
       response =
           await _dio.get(urlList[url], queryParameters: data, options: options);
@@ -69,11 +71,11 @@ class DioUtils {
   // post请求
   post(url, {data, options}) async {
     // print('post request path ------$url-------请求参数$data');
+    isClient = url[0] == "S" ? false : true;
     Response response;
     try {
       response = await _dio.post(urlList[url], data: data, options: options);
       // print('请求路径---$url------请求结果-----${response.data}\n\n');
-      print('\n\n');
       return response.data;
     } on DioError catch (e) {
       print('请求失败---错误类型${e.type}--错误信息${e.message}');
@@ -83,7 +85,7 @@ class DioUtils {
   // 获取token
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.get("token");
+    String token = isClient ? prefs.get("token") : prefs.get("stoken");
     if (token != null && token.length == 0) {
       return "";
     }

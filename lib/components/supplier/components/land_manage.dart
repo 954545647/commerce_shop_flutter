@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-// import 'package:provider/provider.dart';
-// import 'package:commerce_shop_flutter/provider/supplierData.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
 
 class LandManage extends StatefulWidget {
-  LandManage(this.info);
-  final info;
   @override
   _LandManageState createState() => _LandManageState();
 }
@@ -16,33 +14,39 @@ class _LandManageState extends State<LandManage> {
   int hasBeenOn = 0;
   int notBeenOn = 0;
   List farmIds = [];
+  SupplierData supplierData;
   @override
   void initState() {
     super.initState();
-    getLands();
+    _initSupplierData();
+  }
+
+  Future<void> _initSupplierData() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      supplierData = Provider.of<SupplierData>(context);
+      await getLands();
+    });
   }
 
   // 获取全部土地
   getLands() {
-    if (widget.info != null && widget.info["id"] != null) {
-      DioUtils.getInstance()
-          .post("supplierFarm", data: {"id": widget.info["id"]}).then((val) {
-        if (val != null && val["data"] != null) {
-          hasBeenOn = 0;
-          notBeenOn = 0;
-          farmIds = [];
-          val["data"].forEach((item) {
-            farmIds.add({"id": item["id"], "farmName": item["farmName"]});
-            if (item["status"] == 0) {
-              notBeenOn++;
-            } else {
-              hasBeenOn++;
-            }
-          });
-          setState(() {});
-        }
-      });
-    }
+    DioUtils.getInstance().post("SsupplierFarm",
+        data: {"id": supplierData.supplierInfo.id}).then((val) {
+      if (val != null && val["data"] != null) {
+        hasBeenOn = 0;
+        notBeenOn = 0;
+        farmIds = [];
+        val["data"].forEach((item) {
+          farmIds.add({"id": item["id"], "farmName": item["farmName"]});
+          if (item["status"] == 0) {
+            notBeenOn++;
+          } else {
+            hasBeenOn++;
+          }
+        });
+        setState(() {});
+      }
+    });
   }
 
   @override

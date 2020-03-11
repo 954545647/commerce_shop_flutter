@@ -19,7 +19,7 @@ class _NearFarmState extends State<NearFarm> {
   }
 
   getSuppliers() {
-    DioUtils.getInstance().get('getAllSuppliers').then((val) {
+    DioUtils.getInstance().get('SgetAllSuppliers').then((val) {
       if (val != null) {
         supplierLists = val["data"];
         setState(() {});
