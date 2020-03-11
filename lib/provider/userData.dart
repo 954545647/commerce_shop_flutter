@@ -10,36 +10,43 @@ class UserData with ChangeNotifier {
   get userInfo => _userInfo;
 
 // 登录
-  login({id, username, phone, address, unpayOrder}) {
-    print("$id,$address,$username");
+  login({id, username, phone, address, unpayOrder, imgCover}) {
     _isLogin = true;
     _userInfo = new User(
         id: id,
         username: username,
         phone: phone,
         address: address,
+        imgCover: imgCover,
         unpayOrder: unpayOrder);
     notifyListeners();
   }
 
 // 添加地址信息
-  addAdress(id, address) {
+  addAdress(int id, String address) {
     if (id == _userInfo.id) {
       _userInfo.address = address;
     }
   }
 
 // 添加未支付订单订单号
-  addUnpayOrder(id, order) {
+  addUnpayOrder(int id, int order) {
     if (id == _userInfo.id) {
       _userInfo.unpayOrder.add(order);
     }
   }
 
   // 添加未支付订单订单号
-  deleteUnpayOrder(id, index) {
+  deleteUnpayOrder(int id, int index) {
     if (id == _userInfo.id) {
       _userInfo.unpayOrder.removeAt(index);
+    }
+  }
+
+  // 更改头像
+  updateCover(int id, String cover) {
+    if (id == _userInfo.id) {
+      _userInfo.imgCover = cover;
     }
   }
 
@@ -47,10 +54,8 @@ class UserData with ChangeNotifier {
   logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
-    print("开始退出登录${_userInfo.address}");
     _isLogin = false;
     _userInfo = {};
-    print("退出登录啦$_userInfo");
     notifyListeners();
   }
 }
@@ -61,17 +66,19 @@ class User {
   String phone; // 用户电话
   String address; // 用户地址
   List unpayOrder; // 未支付地址
-  // 标准写法
+  String imgCover; // 头像
   User(
       {int id,
       String username,
       String phone,
       String address = "",
+      String imgCover = "",
       List unpayOrder}) {
     this.id = id;
     this.username = username;
     this.phone = phone;
     this.address = address;
     this.unpayOrder = unpayOrder;
+    this.imgCover = imgCover;
   }
 }

@@ -9,8 +9,8 @@ const urlList = {
   // 租地接口
   'leftList': 'rentLand/leftList',
   // 登录注册接口
-  'login': 'login',
-  'register': 'register',
+  'login': 'user/login',
+  'register': 'user/register',
   // 用户接口
   "changePass": "user/changePass",
   "address": "user/address",
@@ -20,6 +20,7 @@ const urlList = {
   "getUserSignDays": "user/getUserSignDays",
   "myFarms": "user/farmOrder",
   "getUserInfo": "user/getUserInfo",
+  "updateImg": "user/updateCover",
   // 优惠卷接口
   "getAlls": "coupon/getAlls",
   "myCoupon": "coupon/myCoupon",
@@ -56,6 +57,9 @@ const urlList = {
   "newFarmOrder": "farm/newOrder",
   "newFarm": "farm/newFarm",
   "newCrop": "farm/newCrop",
+  // 通信接口
+  "sMessage": "socket/sMessage",
+  "servicerHistory": "socket/servicerHistory",
   // 通用接口
   "upload": "supplier/upload"
 };

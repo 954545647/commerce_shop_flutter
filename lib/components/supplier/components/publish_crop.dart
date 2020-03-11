@@ -8,10 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
-// import 'package:provider/provider.dart';
-// import 'package:commerce_shop_flutter/provider/supplierData.dart';
 
 class PublishCrop extends StatefulWidget {
   @override

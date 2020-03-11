@@ -67,3 +67,17 @@ String sourcePoint(int source) {
     return "-$source";
   }
 }
+
+String cutPath(String imgCover) {
+  imgCover = imgCover.toString();
+  if (imgCover.indexOf("10.0.2.2") != -1) {
+    imgCover = imgCover.substring(15);
+  }
+  if (imgCover.indexOf("127.0.0") != -1) {
+    imgCover = imgCover.substring(15);
+  }
+  if (imgCover.indexOf("47.96") != -1) {
+    imgCover = imgCover.substring(15);
+  }
+  return imgCover;
+}

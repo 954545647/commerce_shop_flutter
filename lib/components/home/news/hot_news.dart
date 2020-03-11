@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/loading.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class HotNews extends StatefulWidget {
   @override

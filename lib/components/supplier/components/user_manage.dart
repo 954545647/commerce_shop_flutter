@@ -69,6 +69,9 @@ class _UserManageState extends State<UserManage> {
                 ),
                 Expanded(
                   child: GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "message");
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[

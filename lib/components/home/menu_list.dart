@@ -155,7 +155,7 @@ const List<MenuListItemViewModel> menuListData = [
         size: 29,
         color: Colors.deepOrangeAccent,
       ),
-      shouldLogin: false),
+      shouldLogin: true),
   MenuListItemViewModel(
       title: '商家入驻',
       path: 'sLogin',

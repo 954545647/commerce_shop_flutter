@@ -85,7 +85,6 @@ class _GoodDetailsState extends State<GoodDetails> {
         setState(() {});
       }
     });
-    print(supplierInfo);
   }
 
   @override
@@ -285,6 +284,8 @@ class _GoodDetailsState extends State<GoodDetails> {
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
           builder: (context) => Container(
             height: MediaQuery.of(context).viewInsets.bottom + 330,
             padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
@@ -298,7 +299,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                   child: Row(
                     children: <Widget>[
                       Image.network(
-                        argument["imgCover"],
+                        "${Config.apiHost}${argument["imgCover"]}",
                         fit: BoxFit.cover,
                         width: 150,
                         height: 150,

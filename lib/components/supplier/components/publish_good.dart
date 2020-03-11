@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:city_pickers/city_pickers.dart';
 import '../common/textField.dart';
 import '../common/imageView.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
@@ -227,7 +224,7 @@ class _PublishGoodState extends State<PublishGood> {
                               ),
                               height: ScreenUtil().setHeight(180),
                               width: ScreenUtil().setWidth(180),
-                              child: ImageView(coverImg, coverImg),
+                              child: ImageView("商品封面", coverImg, coverImg),
                             ),
                           )
                         ],

@@ -10,11 +10,9 @@ class SupplierData with ChangeNotifier {
   get supplierInfo => _supplierInfo;
 
 // 登录
-  login({id}) {
+  login({id, username, phone}) {
     _isLogin = true;
-    _supplierInfo = new User(
-      id: id,
-    );
+    _supplierInfo = new User(id: id, username: username, phone: phone);
     notifyListeners();
   }
 
@@ -31,10 +29,11 @@ class SupplierData with ChangeNotifier {
 
 class User {
   int id; // 用户id
-  // 标准写法
-  User({
-    int id,
-  }) {
+  String username;
+  String phone;
+  User({int id, String username, String phone}) {
     this.id = id;
+    this.username = username;
+    this.phone = phone;
   }
 }

@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
 
 class NextStep extends StatefulWidget {

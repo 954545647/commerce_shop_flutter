@@ -1,536 +1,305 @@
+// 注册页面
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
 
-// import './detailed.dart';
-
-class Service extends StatefulWidget {
-  Service({Key key, this.detail}) : super(key: key);
-  final detail;
-
+class Register extends StatefulWidget {
   @override
-  _ServiceState createState() => new _ServiceState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _ServiceState extends State<Service> with SingleTickerProviderStateMixin {
-  var fsNode1 = new FocusNode();
-  var _textInputController = new TextEditingController();
-  var _scrollController = new ScrollController();
-  List<Widget> talkWidgetList = <Widget>[];
-  List<Map> talkHistory = [];
-  bool talkFOT = false;
-  bool otherFOT = false;
+class _RegisterState extends State<Register> {
+  TextEditingController _unameController = new TextEditingController(); // 用户名
+  TextEditingController _pwdController = new TextEditingController(); // 密码
+  TextEditingController _phoneController = new TextEditingController(); // 手机号
+  TextEditingController _checkCodeController =
+      new TextEditingController(); // 验证码
+  GlobalKey _formKey = new GlobalKey<FormState>();
+  final int countdown = 60;
+  bool _isAvailableGetVCode = true; //是否可以获取验证码，默认为`false`
+  String _verifyStr = "发送验证码";
 
-  Animation animationTalk;
-  AnimationController controller;
+  // 倒计时的计时器。
+  Timer _timer;
+  // 当前倒计时的秒数。
+  int _seconds = 60;
+  // 验证码是否校验通过
+  bool _verufyCodeTrue = false;
 
-  @override
-  void initState() {
-    controller = new AnimationController(
-        duration: new Duration(seconds: 1), vsync: this);
-    animationTalk = new Tween(begin: 1.0, end: 1.5).animate(controller)
-      ..addStatusListener((state) {
-        if (state == AnimationStatus.completed) {
-          controller.reverse();
-        } else if (state == AnimationStatus.dismissed) {
-          controller.forward();
-        }
-      });
-
-    fsNode1.addListener(_focusListener);
-
-    super.initState();
+// 开始倒计时
+  _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _seconds--;
+      _isAvailableGetVCode = false;
+      _verifyStr = '已发送(${_seconds}s)';
+      if (_seconds == 0) {
+        _verifyStr = '重新获取';
+        _isAvailableGetVCode = true;
+        _seconds = countdown;
+        _cancelTimer();
+      }
+      setState(() {});
+    });
   }
 
-  _focusListener() async {
-    if (fsNode1.hasFocus) {
-      setState(() {
-        otherFOT = false;
-        talkFOT = false;
-      });
-    }
+  // 取消倒计时的计时器。
+  void _cancelTimer() {
+    // 计时器（`Timer`）组件的取消（`cancel`）方法，取消计时器。
+    _timer?.cancel();
   }
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
-  }
-
-  List<String> returnTalkList = [
-    '这是自动留言,我的手机不在身边, 有事请直接Call我....',
-    '呵呵,真好笑!!!',
-    '你最近好吗?',
-    '如果我是DJ你会爱我吗?',
-    'hohohohohoho, boom!',
-    '刮风那天我试过牵着你手',
-  ];
-
-  getTalkList() {
-    List<Widget> widgetList = [];
-
-    for (var i = 0; i < talkHistory.length; i++) {
-      widgetList.add(returnTalkItem(talkHistory[i]));
-    }
-
-    setState(() {
-      talkWidgetList = widgetList;
-      _scrollController.animateTo(50.0 * talkHistory.length + 100,
-          duration: new Duration(seconds: 1), curve: Curves.ease);
-    });
-  }
-
-  void getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      autoTalk(image, 'image');
-    }
-  }
-
-  autoTalk(val, type) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var mySelf = json.decode(prefs.getString('userInfo'));
-
-    talkHistory.add({
-      'name': mySelf['name'],
-      'id': mySelf['id'],
-      'imageUrl': mySelf['imageUrl'],
-      'content': val,
-      'type': type // image text
-    });
-    getTalkList();
-
-    Future.delayed(new Duration(seconds: 1), () {
-      var item = {
-        'name': widget.detail['name'],
-        'id': widget.detail['id'],
-        'imageUrl': widget.detail['imageUrl'],
-        'content': returnTalkList[talkHistory.length % 5],
-        'type': 'text'
-      };
-      talkHistory.add(item);
-      getTalkList();
-    });
-  }
-
-  returnTalkType(type, val) {
-    switch (type) {
-      case 'text':
-        return new Text(val,
-            softWrap: true,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 100,
-            textAlign: TextAlign.left,
-            style: new TextStyle(
-              height: 1,
-            ));
-        break;
-      case 'image':
-        return new Image.file(val);
-        break;
-      case 'text':
-        return new Text(val);
-        break;
-    }
-  }
-
-  returnTalkItem(item) {
-    List<Widget> widgetList = [];
-
-    if (item['id'] != widget.detail['id']) {
-      // 非本人的信息
-      widgetList = [
-        new Container(
-            margin: new EdgeInsets.only(right: 20.0),
-            padding: new EdgeInsets.all(10.0),
-            decoration: new BoxDecoration(
-                color: Color(0xFFebebf3),
-                borderRadius: new BorderRadius.circular(10.0)),
-            child: new LimitedBox(
-              maxWidth: MediaQuery.of(context).size.width - 120.0,
-              child: returnTalkType(item['type'], item['content']),
-            )),
-        new CircleAvatar(
-          backgroundImage: new NetworkImage('${item['imageUrl']}'),
-        ),
-      ];
-    } else {
-      // 本人的信息
-      widgetList = [
-        new CircleAvatar(
-          backgroundImage: new NetworkImage('${item['imageUrl']}'),
-        ),
-        new Container(
-          margin: new EdgeInsets.only(left: 20.0),
-          padding: new EdgeInsets.all(10.0),
-          decoration: new BoxDecoration(
-              color: Color(0xFFebebf3),
-              borderRadius: new BorderRadius.circular(10.0)),
-          child: new LimitedBox(
-              maxWidth: MediaQuery.of(context).size.width - 120.0,
-              child: returnTalkType(item['type'], item['content'])),
-        ),
-      ];
-    }
-
-    return new Container(
-        width: MediaQuery.of(context).size.width - 120.0,
-        margin: new EdgeInsets.symmetric(vertical: 10.0),
-        child: new Row(
-            mainAxisAlignment: widget.detail['id'] == item['id']
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: widgetList));
+    _unameController.dispose();
+    _pwdController.dispose();
+    _phoneController.dispose();
+    _checkCodeController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
-      onWillPop: () =>
-          Navigator.of(context).pushNamedAndRemoveUntil('/home', (_) => false),
-      child: new Scaffold(
-        appBar: new AppBar(
-          leading: new IconButton(
-            icon: Icon(Icons.keyboard_arrow_left),
-            onPressed: () {
-              Navigator.of(context).pushReplacementNamed('/home');
-            },
-          ),
-          title: new Text(
-            '${widget.detail['name']}',
-            style: new TextStyle(fontSize: 20.0),
-          ),
-          actions: <Widget>[
-            new IconButton(
-              icon: Icon(Icons.person, size: 30.0),
-              onPressed: () {
-                // Navigator.of(context).push(new MaterialPageRoute(
-                //     builder: (_) =>
-                //     new Detailed(detail: widget.detail)));
-              },
-            )
-          ],
-          centerTitle: true,
-        ),
-        body: new Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: <Widget>[
-                new Container(
-                  margin: new EdgeInsets.symmetric(horizontal: 20.0),
-                  padding: new EdgeInsets.only(bottom: 50.0),
-                  // width: MediaQuery.of(context).size.width - 40.0,
-                  child: ListView(
-                    controller: _scrollController,
-                    children: talkWidgetList,
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
+          ..init(context);
+    return Material(
+      child: Scaffold(
+        // padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 100,
+              ),
+              // 返回按钮
+              InkWell(
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black,
+                    size: 30.0,
                   ),
-                ),
-                new Positioned(
-                  bottom: 0,
-                  left: 0,
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(
-                      color: Color(0xFFebebf3),
-                      child: new Column(
-                        children: <Widget>[
-                          new Offstage(
-                            offstage: talkFOT,
-                            child: new Row(
+                  onTap: () {
+                    Navigator.pushNamed(context, 'welcome');
+                  }),
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    // 注册标题
+                    Text(
+                      'Sign Up',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    // 注册字段
+                    Container(
+                      width: ScreenUtil().setWidth(680),
+                      child: Form(
+                          key: _formKey,
+                          // autovalidate: true,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                new Container(
-                                  width: 40.0,
-                                  color: Color(0xFFaaaab6),
-                                  child: new IconButton(
-                                    icon: new Icon(Icons.keyboard_voice),
-                                    onPressed: () {
-                                      setState(() {
-                                        fsNode1.unfocus();
-                                        talkFOT = !talkFOT;
-                                        otherFOT = false;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                new Container(
-                                  padding: new EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  width:
-                                      MediaQuery.of(context).size.width - 140.0,
-                                  child: new TextField(
-                                    focusNode: fsNode1,
-                                    controller: _textInputController,
-                                    decoration: new InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: '输入你的信息...',
-                                        hintStyle: new TextStyle(
-                                            color: Color(0xFF7c7c7e))),
-                                    onSubmitted: (val) {
-                                      if (val != '' && val != null) {
-                                        getTalkList();
-                                        autoTalk(val, 'text');
-                                      }
-                                      _textInputController.clear();
-                                    },
-                                  ),
-                                ),
-                                new IconButton(
-                                  icon: Icon(Icons.insert_emoticon,
-                                      color: Color(0xFF707072)),
-                                  onPressed: () {},
-                                ),
-                                new IconButton(
-                                  icon: Icon(Icons.add_circle_outline,
-                                      color: Color(0xFF707072)),
-                                  onPressed: () {
-                                    setState(() {
-                                      fsNode1.unfocus();
-                                      otherFOT = !otherFOT;
-                                    });
+                                TextFormField(
+                                  controller: _unameController,
+                                  decoration: InputDecoration(
+                                      labelText: '用户名',
+                                      // hintText: '用户名或手机号',
+                                      icon: Icon(Icons.person)),
+                                  validator: (v) {
+                                    return v.trim().length > 0
+                                        ? null
+                                        : '用户名不能为空';
                                   },
+                                ),
+                                TextFormField(
+                                    controller: _pwdController,
+                                    decoration: InputDecoration(
+                                        labelText: "密码",
+                                        hintText: "您的登录密码",
+                                        icon: Icon(Icons.lock)),
+                                    obscureText: true,
+                                    //校验密码
+                                    validator: (v) {
+                                      return v.trim().length > 2
+                                          ? null
+                                          : "密码不能少于6位";
+                                    }),
+                                Stack(
+                                  children: <Widget>[
+                                    TextFormField(
+                                        controller: _phoneController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                            labelText: "手机号",
+                                            hintText: "关联您的手机号码",
+                                            icon: Icon(Icons.phone_iphone)),
+                                        // 校验手机号
+                                        validator: (v) {
+                                          int count = v.trim().length;
+                                          if (count != 11) {
+                                            return "手机号必须是11位";
+                                          }
+                                          RegExp mobile =
+                                              new RegExp(r"^1[3-9]\d{9}$");
+                                          if (mobile.hasMatch(v)) {
+                                            return null;
+                                          } else {
+                                            return "手机格式不正确";
+                                          }
+                                        }),
+                                    Positioned(
+                                      right: 0,
+                                      top: 10,
+                                      child: RaisedButton(
+                                        child: Text(_verifyStr),
+                                        onPressed: () {
+                                          if (_phoneController.text == "") {
+                                            Toast.toast(context,
+                                                msg: "请先填写手机号码");
+                                          } else if (_isAvailableGetVCode ==
+                                              false) {
+                                            Toast.toast(context,
+                                                msg: "一分钟只能获取一次验证码");
+                                          } else {
+                                            _startTimer();
+                                            getData("user/sendSms", data: {
+                                              "phone": _phoneController.text
+                                            }).then((val) {
+                                              Toast.toast(context,
+                                                  msg: "短信已发送，请查收手机短信");
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                TextFormField(
+                                    controller: _checkCodeController,
+                                    decoration: InputDecoration(
+                                        labelText: "验证码",
+                                        hintText: "输入6位数验证码",
+                                        icon: Icon(
+                                          IconData(0xe64a,
+                                              fontFamily: 'myIcons'),
+                                          size: 20,
+                                        )),
+                                    // obscureText: true,
+                                    //校验密码
+                                    validator: (v) {
+                                      return v.trim().length == 6
+                                          ? null
+                                          : "验证码为6位数字";
+                                    }),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Column(
+                                      children: <Widget>[
+                                        GestureDetector(
+                                          child: Container(
+                                            height: ScreenUtil().setHeight(100),
+                                            width: ScreenUtil().setWidth(100),
+                                            margin: EdgeInsets.only(top: 30.0),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(60.0),
+                                                color: Color.fromRGBO(
+                                                    208, 1, 27, 1)),
+                                            child: Icon(
+                                                Icons.keyboard_arrow_right,
+                                                size: 30,
+                                                color: Colors.white),
+                                          ),
+                                          onTap: () async {
+                                            if ((_formKey.currentState
+                                                    as FormState)
+                                                .validate()) {
+                                              if (!_verufyCodeTrue) {
+                                                // 先校验验证码
+                                                getData("user/checkVerifyCode",
+                                                    data: {
+                                                      "phone":
+                                                          _phoneController.text,
+                                                      "verifyCode":
+                                                          _checkCodeController
+                                                              .text
+                                                    }).then((val) async {
+                                                  if (val != null &&
+                                                      val["code"] == 200) {
+                                                    _verufyCodeTrue = true;
+                                                    setState(() {});
+                                                    var data = await DioUtils
+                                                            .getInstance()
+                                                        .post("register",
+                                                            data: {
+                                                          "username":
+                                                              _unameController
+                                                                  .text,
+                                                          "password":
+                                                              _pwdController
+                                                                  .text,
+                                                          "phone":
+                                                              _phoneController
+                                                                  .text
+                                                        });
+                                                    if (data != null &&
+                                                        data["errorCode"] ==
+                                                            0) {
+                                                      Navigator.pushNamed(
+                                                          context, 'login');
+                                                    } else {
+                                                      Toast.toast(context,
+                                                          msg: data["msg"]);
+                                                    }
+                                                  } else {
+                                                    Toast.toast(context,
+                                                        msg: val["msg"]);
+                                                  }
+                                                });
+                                              }
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
-                          ),
-                          new Offstage(
-                              // 录音按钮
-                              offstage: !talkFOT,
-                              child: new Column(
-                                children: <Widget>[
-                                  new Container(
-                                    height: 30.0,
-                                    color: Color(0xFFededed),
-                                    alignment: Alignment.centerLeft,
-                                    child: new IconButton(
-                                      icon: Icon(Icons.arrow_back_ios),
-                                      onPressed: () {
-                                        controller.reset();
-                                        controller.stop();
-                                        setState(() {
-                                          talkFOT = !talkFOT;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  new Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 170.0,
-                                    color: Color(0xFFededed),
-                                    child: new Center(
-                                        child: new AnimatedBuilder(
-                                      animation: animationTalk,
-                                      builder: (_, child) {
-                                        return new GestureDetector(
-                                          child: new CircleAvatar(
-                                            radius: animationTalk.value * 30,
-                                            backgroundColor: Color(0x306b6aba),
-                                            child: new Center(
-                                              child: Icon(Icons.keyboard_voice,
-                                                  size: 30.0,
-                                                  color: Color(0xFF6b6aba)),
-                                            ),
-                                          ),
-                                          onLongPress: () {
-                                            controller.forward();
-                                          },
-                                          onLongPressUp: () {
-                                            controller.reset();
-                                            controller.stop();
-                                          },
-                                        );
-                                      },
-                                    )),
-                                  ),
-                                ],
-                              )),
-                          new Offstage(
-                              // 图片选择
-                              offstage: !otherFOT,
-                              child: new Padding(
-                                  padding: new EdgeInsets.all(10.0),
-                                  child: new Column(
-                                    children: <Widget>[
-                                      new Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: 170.0,
-                                          color: Color(0xFFededed),
-                                          child: Wrap(
-                                            spacing: 25.0,
-                                            runSpacing: 10.0,
-                                            children: <Widget>[
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons
-                                                          .photo_size_select_actual,
-                                                      color: Colors.black38),
-                                                  onPressed: () {
-                                                    getImage();
-                                                  },
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(Icons.videocam,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons.linked_camera,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(Icons.add_location,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons.library_music,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons.library_books,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons.video_library,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                              new Container(
-                                                width: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                height: (MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        100) /
-                                                    4,
-                                                color: Color(0xFFffffff),
-                                                child: new IconButton(
-                                                  iconSize: 50.0,
-                                                  icon: Icon(
-                                                      Icons.local_activity,
-                                                      color: Colors.black38),
-                                                  onPressed: () {},
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                    ],
-                                  )))
-                        ],
-                      )),
-                )
-              ],
-            )),
+                          )),
+                    ),
+                  ],
+                ),
+              ),
+              // 去登录
+              InkWell(
+                child: Container(
+                  alignment: Alignment.center,
+                  width: ScreenUtil().setWidth(680),
+                  margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
+                  child: Text(
+                    'Already have an account? Sign In',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, 'login');
+                },
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

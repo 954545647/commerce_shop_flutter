@@ -1,13 +1,16 @@
+// 客服中心
 import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import 'package:socket_io/socket_io.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'dart:convert';
+import "package:commerce_shop_flutter/utils/dio.dart";
 import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/socketData.dart';
 import "package:commerce_shop_flutter/config/global.dart";
+import 'dart:async';
+import 'package:commerce_shop_flutter/config/config.dart';
 
 class Service extends StatefulWidget {
   Service({Key key, this.detail}) : super(key: key);
@@ -17,20 +20,35 @@ class Service extends StatefulWidget {
   _ServiceState createState() => new _ServiceState();
 }
 
-class _ServiceState extends State<Service> with SingleTickerProviderStateMixin {
+class _ServiceState extends State<Service> {
   var fsNode1 = new FocusNode();
+  ScrollController _controller =
+      new ScrollController(initialScrollOffset: 200.0);
   var _textInputController = new TextEditingController();
   List talkList = []; //   谈话内容
   IO.Socket mysocket;
+  UserData userData;
+  bool typing = false; // 是否有输入内容
   @override
   void initState() {
     super.initState();
     _initSocket();
   }
 
+  // 初始化连接socket
   Future<void> _initSocket() async {
     await Future.delayed(Duration(microseconds: 300), () async {
-      mysocket = Provider.of<MySocketIO>(context).mySocket;
+      mysocket = Provider.of<SocketData>(context).socket;
+      userData = Provider.of<UserData>(context);
+      // 获取历史消息
+      await getHistory();
+      // 通知服务端开始客服服务
+      mysocket.emit(
+          "startForService",
+          new MessageInfo(
+              fromId: userData.userInfo.id,
+              username: userData.userInfo.username));
+      // 监听客服回复
       mysocket.on("replayFromService", (data) {
         createLi(data);
         setState(() {});
@@ -38,112 +56,234 @@ class _ServiceState extends State<Service> with SingleTickerProviderStateMixin {
     });
   }
 
+  // 获取历史消息
+  Future getHistory() async {
+    var data = await DioUtils.getInstance()
+        .post("servicerHistory", data: {"id": userData.userInfo.id});
+    if (data != null && data["data"] != null) {
+      talkList = data["data"].reversed.toList();
+    }
+    setState(() {});
+  }
+
   // 发送消息
   sendMessage(val) {
-    val = {"content": val, "user": "xxx"};
+    val = {
+      "content": val,
+      "username": userData.userInfo.username,
+      "fromId": userData.userInfo.id,
+      "socketId": mysocket.id
+    };
     mysocket.emit("chatToService", val);
     createLi(val);
+    setState(() {});
   }
 
   // 显示消息
   createLi(val) {
     talkList.add({
       "content": val["content"],
-      "user": val["user"],
+      "username": val["username"],
     });
   }
 
   @override
   void dispose() {
+    if (mysocket != null) {
+      mysocket.off("replayFromService");
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(microseconds: 0),
+        () => _controller.jumpTo(_controller.position.maxScrollExtent));
     return new Scaffold(
+      backgroundColor: Color.fromRGBO(242, 242, 242, 1),
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
-        child: new Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Stack(
-              children: <Widget>[
-                TopTitle(title: "客服中心", showArrow: true),
-                new Container(
-                  decoration: BoxDecoration(border: Border.all(width: 1)),
-                  margin: EdgeInsets.fromLTRB(0, 75, 0, 50),
-                  child: talkWidgetList(),
-                ),
-                new Positioned(
-                  bottom: 0,
-                  left: 0,
-                  width: MediaQuery.of(context).size.width,
-                  child: Container(
-                      color: Color(0xFFebebf3),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          new Container(
-                            padding: new EdgeInsets.symmetric(horizontal: 10.0),
-                            width: MediaQuery.of(context).size.width - 80.0,
-                            child: new TextField(
-                              focusNode: fsNode1,
-                              controller: _textInputController,
-                              decoration: new InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: '输入你的信息...',
-                                  hintStyle:
-                                      new TextStyle(color: Color(0xFF7c7c7e))),
-                              onSubmitted: (val) {
-                                if (val == null) {
-                                  return;
-                                }
-                                sendMessage(val);
-                                _textInputController.clear();
-                              },
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              String val = _textInputController.text;
-                              if (val == "" || val == null) {
-                                return;
-                              }
-                              sendMessage(val);
-                              _textInputController.clear();
-                            },
-                            child: new Container(
-                              decoration:
-                                  BoxDecoration(border: Border.all(width: 1)),
-                              padding:
-                                  new EdgeInsets.symmetric(horizontal: 10.0),
-                              child: Text("发送"),
-                            ),
-                          )
-                        ],
-                      )),
-                )
-              ],
-            )),
+        child: Column(
+          children: <Widget>[
+            TopTitle(title: "客服中心", showArrow: true),
+            SizedBox(
+              height: 10,
+            ),
+            // Container(
+            //   height: 30,
+            //   color: Colors.white,
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: <Widget>[
+            //       GestureDetector(
+            //         onTap: () {
+            //           mysocket = IO.io(BASEURL, <String, dynamic>{
+            //             "transports": ['websocket'],
+            //           });
+            //         },
+            //         child: Text("重新连接"),
+            //       ),
+            //       GestureDetector(
+            //         onTap: () {
+            //           mysocket.close();
+            //         },
+            //         child: Text("下线"),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            Expanded(
+              child: ListView.builder(
+                controller: _controller,
+                itemCount: talkList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  String object = talkList[index]["username"];
+                  if (object == "系统") {
+                    return fromService(talkList[index]);
+                  } else {
+                    return chatItem(talkList[index]);
+                  }
+                },
+              ),
+            ),
+            Container(
+                alignment: Alignment.center,
+                height: ScreenUtil().setHeight(100),
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                // margin: EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                    // borderRadius: BorderRadius.circular(15),
+                    color: Colors.white),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    new Container(
+                      decoration: BoxDecoration(
+                          color: Color.fromRGBO(251, 249, 250, 1),
+                          borderRadius: BorderRadius.circular(15)),
+                      padding: new EdgeInsets.symmetric(horizontal: 10.0),
+                      height: ScreenUtil().setHeight(80),
+                      width: ScreenUtil().setWidth(480),
+                      child: new TextField(
+                        focusNode: fsNode1,
+                        controller: _textInputController,
+                        onChanged: (String val) {
+                          typing = val.length > 0;
+                          setState(() {});
+                        },
+                        decoration: new InputDecoration(
+                            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                            border: InputBorder.none,
+                            hintText: '输入你的信息...',
+                            hintStyle: new TextStyle(color: Color(0xFF7c7c7e))),
+                        onSubmitted: (val) {
+                          if (val == null || val.length == 0 || val == "") {
+                            return;
+                          }
+                          sendMessage(val);
+                          _textInputController.clear();
+                          typing = false;
+                        },
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        String val = _textInputController.text;
+                        if (val == "" || val == null) {
+                          return;
+                        }
+                        sendMessage(val);
+                        typing = false;
+                        _textInputController.clear();
+                      },
+                      child: new Container(
+                        alignment: Alignment.center,
+                        height: ScreenUtil().setHeight(80),
+                        width: ScreenUtil().setWidth(120),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18.0),
+                            color: typing
+                                ? Color.fromRGBO(247, 128, 82, 1)
+                                : Color.fromRGBO(251, 249, 250, 1)),
+                        child: Text(
+                          "发送",
+                          style: TextStyle(color: Color(0xFF7c7c7e)),
+                        ),
+                      ),
+                    )
+                  ],
+                ))
+          ],
+        ),
       ),
     );
   }
 
-  Widget talkWidgetList() {
+  Widget chatItem(data) {
     return Container(
-      child: ListView(
-          children: talkList.map((item) {
-        return chatItem(item);
-      }).toList()),
+      margin: EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      // decoration: BoxDecoration(color: Colors.white),
+      height: 50,
+      width: MediaQuery.of(context).size.width,
+      child: Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          height: 50,
+          child: Text(data["content"].toString()),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                    image: NetworkImage(
+                        "${Config.apiHost}${userData.userInfo.imgCover}"),
+                    fit: BoxFit.cover)))
+      ]),
     );
   }
 
-  Widget chatItem(value) {
+  Widget fromService(data) {
     return Container(
-      alignment:
-          value["user"] == "客服" ? Alignment.centerLeft : Alignment.centerRight,
-      child: Text(value["content"].toString()),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      // ),
+      margin: EdgeInsets.only(bottom: 10),
+      height: 50,
+      width: MediaQuery.of(context).size.width,
+      child: Row(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+        Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                    image: NetworkImage(
+                        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583779492487&di=2843ea2cc709f68d1f2857ce3f6a4b40&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01af985927beeeb5b3086ed47f7e57.png%401280w_1l_2o_100sh.png'),
+                    fit: BoxFit.cover))),
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(15)),
+          alignment: Alignment.center,
+          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+          height: 50,
+          child: Text(data["content"].toString()),
+        )
+      ]),
     );
   }
 }

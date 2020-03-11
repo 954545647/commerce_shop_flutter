@@ -15,10 +15,22 @@ class _OrderListState extends State<OrderList> {
   List unpayOrders = []; // 未支付订单
   List pastOrders = []; // 过期订单
   List finishOrders = []; // 完成订单
+  UserData user;
+  bool isLogin;
   @override
   void initState() {
     super.initState();
-    getOrders();
+    checkIfLogin();
+  }
+
+  Future<void> checkIfLogin() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      user = Provider.of<UserData>(context);
+      isLogin = user.isLogin;
+      if (user.isLogin) {
+        getOrders();
+      }
+    });
   }
 
   // 获取全部订单
@@ -47,8 +59,6 @@ class _OrderListState extends State<OrderList> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserData>(context);
-    bool isLogin = user.isLogin;
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.fromLTRB(15, 0, 15, 0),

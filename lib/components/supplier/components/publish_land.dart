@@ -7,7 +7,6 @@ import 'package:city_pickers/city_pickers.dart';
 import '../common/textField.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
 import 'package:provider/provider.dart';

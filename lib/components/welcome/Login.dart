@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-// import 'package:commerce_shop_flutter/pages/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/provider/socketData.dart';
+// import 'package:socket_io_client/socket_io_client.dart' as IO;
+// import "package:commerce_shop_flutter/config/config.dart";
 
 class Login extends StatefulWidget {
   @override
@@ -38,14 +40,31 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // 登录
+  Future login() async {
+    return DioUtils.getInstance().post('login', data: {
+      "username": _unameController.text,
+      "password": _pwdController.text
+    });
+  }
+
+  // 连接socket
+  // Future connect() async {
+  //   IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
+  //     "transports": ['websocket'],
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     final user = Provider.of<UserData>(context);
+    final socket = Provider.of<SocketData>(context);
     return Material(
       child: Container(
+        color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Stack(
           children: <Widget>[
@@ -80,7 +99,7 @@ class _LoginState extends State<Login> {
                 height: ScreenUtil().setHeight(700),
                 child: Form(
                     key: _formKey, // 获取 FormState
-                    autovalidate: true, // 自动校验
+                    // autovalidate: true, // 自动校验
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -147,16 +166,10 @@ class _LoginState extends State<Login> {
                                       */
                                         if ((_formKey.currentState as FormState)
                                             .validate()) {
-                                          var data =
-                                              await DioUtils.getInstance()
-                                                  .post('login', data: {
-                                            "username": _unameController.text,
-                                            "password": _pwdController.text
-                                          });
+                                          var data = await login();
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               var res = data["data"];
-
                                               // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences
@@ -170,7 +183,10 @@ class _LoginState extends State<Login> {
                                                   username: res["username"],
                                                   phone: res["phone"],
                                                   address: userAddress,
+                                                  imgCover: res["imgCover"],
                                                   unpayOrder: []);
+                                              // socket连接
+                                              socket.connect();
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               Navigator.pushNamed(

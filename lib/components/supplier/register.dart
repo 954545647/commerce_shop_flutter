@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
 class SupplierRegister extends StatefulWidget {
@@ -46,6 +45,14 @@ class _SupplierRegisterState extends State<SupplierRegister> {
     });
   }
 
+  void jumpNextStep() {
+    Navigator.pushNamed(context, "nextStep", arguments: {
+      "username": _unameController.text,
+      "password": _pwdController.text,
+      "phone": _phoneController.text
+    });
+  }
+
   // 取消倒计时的计时器。
   void _cancelTimer() {
     // 计时器（`Timer`）组件的取消（`cancel`）方法，取消计时器。
@@ -69,6 +76,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -198,9 +206,6 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                     if ((_formKey.currentState as FormState)
                                         .validate()) {
                                       if (!_verufyCodeTrue) {
-                                        print(_phoneController.text);
-                                        print(_checkCodeController.text);
-                                        print("hahhaha");
                                         // 先校验验证码
                                         getData("user/checkVerifyCode", data: {
                                           "phone": _phoneController.text,
@@ -212,16 +217,17 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                           if (val != null &&
                                               val["code"] == 200) {
                                             _verufyCodeTrue = true;
+                                            jumpNextStep();
                                             setState(() {});
+                                          } else {
+                                            Toast.toast(context,
+                                                msg: val["msg"]);
                                           }
                                         });
                                       }
-                                      Navigator.pushNamed(context, "nextStep",
-                                          arguments: {
-                                            "username": _unameController.text,
-                                            "password": _pwdController.text,
-                                            "phone": _phoneController.text
-                                          });
+                                      if (_verufyCodeTrue) {
+                                        jumpNextStep();
+                                      }
                                     }
                                   },
                                 )
@@ -248,7 +254,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                         ))),
               ),
               SizedBox(
-                height: 80,
+                height: 30,
               ),
             ],
           ),

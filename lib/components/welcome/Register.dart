@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-import 'package:commerce_shop_flutter/utils/http.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
 class Register extends StatefulWidget {
@@ -27,7 +26,7 @@ class _RegisterState extends State<Register> {
   // 当前倒计时的秒数。
   int _seconds = 60;
   // 验证码是否校验通过
-  bool _verufyCodeTrue = false;
+  bool _verifyCodeTrue = false;
 
 // 开始倒计时
   _startTimer() {
@@ -51,6 +50,41 @@ class _RegisterState extends State<Register> {
     _timer?.cancel();
   }
 
+  // 获取验证码
+  Future<void> _getCode() async {
+    await getData("user/sendSms", data: {"phone": _phoneController.text})
+        .then((val) {
+      Toast.toast(context, msg: "短信已发送，请查收手机短信");
+    });
+  }
+
+  // 校验验证码
+  Future checkCode() async {
+    return await getData("user/checkVerifyCode", data: {
+      "phone": _phoneController.text,
+      "verifyCode": _checkCodeController.text
+    });
+  }
+
+  // 注册
+  Future register() async {
+    return DioUtils.getInstance().post("register", data: {
+      "username": _unameController.text,
+      "password": _pwdController.text,
+      "phone": _phoneController.text
+    });
+  }
+
+  Future _register() async {
+    var registerInfo = await register();
+    if (registerInfo != null && registerInfo["errorCode"] == 0) {
+      Navigator.pushNamed(context, 'login');
+    } else {
+      Toast.toast(context, msg: registerInfo["msg"]);
+      return;
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -67,6 +101,7 @@ class _RegisterState extends State<Register> {
           ..init(context);
     return Material(
       child: Container(
+        color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
         child: Stack(
           children: <Widget>[
@@ -156,19 +191,14 @@ class _RegisterState extends State<Register> {
                                 top: 10,
                                 child: RaisedButton(
                                   child: Text(_verifyStr),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (_phoneController.text == "") {
                                       Toast.toast(context, msg: "请先填写手机号码");
                                     } else if (_isAvailableGetVCode == false) {
                                       Toast.toast(context, msg: "一分钟只能获取一次验证码");
                                     } else {
                                       _startTimer();
-                                      getData("user/sendSms", data: {
-                                        "phone": _phoneController.text
-                                      }).then((val) {
-                                        Toast.toast(context,
-                                            msg: "短信已发送，请查收手机短信");
-                                      });
+                                      await _getCode();
                                     }
                                   },
                                 ),
@@ -184,7 +214,6 @@ class _RegisterState extends State<Register> {
                                     IconData(0xe64a, fontFamily: 'myIcons'),
                                     size: 20,
                                   )),
-                              // obscureText: true,
                               //校验密码
                               validator: (v) {
                                 return v.trim().length == 6 ? null : "验证码为6位数字";
@@ -209,40 +238,23 @@ class _RegisterState extends State<Register> {
                                     onTap: () async {
                                       if ((_formKey.currentState as FormState)
                                           .validate()) {
-                                        if (!_verufyCodeTrue) {
-                                          // 先校验验证码
-                                          getData("user/checkVerifyCode",
-                                              data: {
-                                                "phone": _phoneController.text,
-                                                "verifyCode":
-                                                    _checkCodeController.text
-                                              }).then((val) async {
-                                            if (val != null &&
-                                                val["code"] == 200) {
-                                              _verufyCodeTrue = true;
-                                              setState(() {});
-                                              var data =
-                                                  await DioUtils.getInstance()
-                                                      .post("register", data: {
-                                                "username":
-                                                    _unameController.text,
-                                                "password": _pwdController.text,
-                                                "phone": _phoneController.text
-                                              });
-                                              if (data != null &&
-                                                  data["errorCode"] == 0) {
-                                                Navigator.pushNamed(
-                                                    context, 'login');
-                                              } else {
-                                                Toast.toast(context,
-                                                    msg: data["msg"]);
-                                              }
-                                            } else {
-                                              Toast.toast(context,
-                                                  msg: val["msg"]);
-                                            }
-                                          });
+                                        if (!_verifyCodeTrue) {
+                                          // 先校验验证码是否正确
+                                          var ifCodeRight = await checkCode();
+                                          if (ifCodeRight != null &&
+                                              ifCodeRight["code"] == 200) {
+                                            _verifyCodeTrue = true;
+                                          } else {
+                                            // 验证码错误
+                                            Toast.toast(context,
+                                                msg: ifCodeRight["msg"]);
+                                            return;
+                                          }
                                         }
+                                        FocusScope.of(context)
+                                            .requestFocus(FocusNode());
+                                        // 注册账号
+                                        _register();
                                       }
                                     },
                                   )

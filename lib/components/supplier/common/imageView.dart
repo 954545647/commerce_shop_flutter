@@ -4,9 +4,11 @@ import 'dart:io';
 
 class ImageView extends StatefulWidget {
   ImageView(
+    this.title,
     this.imgPath,
     this.coverImg,
   );
+  final String title;
   final File imgPath;
   final File coverImg;
   @override
@@ -24,7 +26,7 @@ class _ImageViewState extends State<ImageView> {
             Icons.camera_alt,
             size: 30,
           ),
-          Text("土地封面")
+          Text(widget.title)
         ],
       );
     } else {

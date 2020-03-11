@@ -147,8 +147,9 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                                   .requestFocus(FocusNode());
                                               // 注册商家全局信息
                                               supplier.login(
-                                                id: res["id"],
-                                              );
+                                                  id: res["id"],
+                                                  username: res["username"],
+                                                  phone: res["phone"]);
                                               // 清空表单
                                               // reset();
                                               // 跳转路由

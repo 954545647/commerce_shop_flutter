@@ -1,528 +1,279 @@
+// 注册页面
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/config/style.dart' as config;
-import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/components/common/toast.dart';
 
-class FarmDetail extends StatefulWidget {
+class Register extends StatefulWidget {
   @override
-  _FarmDetailState createState() => _FarmDetailState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _FarmDetailState extends State<FarmDetail> {
-  ScrollController _controller = ScrollController();
-  List userCouponList = []; // 用户优惠卷列表
-  var chooseCoupon = {}; // 选中的优惠卷
-  double _opacity = 0.0;
-  int areaNum = 1; // 选择土地的块数
-  List cropNum = []; // 农作物的个数
-  int cropTotal = 0; // 农作物的总个数
-  int total = 0; // 下单总价
-  @override
-  void initState() {
-    super.initState();
-    double t;
-    _controller.addListener(() {
-      t = this._controller.offset / config.topPadding;
-      setState(() {
-        if (t >= 1.0) {
-          this._opacity = 1.0;
-        } else if (t < 0.0) {
-          this._opacity = 0.0;
-        } else {
-          this._opacity = t;
-        }
-      });
-    });
-  }
+class _RegisterState extends State<Register> {
+  TextEditingController _unameController = new TextEditingController(); // 用户名
+  TextEditingController _pwdController = new TextEditingController(); // 密码
+  TextEditingController _phoneController = new TextEditingController(); // 手机号
+  TextEditingController _checkCodeController =
+      new TextEditingController(); // 验证码
+  GlobalKey _formKey = new GlobalKey<FormState>();
+  final int countdown = 60;
+  bool _isAvailableGetVCode = true; //是否可以获取验证码，默认为`false`
+  String _verifyStr = "发送验证码";
 
-// 获取用户优惠卷（只获取未使用的）
-  getUserCoupons() {
-    DioUtils.getInstance().post("myCoupon").then((val) {
-      if (val != null && val["data"] != null) {
-        userCouponList = [];
-        val["data"].forEach((data) {
-          if (data["use_state"] == 0) {
-            userCouponList.add(data);
-          }
-        });
-        setState(() {});
+  // 倒计时的计时器。
+  Timer _timer;
+  // 当前倒计时的秒数。
+  int _seconds = 60;
+  // 验证码是否校验通过
+  bool _verufyCodeTrue = false;
+
+// 开始倒计时
+  _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _seconds--;
+      _isAvailableGetVCode = false;
+      _verifyStr = '已发送(${_seconds}s)';
+      if (_seconds == 0) {
+        _verifyStr = '重新获取';
+        _isAvailableGetVCode = true;
+        _seconds = countdown;
+        _cancelTimer();
       }
+      setState(() {});
     });
   }
 
-  splitTags(tags) {
-    List<Widget> list = [];
-    List tagList = tags.split(";");
-    for (var i = 0; i < tagList.length; i++) {
-      list.add(Container(
-        margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
-        alignment: Alignment.center,
-        width: ScreenUtil().setWidth(150),
-        height: ScreenUtil().setHeight(60),
-        decoration: BoxDecoration(
-          border: Border.all(width: 1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(tagList[i]),
-      ));
-    }
-    return list;
+  // 取消倒计时的计时器。
+  void _cancelTimer() {
+    // 计时器（`Timer`）组件的取消（`cancel`）方法，取消计时器。
+    _timer?.cancel();
   }
 
-// 文字块组件
-  Widget textContainer(str, textStyle) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-      alignment: Alignment.centerLeft,
-      height: ScreenUtil().setHeight(80),
-      child: Text(str, style: textStyle),
-    );
-  }
-
-// 获取当前选中的农作物个数
-  int getTotalNum() {
-    int total = 0;
-    for (var i = 0; i < cropNum.length; i++) {
-      total += cropNum[i];
-    }
-    return total;
-  }
-
-// 计算商品总价
-  getTotalPrice(data, setSta) {
-    int result = 0;
-    for (var i = 0; i < data.length; i++) {
-      result += data[i]["price"] * cropNum[i];
-    }
-    total = result;
-    setSta(() {});
-    return total;
+  @override
+  void dispose() {
+    super.dispose();
+    _unameController.dispose();
+    _pwdController.dispose();
+    _phoneController.dispose();
+    _checkCodeController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    Map arguments = ModalRoute.of(context).settings.arguments;
-    print(arguments["cropInfo"]);
-    cropNum = List<int>(arguments["cropInfo"].length);
-    cropNum.fillRange(0, arguments["cropInfo"].length, 0);
-    return Scaffold(
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              SingleChildScrollView(
-                controller: _controller,
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      width: ScreenUtil().setWidth(750),
-                      height: ScreenUtil().setHeight(450),
-                      child: Image.network(
-                        arguments["imgCover"],
-                        fit: BoxFit.cover,
-                      ),
+    ScreenUtil.instance =
+        ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
+          ..init(context);
+    return Material(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+        child: Stack(
+          children: <Widget>[
+            // 返回按钮
+            Positioned(
+                left: 0.0,
+                top: 25.0,
+                child: InkWell(
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.black,
+                      size: 30.0,
                     ),
-                    textContainer("￥${arguments["preArea"]}",
-                        TextStyle(color: Colors.red, fontSize: 20)),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      child: Row(children: splitTags(arguments["tags"])),
-                    ),
-                    SizedBox(height: 10),
-                    textContainer("${arguments["farmName"]}",
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                    // 地址
-                    Container(
-                      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                      alignment: Alignment.centerLeft,
-                      height: ScreenUtil().setHeight(100),
-                      child: Text("${arguments["address"]}",
-                          style: TextStyle(fontSize: 18), maxLines: 2),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => StatefulBuilder(
-                            builder: (BuildContext context, setSta) {
-                              return Container(
-                                padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
-                                height: 400,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      "土地（${arguments["preArea"]}m²/块）",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Container(
-                                      height: ScreenUtil().setHeight(100),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          InkWell(
-                                            onTap: () {
-                                              if (areaNum <= 1) {
-                                                Toast.toast(context,
-                                                    msg: "最低选择量为1");
-                                                return;
-                                              }
-                                              setSta(() {
-                                                areaNum = areaNum - 1;
-                                              });
-                                            },
-                                            child: Icon(IconData(0xe6e6,
-                                                fontFamily: "myIcons")),
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text("$areaNum"),
-                                          SizedBox(width: 10),
-                                          InkWell(
-                                            onTap: () {
-                                              if (areaNum ==
-                                                  arguments["remainNum"]) {
-                                                Toast.toast(context,
-                                                    msg: "库存不足啦");
-                                                return;
-                                              }
-                                              setSta(() {
-                                                areaNum = areaNum + 1;
-                                              });
-                                            },
-                                            child: Icon(Icons.add),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                      child: cropList(
-                                          arguments["cropInfo"], setSta),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: <Widget>[
-                                            Container(
-                                              width: ScreenUtil().setWidth(320),
-                                              height:
-                                                  ScreenUtil().setHeight(100),
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white),
-                                              child: Text(
-                                                "￥$total",
-                                                style: TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        47, 184, 170, 1)),
-                                              ),
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                if (getTotalNum() <
-                                                    areaNum * 10) {
-                                                  Toast.toast(context,
-                                                      msg: "当前面积还没选满");
-                                                  return;
-                                                } else if (getTotalNum() >
-                                                    areaNum * 10) {
-                                                  Toast.toast(context,
-                                                      msg: "超过面积了");
-                                                  return;
-                                                }
-                                                Navigator.pop(context);
-                                              },
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                width:
-                                                    ScreenUtil().setWidth(320),
-                                                height:
-                                                    ScreenUtil().setHeight(100),
-                                                decoration: BoxDecoration(
-                                                    color: Color.fromRGBO(
-                                                        47, 184, 170, 1)),
-                                                child: Text("确定"),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
+                    onTap: () {
+                      Navigator.pushNamed(context, 'welcome');
+                    })),
+            // 注册标题
+            Positioned(
+              left: 5.0,
+              top: 90.0,
+              child: Text(
+                'Sign Up',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            // 注册字段
+            Positioned(
+              top: 140.0,
+              child: Container(
+                width: ScreenUtil().setWidth(680),
+                child: Form(
+                    key: _formKey,
+                    // autovalidate: true,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          TextFormField(
+                            controller: _unameController,
+                            decoration: InputDecoration(
+                                labelText: '用户名',
+                                // hintText: '用户名或手机号',
+                                icon: Icon(Icons.person)),
+                            validator: (v) {
+                              return v.trim().length > 0 ? null : '用户名不能为空';
                             },
                           ),
-                        );
-                      },
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.fromLTRB(15, 10, 15, 0),
-                        padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                        height: ScreenUtil().setHeight(100),
-                        width: ScreenUtil().setWidth(750),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Colors.white),
-                        child: Text("请选择规格数量"),
-                      ),
-                    ),
-                    useCoupon(),
-                    Container(height: 800, child: Text("data"))
-                  ],
-                ),
-              ),
-              this._opacity > 0
-                  ? Positioned(
-                      top: 0,
-                      child: Container(
-                          alignment: Alignment.center,
-                          height: ScreenUtil().setHeight(150),
-                          width: ScreenUtil().setWidth(750),
-                          color: Colors.white,
-                          child: TopTitle(title: "农场详情", showArrow: true)),
-                    )
-                  : Positioned(
-                      top: 30,
-                      left: 20,
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(width: 1)),
-                          alignment: Alignment.center,
-                          height: ScreenUtil().setWidth(50),
-                          width: ScreenUtil().setWidth(50),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.arrow_left,
-                              color: Colors.white,
-                              size: 26,
-                            ),
-                          )),
-                    )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget cropList(data, setSta) {
-    List<Widget> list = [];
-    for (var i = 0; i < data.length; i++) {
-      list.add(cropItem(data, data[i], i, setSta));
-    }
-    return Container(
-      height: 220,
-      child: ListView(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        children: list,
-      ),
-    );
-  }
-
-  Widget cropItem(totalData, data, index, setSta) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      height: ScreenUtil().setHeight(200),
-      width: ScreenUtil().setWidth(220),
-      decoration: BoxDecoration(color: Color.fromRGBO(51, 183, 171, 1)),
-      child: Column(
-        children: <Widget>[
-          Image.network(
-            data["imgCover"],
-            width: ScreenUtil().setWidth(160),
-            height: ScreenUtil().setHeight(140),
-            fit: BoxFit.cover,
-          ),
-          Text(
-            data["cropName"],
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          Text(
-            data["descript"],
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          Text(
-            "￥${data["price"]}/份",
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  int cur = cropNum[index];
-                  if (cur == 0) {
-                    Toast.toast(context, msg: "最低选择量为0");
-                    return;
-                  }
-                  cropNum[index] = cropNum[index] - 1;
-                  getTotalPrice(totalData, setSta);
-                  setSta(() {});
-                },
-                child: Icon(IconData(0xe6e6, fontFamily: "myIcons")),
-              ),
-              SizedBox(width: 10),
-              Text(cropNum[index].toString()),
-              SizedBox(width: 10),
-              InkWell(
-                onTap: () {
-                  if (getTotalNum() >= areaNum * 10) {
-                    Toast.toast(context, msg: "超过面积限制了");
-                    return;
-                  }
-                  cropNum[index] = cropNum[index] + 1;
-                  getTotalPrice(totalData, setSta);
-                  setSta(() {});
-                },
-                child: Icon(Icons.add),
-              )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 优惠卷
-  Widget useCoupon() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: Colors.white),
-      height: 60,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("选择优惠卷"),
-          Text(
-            chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
-            style: TextStyle(color: Colors.red, fontSize: 18),
-          ),
-          InkWell(
-            child: Icon(Icons.more_horiz),
-            onTap: () {
-              showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Container(
-                      color: Colors.white,
-                      height: 300,
-                      child: Stack(
-                        children: <Widget>[
-                          ListView(
+                          TextFormField(
+                              controller: _pwdController,
+                              decoration: InputDecoration(
+                                  labelText: "密码",
+                                  hintText: "您的登录密码",
+                                  icon: Icon(Icons.lock)),
+                              obscureText: true,
+                              //校验密码
+                              validator: (v) {
+                                return v.trim().length > 2 ? null : "密码不能少于6位";
+                              }),
+                          Stack(
                             children: <Widget>[
-                              Container(
-                                alignment: Alignment.center,
-                                height: 80,
-                                child: Text(
-                                  "优惠卷列表",
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w600),
+                              TextFormField(
+                                  controller: _phoneController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      labelText: "手机号",
+                                      hintText: "关联您的手机号码",
+                                      icon: Icon(Icons.phone_iphone)),
+                                  // 校验手机号
+                                  validator: (v) {
+                                    int count = v.trim().length;
+                                    if (count != 11) {
+                                      return "手机号必须是11位";
+                                    }
+                                    RegExp mobile =
+                                        new RegExp(r"^1[3-9]\d{9}$");
+                                    if (mobile.hasMatch(v)) {
+                                      return null;
+                                    } else {
+                                      return "手机格式不正确";
+                                    }
+                                  }),
+                              Positioned(
+                                right: 0,
+                                top: 10,
+                                child: RaisedButton(
+                                  child: Text(_verifyStr),
+                                  onPressed: () {
+                                    if (_phoneController.text == "") {
+                                      Toast.toast(context, msg: "请先填写手机号码");
+                                    } else if (_isAvailableGetVCode == false) {
+                                      Toast.toast(context, msg: "一分钟只能获取一次验证码");
+                                    } else {
+                                      _startTimer();
+                                      getData("user/sendSms", data: {
+                                        "phone": _phoneController.text
+                                      }).then((val) {
+                                        Toast.toast(context,
+                                            msg: "短信已发送，请查收手机短信");
+                                      });
+                                    }
+                                  },
                                 ),
-                              ),
-                              couponList()
+                              )
                             ],
                           ),
-                          Positioned(
-                            right: 20,
-                            top: 30,
-                            child: InkWell(
-                              onTap: () {
-                                // 前往领劵
-                                Navigator.popAndPushNamed(context, "takeCoupon")
-                                    .then((val) {
-                                  if (val) {
-                                    getUserCoupons();
-                                  }
-                                });
-                              },
-                              child: Icon(Icons.more_horiz),
-                            ),
+                          TextFormField(
+                              controller: _checkCodeController,
+                              decoration: InputDecoration(
+                                  labelText: "验证码",
+                                  hintText: "输入6位数验证码",
+                                  icon: Icon(
+                                    IconData(0xe64a, fontFamily: 'myIcons'),
+                                    size: 20,
+                                  )),
+                              // obscureText: true,
+                              //校验密码
+                              validator: (v) {
+                                return v.trim().length == 6 ? null : "验证码为6位数字";
+                              }),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    child: Container(
+                                      height: ScreenUtil().setHeight(100),
+                                      width: ScreenUtil().setWidth(100),
+                                      margin: EdgeInsets.only(top: 30.0),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60.0),
+                                          color: Color.fromRGBO(208, 1, 27, 1)),
+                                      child: Icon(Icons.keyboard_arrow_right,
+                                          size: 30, color: Colors.white),
+                                    ),
+                                    onTap: () async {
+                                      if ((_formKey.currentState as FormState)
+                                          .validate()) {
+                                        if (!_verufyCodeTrue) {
+                                          // 先校验验证码
+                                          getData("user/checkVerifyCode",
+                                              data: {
+                                                "phone": _phoneController.text,
+                                                "verifyCode":
+                                                    _checkCodeController.text
+                                              }).then((val) async {
+                                            if (val != null &&
+                                                val["code"] == 200) {
+                                              _verufyCodeTrue = true;
+                                              setState(() {});
+                                              var data =
+                                                  await DioUtils.getInstance()
+                                                      .post("register", data: {
+                                                "username":
+                                                    _unameController.text,
+                                                "password": _pwdController.text,
+                                                "phone": _phoneController.text
+                                              });
+                                              if (data != null &&
+                                                  data["errorCode"] == 0) {
+                                                Navigator.pushNamed(
+                                                    context, 'login');
+                                              } else {
+                                                Toast.toast(context,
+                                                    msg: data["msg"]);
+                                              }
+                                            } else {
+                                              Toast.toast(context,
+                                                  msg: val["msg"]);
+                                            }
+                                          });
+                                        }
+                                      }
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
                           )
                         ],
-                      )));
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget couponList() {
-    List<Widget> list = [];
-    for (int i = 0; i < userCouponList.length; i++) {
-      list.add(couponItem(userCouponList[i], i));
-    }
-    if (list.length > 0) {
-      return Column(children: list);
-    } else {
-      return GestureDetector(
-        onTap: () {
-          // 前往领劵
-          Navigator.popAndPushNamed(context, "takeCoupon").then((val) {
-            if (val) {
-              getUserCoupons();
-            }
-          });
-        },
-        child: Container(
-          alignment: Alignment.center,
-          height: 50,
-          child: Text(
-            "点击前往领劵",
-            style: TextStyle(fontSize: 20),
-          ),
-        ),
-      );
-    }
-  }
-
-  Widget couponItem(data, index) {
-    return GestureDetector(
-      onTap: () {
-        if (data["with_amount"] > total) {
-          Toast.toast(context, msg: "订单金额不足");
-        } else {
-          chooseCoupon = data;
-          setState(() {});
-          Navigator.pop(context);
-        }
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: ScreenUtil().setWidth(750),
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        height: 60,
-        decoration: BoxDecoration(
-            border: Border.all(width: 1),
-            borderRadius: BorderRadius.circular(15)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            Text(
-              data["name"],
-              style: TextStyle(color: Colors.red),
+                      ),
+                    )),
+              ),
             ),
-            Text(data["type"] == 0 ? "无门槛劵" : "促销商品劵")
+            // 去登录
+            Positioned(
+              bottom: 30,
+              child: InkWell(
+                child: Container(
+                  alignment: Alignment.center,
+                  width: ScreenUtil().setWidth(680),
+                  margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
+                  child: Text(
+                    'Already have an account? Sign In',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.pushNamed(context, 'login');
+                },
+              ),
+            )
           ],
         ),
       ),
