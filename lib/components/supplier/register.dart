@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
+import 'package:commerce_shop_flutter/utils/utils.dart';
 
 class SupplierRegister extends StatefulWidget {
   @override
@@ -67,9 +68,13 @@ class _SupplierRegisterState extends State<SupplierRegister> {
 
   // 检查名字是否存在
   Future<bool> checkNameExit() async {
-    bool ifExit = await _checkNameExit();
-    if (ifExit) {
-      Toast.toast(context, msg: "商家名字已经存在");
+    bool ifExit = false;
+    var data = await DioUtils.getInstance()
+        .post("SsupplierIfExit", data: {"username": _unameController.text});
+    // 查找到有数据 或者 传参不符合规范
+    if (data != null && data["code"] == 400) {
+      Toast.toast(context, msg: parseErrorMessage(data["msg"]));
+      ifExit = true;
     }
     return ifExit;
   }

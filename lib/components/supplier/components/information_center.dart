@@ -102,7 +102,12 @@ class _InformationCenterState extends State<InformationCenter> {
     String lassMessTime = historyInfo[0]["createdAt"];
     return GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, "informationDetail", arguments: data);
+          Navigator.pushNamed(context, "informationDetail", arguments: data)
+              .then((val) {
+            if (val) {
+              getHistory();
+            }
+          });
         },
         child: Container(
           height: ScreenUtil().setHeight(120),

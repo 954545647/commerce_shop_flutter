@@ -59,10 +59,9 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
 
   // 获取历史消息
   Future getHistory() async {
-    var data = await DioUtils.getInstance().post("supplierHistory", data: {
-      "toId": supplierData.supplierInfo.id,
-      "fromId": userData.userInfo.id
-    });
+    Map args = ModalRoute.of(context).settings.arguments;
+    var data = await DioUtils.getInstance().post("supplierHistory",
+        data: {"toId": args["id"], "fromId": userData.userInfo.id});
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
     }

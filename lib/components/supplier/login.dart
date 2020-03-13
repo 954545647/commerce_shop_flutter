@@ -154,6 +154,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               var res = data["data"];
+                                              print(res);
                                               // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences

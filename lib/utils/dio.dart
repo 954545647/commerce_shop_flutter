@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
 import 'package:commerce_shop_flutter/config/serviceUrl.dart';
+import 'dart:convert';
 
 class DioUtils {
   static DioUtils _instance;
@@ -77,7 +78,11 @@ class DioUtils {
       // print('请求路径---$url------请求结果-----${response.data}\n\n');
       return response.data;
     } on DioError catch (e) {
-      print('请求失败---错误类型${e.type}--错误信息${e.message}');
+      if (e.response != null) {
+        return jsonDecode(e.response.toString());
+      } else {
+        print('请求失败---错误类型${e.type}--错误信息${e.message}');
+      }
     }
   }
 

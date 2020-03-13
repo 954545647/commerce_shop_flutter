@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/utils/utils.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
 class Register extends StatefulWidget {
@@ -63,40 +64,29 @@ class _RegisterState extends State<Register> {
     return result;
   }
 
-  Future<bool> _checkNameExit() async {
+  // 检查名字是否存在
+  Future<bool> checkNameExit() async {
     bool ifExit = false;
     var data = await DioUtils.getInstance()
         .post("userIfExit", data: {"username": _unameController.text});
-    if (data != null && data["code"] == 200) {
+    // 查找到有数据 或者 传参不符合规范
+    if (data != null && data["code"] == 400) {
+      Toast.toast(context, msg: parseErrorMessage(data["msg"]));
       ifExit = true;
     }
     return ifExit;
   }
 
-  // 检查名字是否存在
-  Future<bool> checkNameExit() async {
-    bool ifExit = await _checkNameExit();
-    if (ifExit) {
-      Toast.toast(context, msg: "商家名字已经存在");
-    }
-    return ifExit;
-  }
-
-  // 注册
-  Future _register() async {
-    return DioUtils.getInstance().post("register", data: {
+  Future register() async {
+    var registerInfo = await DioUtils.getInstance().post("register", data: {
       "username": _unameController.text,
       "password": _pwdController.text,
       "phone": _phoneController.text
     });
-  }
-
-  Future register() async {
-    var registerInfo = await _register();
     if (registerInfo != null && registerInfo["errorCode"] == 0) {
       Navigator.pushNamed(context, 'login');
     } else {
-      Toast.toast(context, msg: registerInfo["msg"]);
+      Toast.toast(context, msg: parseErrorMessage(registerInfo["msg"]));
       return;
     }
   }

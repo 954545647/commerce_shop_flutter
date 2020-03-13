@@ -20,6 +20,19 @@ List parseTimeList(List list) {
   return result;
 }
 
+// 将错误信息解析成字符串
+String parseErrorMessage(dynamic message) {
+  if (message is String) {
+    return message;
+  } else {
+    String result = "";
+    for (var i = 0; i < message.length; i++) {
+      result = result + message[i];
+    }
+    return result;
+  }
+}
+
 // 截取时间的前10位
 String parseSingleTime(String time) {
   var str = time.toString().substring(0, 10);

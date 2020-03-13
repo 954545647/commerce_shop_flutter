@@ -21,10 +21,9 @@ class _HotGoodsState extends State<HotGoods> {
   getAllGoods() {
     DioUtils.getInstance().post('getAllGoods').then((val) {
       if (val != null && val["data"] != null) {
-        setState(() {
-          goodsList = val["data"];
-          ifShowLoading = false;
-        });
+        goodsList = val["data"];
+        ifShowLoading = false;
+        setState(() {});
       }
     });
   }
@@ -35,7 +34,6 @@ class _HotGoodsState extends State<HotGoods> {
         ? Text("")
         : Container(
             width: ScreenUtil.getInstance().setWidth(750),
-            // height: ScreenUtil.getInstance().setHeight(500),
             color: Color.fromRGBO(245, 245, 245, 0.8),
             child: Column(
               children: <Widget>[

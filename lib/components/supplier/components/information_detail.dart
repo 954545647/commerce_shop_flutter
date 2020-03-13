@@ -1,4 +1,4 @@
-// 客服中心
+// 商家 -> 详细聊天
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
@@ -6,7 +6,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import "package:commerce_shop_flutter/utils/dio.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
-// import "package:commerce_shop_flutter/config/global.dart";
+import "package:commerce_shop_flutter/config/global.dart";
 import 'dart:async';
 import 'package:commerce_shop_flutter/config/config.dart';
 
@@ -33,12 +33,20 @@ class _InformationDetailState extends State<InformationDetail> {
   // 初始化连接socket
   Future<void> _initSocket() async {
     await Future.delayed(Duration(microseconds: 300), () async {
+      Map args = ModalRoute.of(context).settings.arguments;
       supplierData = Provider.of<SupplierData>(context);
       mysocket = supplierData.socket;
-      Map message = ModalRoute.of(context).settings.arguments;
-      // 设置历史消息
-      talkList = message["historyInfo"];
-      setState(() {});
+      // 获取历史记录
+      await getHistory();
+      // 告诉顾客商家开始客服服务了
+      mysocket.emit(
+          "supplierLogin",
+          new MessageInfo(
+              fromId: supplierData.supplierInfo.id,
+              fromName: supplierData.supplierInfo.username,
+              toId: args["userInfo"]["id"],
+              toName: args["userInfo"]["username"],
+              type: 1));
       // 监听顾客回复
       mysocket.on("supplier", (data) {
         createLi(data);
@@ -49,8 +57,11 @@ class _InformationDetailState extends State<InformationDetail> {
 
   // 获取历史消息
   Future getHistory() async {
-    var data = await DioUtils.getInstance()
-        .post("servicerHistory", data: {"id": supplierData.supplierInfo.id});
+    Map args = ModalRoute.of(context).settings.arguments;
+    var data = await DioUtils.getInstance().post("supplierHistory", data: {
+      "toId": args["userInfo"]["id"],
+      "fromId": supplierData.supplierInfo.id
+    });
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
     }
@@ -59,13 +70,16 @@ class _InformationDetailState extends State<InformationDetail> {
 
   // 发送消息
   sendMessage(val) {
+    Map args = ModalRoute.of(context).settings.arguments;
     val = {
       "content": val,
       "fromName": supplierData.supplierInfo.username,
       "fromId": supplierData.supplierInfo.id,
-      "socketId": mysocket.id
+      "toId": args["userInfo"]["id"],
+      "toName": args["userInfo"]["username"],
+      "type": 1
     };
-    mysocket.emit("chatToService", val);
+    mysocket.emit("SreplayToClient", val);
     createLi(val);
     setState(() {});
   }
@@ -75,6 +89,7 @@ class _InformationDetailState extends State<InformationDetail> {
     talkList.add({
       "content": val["content"],
       "fromName": val["fromName"],
+      "type": val["type"]
     });
   }
 
@@ -97,7 +112,11 @@ class _InformationDetailState extends State<InformationDetail> {
         removeTop: true,
         child: Column(
           children: <Widget>[
-            TopTitle(title: "中心", showArrow: true),
+            TopTitle(
+              title: "聊天",
+              showArrow: true,
+              ifRefresh: true,
+            ),
             SizedBox(
               height: 10,
             ),
@@ -106,11 +125,12 @@ class _InformationDetailState extends State<InformationDetail> {
                 controller: _controller,
                 itemCount: talkList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  String object = talkList[index]["fromName"];
-                  if (object == supplierData.supplierInfo.username) {
-                    return fromService(talkList[index]);
-                  } else {
+                  int type = talkList[index]["type"];
+                  // 消息中心，商家是聊天方
+                  if (type == 1) {
                     return chatItem(talkList[index]);
+                  } else {
+                    return fromService(talkList[index]);
                   }
                 },
               ),
@@ -193,7 +213,6 @@ class _InformationDetailState extends State<InformationDetail> {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      // decoration: BoxDecoration(color: Colors.white),
       height: 50,
       width: MediaQuery.of(context).size.width,
       child: Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
@@ -222,11 +241,9 @@ class _InformationDetailState extends State<InformationDetail> {
   }
 
   Widget fromService(data) {
+    Map args = ModalRoute.of(context).settings.arguments;
     return Container(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      // ),
       margin: EdgeInsets.only(bottom: 10),
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -238,7 +255,7 @@ class _InformationDetailState extends State<InformationDetail> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583779492487&di=2843ea2cc709f68d1f2857ce3f6a4b40&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01af985927beeeb5b3086ed47f7e57.png%401280w_1l_2o_100sh.png'),
+                        "${Config.apiHost}${args["userInfo"]["imgCover"]}"),
                     fit: BoxFit.cover))),
         SizedBox(
           width: 10,
