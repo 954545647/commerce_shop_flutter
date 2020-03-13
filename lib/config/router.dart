@@ -36,8 +36,10 @@ import 'package:commerce_shop_flutter/components/supplier/nextStep.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_good.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_land.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_crop.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/information_center.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/information_detail.dart';
 import 'package:commerce_shop_flutter/components/chitchat/service.dart';
-import 'package:commerce_shop_flutter/components/chitchat/message.dart';
+import 'package:commerce_shop_flutter/components/chitchat/chat_to_supplier.dart';
 
 final routes = {
   'welcome': (context) => Welcome(),
@@ -78,6 +80,8 @@ final routes = {
   "publishLand": (context, {arguments}) => PublishLand(),
   "publishCrop": (context, {arguments}) => PublishCrop(),
   "service": (context, {arguments}) => Service(),
-  "message": (context, {arguments}) => Message(),
+  "chatToSupplier": (context, {arguments}) => ChatToSupplier(),
   "photo": (context) => Photo(),
+  "informationCenter": (context, {arguments}) => InformationCenter(),
+  "informationDetail": (context, {arguments}) => InformationDetail(),
 };

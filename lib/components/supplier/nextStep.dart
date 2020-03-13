@@ -18,10 +18,13 @@ class _NextStepState extends State<NextStep> {
   TextEditingController _idCardController = new TextEditingController(); // 手机号
   File frontImg; // 身份证正面
   File backImg; // 身份证背面
+  File shopImg; // 店铺封面
   String serverFrontImg;
   String serverBackImg;
+  String serverShopImg;
   bool isFront = true;
   String idCard = "";
+  int number = 0;
 
   @override
   void dispose() {
@@ -51,10 +54,13 @@ class _NextStepState extends State<NextStep> {
         child: Scaffold(
           body: ListView(
             children: <Widget>[
+              SizedBox(
+                height: 30,
+              ),
               Container(
                   alignment: Alignment.centerLeft,
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  height: ScreenUtil().setHeight(240),
+                  height: ScreenUtil().setHeight(200),
                   child: Row(
                     children: <Widget>[
                       InkWell(
@@ -75,7 +81,7 @@ class _NextStepState extends State<NextStep> {
                   )),
               // 身份证号码
               Container(
-                padding: EdgeInsets.fromLTRB(25, 10, 25, 30),
+                padding: EdgeInsets.fromLTRB(25, 0, 20, 0),
                 child: TextField(
                   controller: _idCardController,
                   onChanged: (v) {
@@ -119,6 +125,27 @@ class _NextStepState extends State<NextStep> {
                   ],
                 ),
               ),
+              // 店铺照片
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      height: ScreenUtil().setHeight(100),
+                      child: Text(
+                        "店铺封面",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        imageView(shopImg, 2),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 margin: EdgeInsets.fromLTRB(10, 30, 10, 0),
                 alignment: Alignment.center,
@@ -137,13 +164,18 @@ class _NextStepState extends State<NextStep> {
                       Toast.toast(context, msg: "请上传身份证反面");
                       return;
                     }
+                    if (serverShopImg == null) {
+                      Toast.toast(context, msg: "请上传店铺封面");
+                      return;
+                    }
                     await DioUtils.getInstance().post("Ssregister", data: {
                       "username": userInfo["username"],
                       "password": userInfo["password"],
                       "phone": userInfo["phone"],
                       "idNum": _idCardController.text,
                       "frontImg": serverFrontImg,
-                      "backImg": serverBackImg
+                      "backImg": serverBackImg,
+                      "imgCover": serverShopImg
                     }).then((val) {
                       if (val != null && val["data"] != null) {
                         Toast.toast(context, msg: "入驻成功");
@@ -177,11 +209,7 @@ class _NextStepState extends State<NextStep> {
               size: 50,
             ),
             onTap: () {
-              if (i == 1) {
-                isFront = false;
-              } else {
-                isFront = true;
-              }
+              number = i;
               showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -222,7 +250,13 @@ class _NextStepState extends State<NextStep> {
   Future _getImageFromCamera() async {
     var img =
         await ImagePicker.pickImage(source: ImageSource.camera, maxWidth: 400);
-    isFront ? frontImg = img : backImg = img;
+    if (number == 0) {
+      frontImg = img;
+    } else if (number == 1) {
+      backImg = img;
+    } else {
+      shopImg = img;
+    }
     uploadPhoto(img);
     setState(() {});
   }
@@ -230,7 +264,13 @@ class _NextStepState extends State<NextStep> {
 // 本地图片获取
   Future _takePhoto() async {
     var img = await ImagePicker.pickImage(source: ImageSource.gallery);
-    isFront ? frontImg = img : backImg = img;
+    if (number == 0) {
+      frontImg = img;
+    } else if (number == 1) {
+      backImg = img;
+    } else {
+      shopImg = img;
+    }
     uploadPhoto(img);
     setState(() {});
   }
@@ -245,9 +285,14 @@ class _NextStepState extends State<NextStep> {
         FormData.fromMap({"file": await MultipartFile.fromFile(fileDir)});
     var res =
         await getData("supplier/upload", data: formData, baseUrl: BASEURL);
-    isFront ? frontImg = img : backImg = img;
     if (res != null && res["url"] != null) {
-      isFront ? serverFrontImg = res["url"] : serverBackImg = res["url"];
+      if (number == 0) {
+        serverFrontImg = res["url"];
+      } else if (number == 1) {
+        serverBackImg = res["url"];
+      } else {
+        serverShopImg = res["url"];
+      }
     }
   }
 }

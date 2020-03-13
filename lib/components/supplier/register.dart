@@ -25,8 +25,6 @@ class _SupplierRegisterState extends State<SupplierRegister> {
   Timer _timer;
   // 当前倒计时的秒数。
   int _seconds = 60;
-  // 验证码是否校验通过
-  bool _verufyCodeTrue = false;
   bool checkOk = false; // 是否通过验证
 
 // 开始倒计时
@@ -41,19 +39,22 @@ class _SupplierRegisterState extends State<SupplierRegister> {
         _seconds = countdown;
         _cancelTimer();
       }
+      setState(() {});
     });
   }
 
   // 跳转注册下一步
   void jumpNextStep() {
+    // 关闭键盘
+    FocusScope.of(context).requestFocus(FocusNode());
     Navigator.pushNamed(context, "nextStep", arguments: {
       "username": _unameController.text,
       "password": _pwdController.text,
       "phone": _phoneController.text
     });
+    _cancelTimer();
   }
 
-  // 检查名字是否存在
   Future<bool> _checkNameExit() async {
     bool ifExit = false;
     var data = await DioUtils.getInstance()
@@ -64,14 +65,28 @@ class _SupplierRegisterState extends State<SupplierRegister> {
     return ifExit;
   }
 
-  void checkNameExit() async {
+  // 检查名字是否存在
+  Future<bool> checkNameExit() async {
     bool ifExit = await _checkNameExit();
     if (ifExit) {
       Toast.toast(context, msg: "商家名字已经存在");
-      return;
-    } else {
-      jumpNextStep();
     }
+    return ifExit;
+  }
+
+  // 检查验证码
+  Future<bool> checkCode() async {
+    bool result = false;
+    var data = await getData("user/checkVerifyCode", data: {
+      "phone": _phoneController.text,
+      "verifyCode": _checkCodeController.text
+    });
+    if (data != null && data["code"] == 200) {
+      result = true;
+    } else {
+      Toast.toast(context, msg: data["msg"]);
+    }
+    return result;
   }
 
   // 取消倒计时的计时器。
@@ -227,28 +242,15 @@ class _SupplierRegisterState extends State<SupplierRegister> {
                                   onTap: () async {
                                     if ((_formKey.currentState as FormState)
                                         .validate()) {
-                                      if (!_verufyCodeTrue) {
-                                        // 先校验验证码
-                                        getData("user/checkVerifyCode", data: {
-                                          "phone": _phoneController.text,
-                                          "verifyCode":
-                                              _checkCodeController.text
-                                        }).then((val) async {
-                                          print(
-                                              "验证码：${_checkCodeController.text},验证结果：${val["msg"]}");
-                                          if (val != null &&
-                                              val["code"] == 200) {
-                                            _verufyCodeTrue = true;
-                                            // 判断商家名称是否存在
-                                            checkNameExit();
-                                          } else {
-                                            Toast.toast(context,
-                                                msg: val["msg"]);
-                                          }
-                                        });
+                                      // 校验名字是否存在
+                                      bool result = await checkNameExit();
+                                      if (result) {
+                                        return;
                                       }
-                                      if (_verufyCodeTrue) {
-                                        checkNameExit();
+                                      // 校验验证码
+                                      bool ifCodeTrue = await checkCode();
+                                      if (ifCodeTrue) {
+                                        jumpNextStep();
                                       }
                                     }
                                   },

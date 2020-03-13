@@ -29,11 +29,6 @@ class _HotGoodsState extends State<HotGoods> {
     });
   }
 
-// 保存当前点击商品的id
-  saveGoodId(goodId) {
-    DioUtils.getInstance().post('saveId', data: {"goodId": goodId});
-  }
-
   @override
   Widget build(BuildContext context) {
     return ifShowLoading
@@ -70,22 +65,13 @@ class _HotGoodsState extends State<HotGoods> {
 
   // 热门商品子项
   Widget hotGoodsItem(item) {
-    var id = item['id'];
     var name = item['goodName'];
     var price = item['price'];
     var desc = item['descript'];
-    var stock = item['stock'];
     var imgCover = item['imgCover'];
-    var sales = item['sales'];
-    var expressCost = item['expressCost'];
-    var from = item['from'];
-    var supplierId = item['supplierId'];
     return GestureDetector(
       onTap: () {
-        saveGoodId(id);
-        Navigator.pushNamed(context, 'homeGoodsDetail',
-            arguments:
-                '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","supplierId":$supplierId,"from":"$from"}');
+        Navigator.pushNamed(context, "homeGoodsDetail", arguments: item);
       },
       child: Container(
         height: ScreenUtil().setHeight(340),

@@ -20,6 +20,7 @@ const urlList = {
   "getUserSignDays": "user/getUserSignDays",
   "myFarms": "user/farmOrder",
   "getUserInfo": "user/getUserInfo",
+  "userIfExit": "user/ifExit",
   "updateImg": "user/updateCover",
   // 优惠卷接口
   "getAlls": "coupon/getAlls",
@@ -52,6 +53,7 @@ const urlList = {
   "SsupplierGood": "supplier/goods",
   "SsupplierOrders": "supplier/orders",
   "SsupplierIfExit": "supplier/ifExit",
+  "SsupplierMessage": "supplier/message",
   // 农场接口
   "getFarmsInfo": "farm/getInfo",
   "getAllFarmsInfo": "farm/getAlls",
@@ -61,6 +63,7 @@ const urlList = {
   // 通信接口
   "sMessage": "socket/sMessage",
   "servicerHistory": "socket/servicerHistory",
+  "supplierHistory": "socket/supplierHistory",
   // 通用接口
   "upload": "supplier/upload"
 };

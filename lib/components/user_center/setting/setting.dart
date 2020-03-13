@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
-import 'package:commerce_shop_flutter/provider/socketData.dart';
 
 class Setting extends StatefulWidget {
   @override
@@ -12,8 +11,6 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
-    final socket = Provider.of<SocketData>(context);
-
     final user = Provider.of<UserData>(context);
     List listData = [
       {'jumpRoute': 'password', 'title': '修改密码'},
@@ -67,7 +64,7 @@ class _SettingState extends State<Setting> {
                 onTap: () {
                   // 先弹出框提示警告
                   // 断开socket连接
-                  socket.disconnect();
+                  user.disconnect();
                   user.logout();
                   Navigator.pushNamed(context, "index");
                 },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import "package:commerce_shop_flutter/config/config.dart";
+import "package:commerce_shop_flutter/config/config.dart";
 
 class Supplier extends StatefulWidget {
   @override
@@ -14,6 +14,7 @@ class _SupplierState extends State<Supplier> {
     Map args = ModalRoute.of(context).settings.arguments;
     String name = args["username"];
     String phone = args["phone"];
+    String imgCover = args["imgCover"];
     return Scaffold(
       body: MediaQuery.removePadding(
         context: context,
@@ -23,40 +24,14 @@ class _SupplierState extends State<Supplier> {
             children: <Widget>[
               // 标题
               TopTitle(title: '商户详情', showArrow: true),
-              // 商家轮播图
-              // Stack(
-              //   alignment: Alignment(0, 1.5),
-              //   children: <Widget>[
-              //     Image.network(
-              //       "${Config.apiHost}$cover",
-              //       fit: BoxFit.fill,
-              //       width: ScreenUtil().setWidth(750),
-              //       height: ScreenUtil().setHeight(400),
-              //     ),
-              //     Container(
-              //       width: ScreenUtil().setWidth(160),
-              //       height: ScreenUtil().setHeight(160),
-              //       decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.circular(100),
-              //           color: Colors.white),
-              //       child: Stack(
-              //         alignment: Alignment(0, 0),
-              //         children: <Widget>[
-              //           ClipOval(
-              //             child: Image.asset(
-              //               'assets/images/potatoes1.webp',
-              //               width: ScreenUtil().setWidth(130),
-              //               height: ScreenUtil().setHeight(130),
-              //               fit: BoxFit.fill,
-              //             ),
-              //           )
-              //         ],
-              //       ),
-              //     )
-              //   ],
-              // ),
+              // 商家封面
+              Image.network(
+                "${Config.apiHost}$imgCover",
+                height: 250,
+                fit: BoxFit.cover,
+              ),
               // 商家信息
-              merchantDetail(name, phone),
+              merchantDetail(imgCover, name, phone),
             ],
           ),
         ),
@@ -65,15 +40,11 @@ class _SupplierState extends State<Supplier> {
   }
 
   // 商家信息
-  Widget merchantDetail(name, phone) {
+  Widget merchantDetail(imgCover, name, phone) {
     return Container(
       margin: EdgeInsets.only(top: 25),
       child: Column(
         children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            child: Text('基本信息'),
-          ),
           merchantInfo(name, "0xe60c"),
           merchantInfo(phone, "0xe616"),
           // merchantInfo(address, "0xe62f"),

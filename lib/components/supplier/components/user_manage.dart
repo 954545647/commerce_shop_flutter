@@ -1,7 +1,6 @@
 // 用户中心
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
 import "package:commerce_shop_flutter/utils/diaLog.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
@@ -15,11 +14,7 @@ class _UserManageState extends State<UserManage> {
   @override
   void initState() {
     super.initState();
-    getOrders();
   }
-
-  // 获取全部订单
-  getOrders() {}
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +65,7 @@ class _UserManageState extends State<UserManage> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, "message");
+                      Navigator.pushNamed(context, "informationCenter");
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -108,6 +103,7 @@ class _UserManageState extends State<UserManage> {
                         route: "index",
                         method: () {
                           supplier.logout();
+                          supplier.disconnect();
                         },
                       );
                     },

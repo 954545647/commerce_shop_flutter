@@ -68,6 +68,7 @@ String sourcePoint(int source) {
   }
 }
 
+// 切割图片路径
 String cutPath(String imgCover) {
   imgCover = imgCover.toString();
   if (imgCover.indexOf("10.0.2.2") != -1) {
@@ -80,4 +81,60 @@ String cutPath(String imgCover) {
     imgCover = imgCover.substring(15);
   }
   return imgCover;
+}
+
+// 获取消息的时间
+String getMessTime(String time) {
+  String detail = time.substring(11, 13);
+  time = parseSingleTime(time);
+  // 解析传入的时间
+  DateTime curTime = DateTime.parse("$time");
+  // 当前时间
+  DateTime now = new DateTime.now();
+  // 计算当前时间和传入时间的差值
+  var difference = now.difference(curTime);
+  int day = difference.inDays;
+  if (day == 0) {
+    // 计算是早上还是晚上
+    if (int.parse(detail) > 12) {
+      return "下午";
+    } else {
+      return "上午";
+    }
+  } else if (day == 1) {
+    return "昨天";
+  } else if (day <= 7) {
+    return pasreWeekDay(curTime);
+  }
+  return time;
+}
+
+// 获取当前是星期几
+String pasreWeekDay(DateTime time) {
+  int weekday = time.weekday;
+  String str = "";
+  switch (weekday) {
+    case 1:
+      str = "星期一";
+      break;
+    case 2:
+      str = "星期二";
+      break;
+    case 3:
+      str = "星期三";
+      break;
+    case 4:
+      str = "星期四";
+      break;
+    case 5:
+      str = "星期五";
+      break;
+    case 6:
+      str = "星期六";
+      break;
+    case 7:
+      str = "星期日";
+      break;
+  }
+  return str;
 }

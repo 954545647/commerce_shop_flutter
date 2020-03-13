@@ -25,8 +25,6 @@ class _RegisterState extends State<Register> {
   Timer _timer;
   // 当前倒计时的秒数。
   int _seconds = 60;
-  // 验证码是否校验通过
-  bool _verifyCodeTrue = false;
 
 // 开始倒计时
   _startTimer() {
@@ -50,24 +48,42 @@ class _RegisterState extends State<Register> {
     _timer?.cancel();
   }
 
-  // 获取验证码
-  Future<void> _getCode() async {
-    await getData("user/sendSms", data: {"phone": _phoneController.text})
-        .then((val) {
-      Toast.toast(context, msg: "短信已发送，请查收手机短信");
-    });
-  }
-
-  // 校验验证码
-  Future checkCode() async {
-    return await getData("user/checkVerifyCode", data: {
+  // 检查验证码
+  Future<bool> checkCode() async {
+    bool result = false;
+    var data = await getData("user/checkVerifyCode", data: {
       "phone": _phoneController.text,
       "verifyCode": _checkCodeController.text
     });
+    if (data != null && data["code"] == 200) {
+      result = true;
+    } else {
+      Toast.toast(context, msg: data["msg"]);
+    }
+    return result;
+  }
+
+  Future<bool> _checkNameExit() async {
+    bool ifExit = false;
+    var data = await DioUtils.getInstance()
+        .post("userIfExit", data: {"username": _unameController.text});
+    if (data != null && data["code"] == 200) {
+      ifExit = true;
+    }
+    return ifExit;
+  }
+
+  // 检查名字是否存在
+  Future<bool> checkNameExit() async {
+    bool ifExit = await _checkNameExit();
+    if (ifExit) {
+      Toast.toast(context, msg: "商家名字已经存在");
+    }
+    return ifExit;
   }
 
   // 注册
-  Future register() async {
+  Future _register() async {
     return DioUtils.getInstance().post("register", data: {
       "username": _unameController.text,
       "password": _pwdController.text,
@@ -75,8 +91,8 @@ class _RegisterState extends State<Register> {
     });
   }
 
-  Future _register() async {
-    var registerInfo = await register();
+  Future register() async {
+    var registerInfo = await _register();
     if (registerInfo != null && registerInfo["errorCode"] == 0) {
       Navigator.pushNamed(context, 'login');
     } else {
@@ -197,8 +213,13 @@ class _RegisterState extends State<Register> {
                                     } else if (_isAvailableGetVCode == false) {
                                       Toast.toast(context, msg: "一分钟只能获取一次验证码");
                                     } else {
-                                      _startTimer();
-                                      await _getCode();
+                                      getData("user/sendSms", data: {
+                                        "phone": _phoneController.text
+                                      }).then((val) {
+                                        _startTimer();
+                                        Toast.toast(context,
+                                            msg: "短信已发送，请查收手机短信");
+                                      });
                                     }
                                   },
                                 ),
@@ -238,23 +259,16 @@ class _RegisterState extends State<Register> {
                                     onTap: () async {
                                       if ((_formKey.currentState as FormState)
                                           .validate()) {
-                                        if (!_verifyCodeTrue) {
-                                          // 先校验验证码是否正确
-                                          var ifCodeRight = await checkCode();
-                                          if (ifCodeRight != null &&
-                                              ifCodeRight["code"] == 200) {
-                                            _verifyCodeTrue = true;
-                                          } else {
-                                            // 验证码错误
-                                            Toast.toast(context,
-                                                msg: ifCodeRight["msg"]);
-                                            return;
-                                          }
+                                        // 校验名字是否存在
+                                        bool result = await checkNameExit();
+                                        if (result) {
+                                          return;
                                         }
-                                        FocusScope.of(context)
-                                            .requestFocus(FocusNode());
-                                        // 注册账号
-                                        _register();
+                                        // 校验验证码
+                                        bool ifCodeTrue = await checkCode();
+                                        if (ifCodeTrue) {
+                                          register();
+                                        }
                                       }
                                     },
                                   )

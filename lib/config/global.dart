@@ -1,5 +1,4 @@
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import "package:commerce_shop_flutter/config/config.dart";
 
 class MySocketIO {
   IO.Socket socket;
@@ -10,22 +9,34 @@ class MessageInfo {
   int fromId; // 发信息人Id
   int toId = 0; // 收信息人Id
   String content = ""; // 信息内容
-  String username;
+  String fromName;
+  String toName;
+  int type = 0; // 是哪方发送
 
-  MessageInfo({this.fromId, this.toId, this.content, this.username});
+  MessageInfo(
+      {this.fromId,
+      this.toId,
+      this.content,
+      this.fromName,
+      this.toName,
+      this.type});
 
   MessageInfo.fromJson(Map json) {
+    toName = json["toName"];
+    fromName = json["fromName"];
     fromId = json['fromId'];
     toId = json['toId'];
     content = json['content'];
-    username = json['username'];
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() => {
         'fromId': fromId,
         'toId': toId,
         'content': content,
-        'username': username,
+        'toName': toName,
+        'fromName': fromName,
+        'type': type,
       };
 }
 

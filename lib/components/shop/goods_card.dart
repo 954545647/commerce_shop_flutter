@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:commerce_shop_flutter/utils/dio.dart';
 import "package:commerce_shop_flutter/config/config.dart";
 
 class GoodsCard extends StatefulWidget {
@@ -11,23 +10,8 @@ class GoodsCard extends StatefulWidget {
 }
 
 class _GoodsCardState extends State<GoodsCard> {
-  // 保存当前点击商品的id
-  saveGoodId(goodId) {
-    DioUtils.getInstance().post('saveId', data: {"goodId": goodId});
-  }
-
   @override
   Widget build(BuildContext context) {
-    var id = widget.data['id'];
-    var name = widget.data['goodName'];
-    var price = widget.data['price'];
-    var desc = widget.data['descript'];
-    var stock = widget.data['stock'];
-    var imgCover = widget.data['imgCover'];
-    var sales = widget.data['sales'];
-    var expressCost = widget.data['expressCost'];
-    var from = widget.data['from'];
-    var supplierId = widget.data['supplierId'];
     return Container(
       margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -43,10 +27,8 @@ class _GoodsCardState extends State<GoodsCard> {
       ),
       child: GestureDetector(
         onTap: () {
-          saveGoodId(widget.data["id"]);
-          Navigator.pushNamed(context, 'homeGoodsDetail',
-              arguments:
-                  '{"id":$id,"name":"$name","price":$price,"desc":"$desc","stock":"$stock","imgCover":"$imgCover","sales":"$sales","expressCost":"$expressCost","supplierId":$supplierId,"from":"$from"}');
+          Navigator.pushNamed(context, "homeGoodsDetail",
+              arguments: widget.data);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

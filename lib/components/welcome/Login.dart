@@ -5,9 +5,6 @@ import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
-import 'package:commerce_shop_flutter/provider/socketData.dart';
-// import 'package:socket_io_client/socket_io_client.dart' as IO;
-// import "package:commerce_shop_flutter/config/config.dart";
 
 class Login extends StatefulWidget {
   @override
@@ -48,20 +45,12 @@ class _LoginState extends State<Login> {
     });
   }
 
-  // 连接socket
-  // Future connect() async {
-  //   IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
-  //     "transports": ['websocket'],
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     final user = Provider.of<UserData>(context);
-    final socket = Provider.of<SocketData>(context);
     return Material(
       child: Container(
         color: Colors.white,
@@ -186,7 +175,7 @@ class _LoginState extends State<Login> {
                                                   imgCover: res["imgCover"],
                                                   unpayOrder: []);
                                               // socket连接
-                                              socket.connect();
+                                              user.connect();
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               Navigator.pushNamed(

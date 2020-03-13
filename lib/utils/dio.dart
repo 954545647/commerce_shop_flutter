@@ -19,7 +19,6 @@ class DioUtils {
   // dio 初始化配置
   DioUtils() {
     print("我DIO初始化");
-    print("isClient$isClient");
     //请求参数配置
     _baseOptions = new BaseOptions(
       baseUrl: BASEURL,

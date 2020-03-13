@@ -5,24 +5,24 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import "package:commerce_shop_flutter/utils/dio.dart";
 import 'package:provider/provider.dart';
-import 'package:commerce_shop_flutter/provider/userData.dart';
-import "package:commerce_shop_flutter/config/global.dart";
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
+// import "package:commerce_shop_flutter/config/global.dart";
 import 'dart:async';
 import 'package:commerce_shop_flutter/config/config.dart';
 
-class Service extends StatefulWidget {
+class InformationDetail extends StatefulWidget {
   @override
-  _ServiceState createState() => new _ServiceState();
+  _InformationDetailState createState() => new _InformationDetailState();
 }
 
-class _ServiceState extends State<Service> {
+class _InformationDetailState extends State<InformationDetail> {
   var fsNode1 = new FocusNode();
   ScrollController _controller =
       new ScrollController(initialScrollOffset: 200.0);
   var _textInputController = new TextEditingController();
   List talkList = []; //   谈话内容
   IO.Socket mysocket;
-  UserData userData;
+  SupplierData supplierData;
   bool typing = false; // 是否有输入内容
   @override
   void initState() {
@@ -33,19 +33,14 @@ class _ServiceState extends State<Service> {
   // 初始化连接socket
   Future<void> _initSocket() async {
     await Future.delayed(Duration(microseconds: 300), () async {
-      userData = Provider.of<UserData>(context);
-      mysocket = userData.socket;
-      // 获取历史消息
-      await getHistory();
-      // 通知服务端开始客服服务
-      mysocket.emit(
-          "startForService",
-          new MessageInfo(
-              fromId: userData.userInfo.id,
-              fromName: userData.userInfo.username,
-              toName: "客服"));
-      // 监听客服回复
-      mysocket.on("replayFromService", (data) {
+      supplierData = Provider.of<SupplierData>(context);
+      mysocket = supplierData.socket;
+      Map message = ModalRoute.of(context).settings.arguments;
+      // 设置历史消息
+      talkList = message["historyInfo"];
+      setState(() {});
+      // 监听顾客回复
+      mysocket.on("supplier", (data) {
         createLi(data);
         setState(() {});
       });
@@ -55,7 +50,7 @@ class _ServiceState extends State<Service> {
   // 获取历史消息
   Future getHistory() async {
     var data = await DioUtils.getInstance()
-        .post("servicerHistory", data: {"id": userData.userInfo.id});
+        .post("servicerHistory", data: {"id": supplierData.supplierInfo.id});
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
     }
@@ -66,9 +61,9 @@ class _ServiceState extends State<Service> {
   sendMessage(val) {
     val = {
       "content": val,
-      "fromName": userData.userInfo.username,
-      "fromId": userData.userInfo.id,
-      "type": 0
+      "fromName": supplierData.supplierInfo.username,
+      "fromId": supplierData.supplierInfo.id,
+      "socketId": mysocket.id
     };
     mysocket.emit("chatToService", val);
     createLi(val);
@@ -80,14 +75,13 @@ class _ServiceState extends State<Service> {
     talkList.add({
       "content": val["content"],
       "fromName": val["fromName"],
-      "type": val["type"]
     });
   }
 
   @override
   void dispose() {
     if (mysocket != null) {
-      mysocket.off("replayFromService");
+      mysocket.off("supplier");
     }
     super.dispose();
   }
@@ -103,7 +97,7 @@ class _ServiceState extends State<Service> {
         removeTop: true,
         child: Column(
           children: <Widget>[
-            TopTitle(title: "客服中心", showArrow: true),
+            TopTitle(title: "中心", showArrow: true),
             SizedBox(
               height: 10,
             ),
@@ -112,8 +106,8 @@ class _ServiceState extends State<Service> {
                 controller: _controller,
                 itemCount: talkList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  int type = talkList[index]["type"];
-                  if (type == 1) {
+                  String object = talkList[index]["fromName"];
+                  if (object == supplierData.supplierInfo.username) {
                     return fromService(talkList[index]);
                   } else {
                     return chatItem(talkList[index]);
@@ -221,7 +215,7 @@ class _ServiceState extends State<Service> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        "${Config.apiHost}${userData.userInfo.imgCover}"),
+                        "${Config.apiHost}${supplierData.supplierInfo.imgCover}"),
                     fit: BoxFit.cover)))
       ]),
     );

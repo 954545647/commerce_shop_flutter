@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/common_title.dart';
-import 'dart:convert';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
@@ -29,23 +28,35 @@ class _GoodDetailsState extends State<GoodDetails> {
   int buyCount = 1; // 购物数量
   @override
   void initState() {
+    super.initState();
     getCart();
     getGoodInfo();
-    super.initState();
+  }
+
+  // 获取商家信息
+  Future<void> getSupplierInfo() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      var data = await DioUtils.getInstance().post("SgetSupplierById",
+          data: {"supplierId": goodInfo["supplierId"]});
+      if (data != null && data["data"] != null) {
+        supplierInfo = data["data"];
+        setState(() {});
+      }
+    });
   }
 
 // 获取商品信息
-  getGoodInfo() {
-    DioUtils.getInstance().get('getId').then((val) {
-      if (val != null) {
-        DioUtils.getInstance()
-            .post("getGoodInfo", data: {"goodId": val}).then((val) {
-          if (val != null && val["data"] != null) {
-            setState(() {
-              goodInfo = val["data"];
-            });
-          }
+  Future<void> getGoodInfo() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      Map argument = ModalRoute.of(context).settings.arguments;
+      var data = await DioUtils.getInstance()
+          .post("getGoodInfo", data: {"goodId": argument["id"]});
+      if (data != null && data["data"] != null) {
+        setState(() {
+          goodInfo = data["data"];
         });
+        // 获取商家信息
+        await getSupplierInfo();
       }
     });
   }
@@ -76,34 +87,22 @@ class _GoodDetailsState extends State<GoodDetails> {
     });
   }
 
-// 获取商家信息
-  getSupplierInfo(supplierId) async {
-    await DioUtils.getInstance()
-        .post("SgetSupplierById", data: {"supplierId": supplierId}).then((val) {
-      if (val != null && val["data"] != null) {
-        supplierInfo = val["data"];
-        setState(() {});
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    var args = ModalRoute.of(context).settings.arguments;
+    Map argument = ModalRoute.of(context).settings.arguments;
     final userInfo = Provider.of<UserData>(context);
     final good = Provider.of<GoodData>(context);
     bool ifLogin = userInfo.isLogin; // 用户是否登录
     // 获取路由参数
-    Map<String, dynamic> argument = json.decode(args);
     if (goodInfo == null) {
       return Text("数据出现异常");
     } else {
       var id = goodInfo["id"];
-      var goodName = goodInfo["goodName"];
+      String goodName = goodInfo["goodName"];
       var price = goodInfo["price"].toString();
       var expressCost = goodInfo["expressCost"].toString();
       var supplierId = goodInfo["supplierId"];
-      var imgCover = goodInfo["imgCover"];
+      String imgCover = goodInfo["imgCover"];
       good.add(id, supplierId, goodName, imgCover);
       return Scaffold(
         body: MediaQuery.removePadding(
@@ -115,7 +114,7 @@ class _GoodDetailsState extends State<GoodDetails> {
               // 商品标题
               ListView(
                 children: <Widget>[
-                  CommonTitle(title: argument['name'].toString()),
+                  CommonTitle(title: argument["goodName"]),
                   // 商品图片展示
                   goodBanner(argument),
                   // 商品价格、简介、销量
@@ -141,7 +140,6 @@ class _GoodDetailsState extends State<GoodDetails> {
                       GestureDetector(
                         onTap: () async {
                           // 先获取数据
-                          await getSupplierInfo(supplierId);
                           Navigator.pushNamed(context, "supplier",
                               arguments: supplierInfo);
                         },
@@ -225,16 +223,28 @@ class _GoodDetailsState extends State<GoodDetails> {
                           ),
                         ),
                       ),
-                      Container(
-                        height: 30,
-                        width: ScreenUtil().setWidth(200),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Color.fromRGBO(255, 174, 28, 1),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Text(
-                          "立即支付",
-                          style: TextStyle(color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          // 联系商家
+                          if (!ifLogin) {
+                            loginDialog(context, "请先登录");
+                            return;
+                          } else {
+                            Navigator.pushNamed(context, "chatToSupplier",
+                                arguments: supplierInfo);
+                          }
+                        },
+                        child: Container(
+                          height: 30,
+                          width: ScreenUtil().setWidth(200),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(255, 174, 28, 1),
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Text(
+                            "联系商家",
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       )
                     ],

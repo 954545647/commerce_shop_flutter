@@ -5,6 +5,7 @@ import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SupplierLogin extends StatefulWidget {
   @override
@@ -31,6 +32,12 @@ class _SupplierLoginState extends State<SupplierLogin> {
     });
   }
 
+  // 商家上线socket
+  void supplierLogin(IO.Socket socket, supplierInfo) {
+    socket.emit("supplierLogin",
+        {"id": supplierInfo.id, "username": supplierInfo.username});
+  }
+
   // 清空表单
   void reset() {
     _unameController.text = "";
@@ -44,7 +51,6 @@ class _SupplierLoginState extends State<SupplierLogin> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     final supplier = Provider.of<SupplierData>(context);
-
     return Material(
       child: Container(
         color: Colors.white,
@@ -124,8 +130,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                       ),
                                     ),
                                     onTap: () {
-                                      Navigator.pushNamed(
-                                          context, 'Ssregister');
+                                      Navigator.pushNamed(context, 'sRegister');
                                     },
                                   ),
                                   GestureDetector(
@@ -162,11 +167,15 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                               supplier.login(
                                                   id: res["id"],
                                                   username: res["username"],
+                                                  imgCover: res["imgCover"],
                                                   phone: res["phone"]);
                                               // 清空表单
                                               reset();
                                               // 跳转路由
-                                              print(res);
+                                              supplier.connect();
+                                              // 发送socket消息，商家上线
+                                              supplierLogin(supplier.socket,
+                                                  supplier.supplierInfo);
                                               Navigator.pushReplacementNamed(
                                                   context, 'supplierCenter',
                                                   arguments: {"id": res["id"]});
