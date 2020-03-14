@@ -84,6 +84,11 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
     setState(() {});
   }
 
+  // 顾客离开
+  clientExit() {
+    mysocket.emit("nochatToSupplier", {"id": userData.userInfo.id});
+  }
+
   // 显示消息
   createLi(val) {
     talkList.add({
@@ -116,6 +121,8 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
             TopTitle(
               title: name,
               showArrow: true,
+              shouldExecute: true,
+              method: clientExit,
             ),
             Expanded(
               child: ListView.builder(
@@ -193,7 +200,8 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
                                 : Color.fromRGBO(251, 249, 250, 1)),
                         child: Text(
                           "发送",
-                          style: TextStyle(color: Color(0xFF7c7c7e)),
+                          style: TextStyle(
+                              color: typing ? Colors.white : Color(0xFF7c7c7e)),
                         ),
                       ),
                     )

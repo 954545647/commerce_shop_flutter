@@ -37,14 +37,16 @@ class _MyCartState extends State<MyCart> {
     DioUtils.getInstance().post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         userCart = val["data"];
-        // 创建一个数组，用来关联每一件商品在购物车中的选择状态
-        cartState = List<bool>(userCart.length);
-        cartState.fillRange(0, userCart.length - 1, false);
-        totalState =
-            cartState.every((state) => state == true) && cartState.length > 0;
-        userCart.forEach((item) {
-          cartCount.add(item["count"].toString());
-        });
+        if (userCart.length != 0) {
+          // 创建一个数组，用来关联每一件商品在购物车中的选择状态
+          cartState = List<bool>(userCart.length);
+          cartState.fillRange(0, userCart.length - 1, false);
+          totalState =
+              cartState.every((state) => state == true) && cartState.length > 0;
+          userCart.forEach((item) {
+            cartCount.add(item["count"].toString());
+          });
+        }
         setState(() {});
       }
     });

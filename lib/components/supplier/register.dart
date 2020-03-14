@@ -56,16 +56,6 @@ class _SupplierRegisterState extends State<SupplierRegister> {
     _cancelTimer();
   }
 
-  Future<bool> _checkNameExit() async {
-    bool ifExit = false;
-    var data = await DioUtils.getInstance()
-        .post("SsupplierIfExit", data: {"username": _unameController.text});
-    if (data != null && data["code"] == 200) {
-      ifExit = true;
-    }
-    return ifExit;
-  }
-
   // 检查名字是否存在
   Future<bool> checkNameExit() async {
     bool ifExit = false;

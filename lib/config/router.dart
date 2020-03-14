@@ -38,6 +38,8 @@ import 'package:commerce_shop_flutter/components/supplier/components/publish_lan
 import 'package:commerce_shop_flutter/components/supplier/components/publish_crop.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/information_center.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/information_detail.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/good_manage_detail.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/order_manage_detail.dart';
 import 'package:commerce_shop_flutter/components/chitchat/service.dart';
 import 'package:commerce_shop_flutter/components/chitchat/chat_to_supplier.dart';
 
@@ -78,6 +80,8 @@ final routes = {
   "supplierCenter": (context, {arguments}) => SupplierCenter(),
   "publishGood": (context, {arguments}) => PublishGood(),
   "publishLand": (context, {arguments}) => PublishLand(),
+  "goodManageDetail": (context, {arguments}) => GoodManageDetail(),
+  "orderManageDetail": (context, {arguments}) => OrderManageDetail(),
   "publishCrop": (context, {arguments}) => PublishCrop(),
   "service": (context, {arguments}) => Service(),
   "chatToSupplier": (context, {arguments}) => ChatToSupplier(),

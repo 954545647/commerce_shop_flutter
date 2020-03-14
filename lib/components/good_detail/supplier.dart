@@ -28,7 +28,7 @@ class _SupplierState extends State<Supplier> {
               Image.network(
                 "${Config.apiHost}$imgCover",
                 height: 250,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
               ),
               // 商家信息
               merchantDetail(imgCover, name, phone),

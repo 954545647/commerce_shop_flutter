@@ -16,6 +16,8 @@ class _OrderManageState extends State<OrderManage> {
   List unpayOrders = []; // 未支付订单
   List goodOrders = []; // 认养订单
   List farmOrders = []; // 租地订单
+  int unpayNum = 0;
+  int goodOrderNum = 0;
   SupplierData supplierData;
   @override
   void initState() {
@@ -23,6 +25,7 @@ class _OrderManageState extends State<OrderManage> {
     _initSupplierData();
   }
 
+  // 初始化商家订单
   Future<void> _initSupplierData() async {
     await Future.delayed(Duration(microseconds: 300), () async {
       supplierData = Provider.of<SupplierData>(context);
@@ -36,8 +39,17 @@ class _OrderManageState extends State<OrderManage> {
         data: {"supplierId": supplierData.supplierInfo.id}).then((val) {
       if (val != null && val["data"] != null) {
         var data = val["data"];
+        unpayNum = 0;
+        goodOrderNum = 0;
         goodOrders = data["goodOrderList"];
         farmOrders = data["farmOrderList"];
+        goodOrders.forEach((item) {
+          if (item["status"] == 1) {
+            unpayNum++;
+          } else {
+            goodOrderNum++;
+          }
+        });
         setState(() {});
       }
     });
@@ -79,7 +91,7 @@ class _OrderManageState extends State<OrderManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("${goodOrders.length + farmOrders.length}",
+                        Text("${goodOrderNum + farmOrders.length + unpayNum}",
                             style: TextStyle(fontSize: 18.0)),
                         Text(
                           '全部订单',
@@ -87,6 +99,10 @@ class _OrderManageState extends State<OrderManage> {
                         )
                       ],
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "orderManageDetail",
+                          arguments: 0);
+                    },
                   ),
                 ),
                 Expanded(
@@ -94,13 +110,17 @@ class _OrderManageState extends State<OrderManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Text("$unpayNum", style: TextStyle(fontSize: 18.0)),
                         Text(
-                          '代付款',
+                          '待付款',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "orderManageDetail",
+                          arguments: 1);
+                    },
                   ),
                 ),
                 Expanded(
@@ -108,15 +128,17 @@ class _OrderManageState extends State<OrderManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(goodOrders.length.toString(),
-                            style: TextStyle(fontSize: 18.0)),
+                        Text("$goodOrderNum", style: TextStyle(fontSize: 18.0)),
                         Text(
                           '认养订单',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, "orderManageDetail",
+                          arguments: 2);
+                    },
                   ),
                 ),
                 Expanded(
@@ -132,6 +154,10 @@ class _OrderManageState extends State<OrderManage> {
                         )
                       ],
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "orderManageDetail",
+                          arguments: 3);
+                    },
                   ),
                 ),
               ],

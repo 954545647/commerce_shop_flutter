@@ -183,7 +183,8 @@ class _ServiceState extends State<Service> {
                                 : Color.fromRGBO(251, 249, 250, 1)),
                         child: Text(
                           "发送",
-                          style: TextStyle(color: Color(0xFF7c7c7e)),
+                          style: TextStyle(
+                              color: typing ? Colors.white : Color(0xFF7c7c7e)),
                         ),
                       ),
                     )

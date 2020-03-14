@@ -84,6 +84,11 @@ class _InformationDetailState extends State<InformationDetail> {
     setState(() {});
   }
 
+  // 商家离开
+  supplierExit() {
+    mysocket.emit("SnosreplayToClient", {"id": supplierData.supplierInfo.id});
+  }
+
   // 显示消息
   createLi(val) {
     talkList.add({
@@ -116,6 +121,8 @@ class _InformationDetailState extends State<InformationDetail> {
               title: "聊天",
               showArrow: true,
               ifRefresh: true,
+              shouldExecute: true,
+              method: supplierExit,
             ),
             SizedBox(
               height: 10,
@@ -197,7 +204,8 @@ class _InformationDetailState extends State<InformationDetail> {
                                 : Color.fromRGBO(251, 249, 250, 1)),
                         child: Text(
                           "发送",
-                          style: TextStyle(color: Color(0xFF7c7c7e)),
+                          style: TextStyle(
+                              color: typing ? Colors.white : Color(0xFF7c7c7e)),
                         ),
                       ),
                     )

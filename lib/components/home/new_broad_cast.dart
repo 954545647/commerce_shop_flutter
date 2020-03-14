@@ -1,42 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
-class NewBroadCast extends StatelessWidget {
+class NewBroadCast extends StatefulWidget {
+  @override
+  _NewBroadCastState createState() => _NewBroadCastState();
+}
+
+class _NewBroadCastState extends State<NewBroadCast> {
+  String cityName = "";
+  List weatherList = [];
+  @override
+  void initState() {
+    super.initState();
+    getWeather();
+  }
+
+  Future<void> getWeather() async {
+    var data = await new Dio().get(
+        "https://tianqiapi.com/api?version=v1&appid=85861573&appsecret=DEayWu5Y");
+    var weather = jsonDecode(data.toString());
+    cityName = weather["city"];
+    weatherList = weather["data"];
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: DioUtils.getInstance().get('homeNewsList'),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            if (snapshot.data != null &&
-                snapshot.data["data"] != null &&
-                snapshot.data["data"]["newsList"] != null) {
-              var newList = snapshot.data['data']['newsList'];
-              return Container(
-                width: ScreenUtil.getInstance().setWidth(750),
-                height: ScreenUtil.getInstance().setHeight(120),
-                margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[leftNew(), rightNew(newList)],
-                ),
-              );
-            } else {
-              return Container(
-                child: Text("数据发出错误"),
-              );
-            }
-          }
-        } else {
-          return Center(child: CircularProgressIndicator()); // 请求未结束，显示loading
-        }
-      },
-    );
+    if (cityName != "") {
+      return Container(
+        width: ScreenUtil.getInstance().setWidth(750),
+        height: ScreenUtil.getInstance().setHeight(120),
+        margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[leftNew(), rightNew(weatherList)],
+        ),
+      );
+    } else {
+      return Container(
+        width: ScreenUtil.getInstance().setWidth(750),
+        height: ScreenUtil.getInstance().setHeight(120),
+        margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+        child: Text(""),
+      );
+    }
   }
 
   // 左侧标题
@@ -47,11 +59,11 @@ class NewBroadCast extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '农场',
+              '天气',
               style:
                   TextStyle(backgroundColor: Color.fromRGBO(54, 159, 144, 1)),
             ),
-            Text('快报')
+            Text('预报')
           ],
         ));
   }
@@ -65,7 +77,7 @@ class NewBroadCast extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return newItem(list[index]);
         },
-        itemCount: 4,
+        itemCount: list.length,
         scrollDirection: Axis.vertical,
         autoplay: true,
       ),
@@ -74,11 +86,15 @@ class NewBroadCast extends StatelessWidget {
 
   // 新闻子项
   Widget newItem(item) {
+    // String res =
+    String day = item["day"];
+    String date = item["date"];
+    String wea = item["wea"];
     return Container(
         padding: EdgeInsets.fromLTRB(5, 0, 0, 5),
         child: Center(
           child: Text(
-            item,
+            "$cityName $day  $date  $wea",
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

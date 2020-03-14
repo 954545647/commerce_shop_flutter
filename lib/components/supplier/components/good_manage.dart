@@ -14,6 +14,7 @@ class _GoodManageState extends State<GoodManage> {
   int hasBeenOn = 0; // 已经上架
   int notBeenOn = 0; // 下架
   int goodCount = 0; // 商品数量
+  List goodData = [];
   SupplierData supplierData;
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _GoodManageState extends State<GoodManage> {
     });
   }
 
-  // 获取全部订单
+  // 获取全部商品
   getAllGoods() {
     DioUtils.getInstance().post("SsupplierGood",
         data: {"id": supplierData.supplierInfo.id}).then((val) {
@@ -44,6 +45,7 @@ class _GoodManageState extends State<GoodManage> {
           }
           goodCount++;
         });
+        goodData = val["data"];
         setState(() {});
       }
     });
@@ -90,9 +92,13 @@ class _GoodManageState extends State<GoodManage> {
                         Text(
                           '出售中',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
-                        )
+                        ),
                       ],
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "goodManageDetail",
+                          arguments: 1);
+                    },
                   ),
                 ),
                 Expanded(
@@ -108,6 +114,10 @@ class _GoodManageState extends State<GoodManage> {
                         )
                       ],
                     ),
+                    onTap: () {
+                      Navigator.pushNamed(context, "goodManageDetail",
+                          arguments: 0);
+                    },
                   ),
                 ),
                 Expanded(
@@ -123,7 +133,15 @@ class _GoodManageState extends State<GoodManage> {
                         )
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, "goodManageDetail",
+                              arguments: 2)
+                          .then((val) {
+                        if (val) {
+                          getAllGoods();
+                        }
+                      });
+                    },
                   ),
                 ),
                 Expanded(

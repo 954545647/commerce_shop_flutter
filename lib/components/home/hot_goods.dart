@@ -23,7 +23,9 @@ class _HotGoodsState extends State<HotGoods> {
       if (val != null && val["data"] != null) {
         goodsList = val["data"];
         ifShowLoading = false;
-        setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }

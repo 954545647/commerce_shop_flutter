@@ -30,6 +30,7 @@ const urlList = {
   // 商品接口
   "getAllGoods": "goods/getAlls",
   "updateGood": "goods/update",
+  "updateGoodStatus": "goods/updateStatus",
   "getGoodInfo": "goods/getInfo",
   "saveId": "goods/saveId",
   "getId": "goods/getId",
@@ -39,6 +40,7 @@ const urlList = {
   "startTask": "order/startTask",
   "allOrders": "order/all",
   "modifyOrderStatus": "order/modify",
+  "SunpayOrders": "order/unpay",
   // 购物车接口
   "deleteCart": "cart/delete",
   "handleCart": "cart/handle",

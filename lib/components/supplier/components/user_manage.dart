@@ -53,7 +53,7 @@ class _UserManageState extends State<UserManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Icon(IconData(0xe6b0, fontFamily: 'myIcons')),
                         Text(
                           '个人信息',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -70,7 +70,7 @@ class _UserManageState extends State<UserManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Icon(IconData(0xe630, fontFamily: 'myIcons')),
                         Text(
                           '消息中心',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
@@ -84,7 +84,7 @@ class _UserManageState extends State<UserManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("0", style: TextStyle(fontSize: 18.0)),
+                        Icon(IconData(0xe611, fontFamily: 'myIcons')),
                         Text(
                           '修改密码',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),

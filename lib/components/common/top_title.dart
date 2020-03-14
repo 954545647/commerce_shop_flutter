@@ -7,8 +7,15 @@ class TopTitle extends StatelessWidget {
   final double top;
   final bool showArrow;
   final ifRefresh;
+  final Function method;
+  final bool shouldExecute;
   TopTitle(
-      {this.title, this.top = 20, this.showArrow = false, this.ifRefresh = ""});
+      {this.title,
+      this.method,
+      this.top = 20,
+      this.showArrow = false,
+      this.shouldExecute = false,
+      this.ifRefresh = ""});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,6 +46,9 @@ class TopTitle extends StatelessWidget {
                           color: Colors.grey,
                         ),
                         onTap: () {
+                          if (shouldExecute) {
+                            method();
+                          }
                           Navigator.pop(context, ifRefresh);
                         },
                       ),

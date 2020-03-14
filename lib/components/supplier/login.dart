@@ -35,7 +35,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
   // 商家上线socket
   void supplierLogin(IO.Socket socket, supplierInfo) {
     socket.emit("supplierLogin",
-        {"id": supplierInfo.id, "username": supplierInfo.username});
+        {"fromId": supplierInfo.id, "username": supplierInfo.username});
   }
 
   // 清空表单
@@ -164,6 +164,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                               // 关闭键盘
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
+                                              print(res);
                                               // 注册商家全局信息
                                               supplier.login(
                                                   id: res["id"],
@@ -175,8 +176,8 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                               // 跳转路由
                                               supplier.connect();
                                               // 发送socket消息，商家上线
-                                              supplierLogin(supplier.socket,
-                                                  supplier.supplierInfo);
+                                              // supplierLogin(supplier.socket,
+                                              //     supplier.supplierInfo);
                                               Navigator.pushReplacementNamed(
                                                   context, 'supplierCenter',
                                                   arguments: {"id": res["id"]});

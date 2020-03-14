@@ -90,6 +90,11 @@ class DioUtils {
   getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = isClient ? prefs.get("token") : prefs.get("stoken");
+    // if (isClient) {
+    //   print("携带顾客的token---------${prefs.get("token")}----------------------");
+    // } else {
+    //   print("携带商家的token${prefs.get("stoken")}");
+    // }
     if (token != null && token.length == 0) {
       return "";
     }

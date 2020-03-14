@@ -36,10 +36,10 @@ class _SingleItemState extends State<SingleItem> {
             },
             inputFormatters: [
               // 长度限制
-              LengthLimitingTextInputFormatter(18),
+              LengthLimitingTextInputFormatter(50),
               widget.ifNum
                   ? WhitelistingTextInputFormatter.digitsOnly
-                  : LengthLimitingTextInputFormatter(20)
+                  : LengthLimitingTextInputFormatter(50)
             ],
             keyboardType:
                 widget.ifNum ? TextInputType.phone : TextInputType.text,

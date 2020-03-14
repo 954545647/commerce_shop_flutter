@@ -31,10 +31,10 @@ class _InformationCenterState extends State<InformationCenter> {
     await Future.delayed(Duration(microseconds: 300), () async {
       supplierData = Provider.of<SupplierData>(context);
       mysocket = supplierData.socket;
-      // 监听客服回复
-      // mysocket.on("replayFromService", (data) {
-      //   setState(() {});
-      // });
+      // 监听顾客回复
+      mysocket.on("supplier", (data) {
+        print(data);
+      });
       await getHistory();
     });
   }
@@ -43,12 +43,12 @@ class _InformationCenterState extends State<InformationCenter> {
   Future<void> getHistory() async {
     var data = await DioUtils.getInstance()
         .post("SsupplierMessage", data: {"id": supplierData.supplierInfo.id});
-    setState(() {
-      message = data["data"];
-    });
+    if (mounted) {
+      setState(() {
+        message = data["data"];
+      });
+    }
   }
-
-  // 获取历史消息
 
   @override
   void dispose() {
@@ -68,7 +68,10 @@ class _InformationCenterState extends State<InformationCenter> {
         child: Container(
           child: ListView(
             children: <Widget>[
-              TopTitle(title: "消息中心", showArrow: true),
+              TopTitle(
+                title: "消息中心",
+                showArrow: true,
+              ),
               userList(),
             ],
           ),

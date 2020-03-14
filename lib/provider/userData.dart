@@ -72,7 +72,7 @@ class UserData with ChangeNotifier {
 // 退出
   logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    prefs.remove("token");
     _isLogin = false;
     _userInfo = {};
     notifyListeners();
