@@ -54,7 +54,7 @@ class _ServiceState extends State<Service> {
 
   // 获取历史消息
   Future getHistory() async {
-    var data = await DioUtils.getInstance()
+    var data = await DioUtil.getInstance(context)
         .post("servicerHistory", data: {"id": userData.userInfo.id});
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
@@ -222,7 +222,7 @@ class _ServiceState extends State<Service> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        "${Config.apiHost}${userData.userInfo.imgCover}"),
+                        "${Config.apiHost}/${userData.userInfo.imgCover}"),
                     fit: BoxFit.cover)))
       ]),
     );

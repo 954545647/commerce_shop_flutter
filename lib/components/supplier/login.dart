@@ -26,7 +26,7 @@ class _SupplierLoginState extends State<SupplierLogin> {
 
   // 登录
   Future login() async {
-    return DioUtils.getInstance().post('Sslogin', data: {
+    return DioUtil.getInstance(context).post('Sslogin', data: {
       "username": _unameController.text,
       "password": _pwdController.text
     });
@@ -154,17 +154,15 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               var res = data["data"];
-                                              print(res);
                                               // 将token保存到本地缓存中
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
-                                              prefs.setString(
-                                                  "stoken", res["token"]);
+                                              prefs.setString("SaccessToken",
+                                                  res["accessToken"]);
                                               // 关闭键盘
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
-                                              print(res);
                                               // 注册商家全局信息
                                               supplier.login(
                                                   id: res["id"],

@@ -34,7 +34,7 @@ class _GoodManageDetailState extends State<GoodManageDetail> {
   // 改变商品状态
   Future<void> changeState(data) async {
     int status = data["status"] == 0 ? 1 : 0;
-    await DioUtils.getInstance().post("updateGoodStatus",
+    await DioUtil.getInstance(context).post("updateGoodStatus",
         data: {"goodId": data["id"], "status": status});
     await getAllGoods();
   }
@@ -42,7 +42,7 @@ class _GoodManageDetailState extends State<GoodManageDetail> {
   // 获取全部商品
   getAllGoods() {
     int status = ModalRoute.of(context).settings.arguments;
-    DioUtils.getInstance().post("SsupplierGood",
+    DioUtil.getInstance(context).post("SsupplierGood",
         data: {"id": supplierData.supplierInfo.id}).then((val) {
       if (val != null && val["data"] != null) {
         if (status == 2) {
@@ -115,7 +115,7 @@ class _GoodManageDetailState extends State<GoodManageDetail> {
       padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
       child: Row(
         children: <Widget>[
-          Image.network("${Config.apiHost}$imgCover",
+          Image.network("${Config.apiHost}/$imgCover",
               width: ScreenUtil().setWidth(300),
               height: ScreenUtil().setHeight(300),
               fit: BoxFit.cover),

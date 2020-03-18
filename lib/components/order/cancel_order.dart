@@ -1,6 +1,5 @@
 // 已取消订单页
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
@@ -12,29 +11,30 @@ class CancelOrder extends StatefulWidget {
 }
 
 class _CancelOrderState extends State<CancelOrder> {
-  List orderList = [];
+  // List orderList = [];
   @override
   void initState() {
     super.initState();
-    getOrders();
+    // getOrders();
   }
 
-  // 获取全部订单
-  getOrders() {
-    DioUtils.getInstance().get("allOrders").then((val) {
-      if (val != null && val["data"] != null) {
-        val["data"].forEach((data) {
-          if (data["status"] == 3) {
-            orderList.add(data);
-          }
-        });
-        setState(() {});
-      }
-    });
-  }
+  // // 获取全部订单
+  // getOrders() {
+  //   DioUtil.getInstance(context).get("allOrders").then((val) {
+  //     if (val != null && val["data"] != null) {
+  //       val["data"].forEach((data) {
+  //         if (data["status"] == 3) {
+  //           orderList.add(data);
+  //         }
+  //       });
+  //       setState(() {});
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
+    List orderList = ModalRoute.of(context).settings.arguments;
     return Scaffold(
         body: MediaQuery.removePadding(
       context: context,
@@ -43,14 +43,14 @@ class _CancelOrderState extends State<CancelOrder> {
         child: ListView(
           children: <Widget>[
             TopTitle(title: "已失效", showArrow: true),
-            orderLists()
+            orderLists(orderList)
           ],
         ),
       ),
     ));
   }
 
-  Widget orderLists() {
+  Widget orderLists(orderList) {
     List<Widget> list = [];
     if (orderList.length > 0) {
       for (var i = 0; i < orderList.length; i++) {
@@ -93,7 +93,7 @@ class _CancelOrderState extends State<CancelOrder> {
       child: Row(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${orderDetail["good_cover"]}",
+            "${Config.apiHost}/${orderDetail["good_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,

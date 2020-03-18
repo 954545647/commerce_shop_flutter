@@ -55,8 +55,7 @@ class _PublishCropState extends State<PublishCrop> {
     String fileDir = img.path;
     FormData formData =
         FormData.fromMap({"file": await MultipartFile.fromFile(fileDir)});
-    var res =
-        await getData("supplier/upload", data: formData, baseUrl: BASEURL);
+    var res = await getData("utils/upload", data: formData, baseUrl: BASEURL);
     if (res != null && res["url"] != null) {
       serverImg = res["url"];
     }
@@ -85,7 +84,7 @@ class _PublishCropState extends State<PublishCrop> {
     String descript = _descController.text;
     String price = _priceController.text;
     int farmId = chooseItem["id"];
-    DioUtils.getInstance().post("newCrop", data: {
+    DioUtil.getInstance(context).post("newCrop", data: {
       "cropName": cropName,
       "descript": descript,
       "price": price,

@@ -26,7 +26,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   }
 
   getCoupon() {
-    DioUtils.getInstance().post("myCoupon").then((val) {
+    DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         List list = val["data"];
         List useList = [];

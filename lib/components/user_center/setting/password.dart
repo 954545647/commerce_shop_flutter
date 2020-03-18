@@ -56,7 +56,7 @@ class _PasswordState extends State<Password> {
                     onPressed: () async {
                       if ((_formKey.currentState as FormState).validate()) {
                         // 校验通过
-                        var data = await DioUtils.getInstance()
+                        var data = await DioUtil.getInstance(context)
                             .post("changePass", data: {
                           "oldPass": _pass1Controller.text,
                           "newPass": _pass2Controller.text

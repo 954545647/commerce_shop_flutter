@@ -67,7 +67,7 @@ class _RegisterState extends State<Register> {
   // 检查名字是否存在
   Future<bool> checkNameExit() async {
     bool ifExit = false;
-    var data = await DioUtils.getInstance()
+    var data = await DioUtil.getInstance(context)
         .post("userIfExit", data: {"username": _unameController.text});
     // 查找到有数据 或者 传参不符合规范
     if (data != null && data["code"] == 400) {
@@ -78,7 +78,8 @@ class _RegisterState extends State<Register> {
   }
 
   Future register() async {
-    var registerInfo = await DioUtils.getInstance().post("register", data: {
+    var registerInfo =
+        await DioUtil.getInstance(context).post("register", data: {
       "username": _unameController.text,
       "password": _pwdController.text,
       "phone": _phoneController.text

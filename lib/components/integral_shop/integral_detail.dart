@@ -17,7 +17,8 @@ class _IntegralDetailState extends State<IntegralDetail> {
   @override
   void initState() {
     super.initState();
-    DioUtils.getInstance().post('getUserInfo', data: {"type": 3}).then((val) {
+    DioUtil.getInstance(context)
+        .post('getUserInfo', data: {"type": 3}).then((val) {
       setState(() {
         integralList = val["data"];
       });

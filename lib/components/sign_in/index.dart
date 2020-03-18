@@ -28,13 +28,13 @@ class _SignInState extends State<SignIn> {
 
 // 获取用户签到日期 返回的是一个 Future对象
   getUserSignData() async {
-    var data = await DioUtils.getInstance().post('getUserSignDays');
+    var data = await DioUtil.getInstance(context).post('getUserSignDays');
     return parseTimeList(data["data"]);
   }
 
 // 修改积分
   void modifyIntegral() async {
-    var data = await DioUtils.getInstance()
+    var data = await DioUtil.getInstance(context)
         .post("changeIntegral", data: {"source": 1});
     if (data == null) {
       Toast.toast(context, msg: "修改失败");

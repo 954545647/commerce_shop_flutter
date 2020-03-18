@@ -58,10 +58,11 @@ class _InformationDetailState extends State<InformationDetail> {
   // 获取历史消息
   Future getHistory() async {
     Map args = ModalRoute.of(context).settings.arguments;
-    var data = await DioUtils.getInstance().post("supplierHistory", data: {
-      "toId": args["userInfo"]["id"],
-      "fromId": supplierData.supplierInfo.id
-    });
+    var data = await DioUtil.getInstance(context).post("supplierHistory",
+        data: {
+          "toId": args["userInfo"]["id"],
+          "fromId": supplierData.supplierInfo.id
+        });
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
     }
@@ -242,7 +243,7 @@ class _InformationDetailState extends State<InformationDetail> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        "${Config.apiHost}${supplierData.supplierInfo.imgCover}"),
+                        "${Config.apiHost}/${supplierData.supplierInfo.imgCover}"),
                     fit: BoxFit.cover)))
       ]),
     );
@@ -263,7 +264,7 @@ class _InformationDetailState extends State<InformationDetail> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        "${Config.apiHost}${args["userInfo"]["imgCover"]}"),
+                        "${Config.apiHost}/${args["userInfo"]["imgCover"]}"),
                     fit: BoxFit.cover))),
         SizedBox(
           width: 10,

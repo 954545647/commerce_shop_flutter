@@ -19,7 +19,7 @@ class _FarmListState extends State<FarmList> {
 
 // 获取农场信息
   getFarmList() {
-    DioUtils.getInstance().get("getAllFarmsInfo").then((val) {
+    DioUtil.getInstance(context).get("getAllFarmsInfo").then((val) {
       if (val != null && val["data"] != null) {
         setState(() {
           farmList = val["data"];

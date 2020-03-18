@@ -74,8 +74,7 @@ class _PublishLandState extends State<PublishLand> {
     String fileDir = img.path;
     FormData formData =
         FormData.fromMap({"file": await MultipartFile.fromFile(fileDir)});
-    var res =
-        await getData("supplier/upload", data: formData, baseUrl: BASEURL);
+    var res = await getData("utils/upload", data: formData, baseUrl: BASEURL);
     if (res != null && res["url"] != null) {
       serverImg = res["url"];
     }
@@ -112,7 +111,7 @@ class _PublishLandState extends State<PublishLand> {
     String preMoney = _preMoneyController.text;
     String monitor = _monitorController.text;
     int id = supplier.supplierInfo.id;
-    DioUtils.getInstance().post("newFarm", data: {
+    DioUtil.getInstance(context).post("newFarm", data: {
       "supplierId": id,
       "farmName": name,
       "descript": desc,

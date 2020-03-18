@@ -40,13 +40,13 @@ class _OrderManageDetailState extends State<OrderManageDetail> {
     int type = ModalRoute.of(context).settings.arguments;
     // 未支付订单
     if (type == 1) {
-      var data = await DioUtils.getInstance().get("SunpayOrders");
+      var data = await DioUtil.getInstance(context).get("SunpayOrders");
       if (data != null) {
         orderData = data["data"];
         setState(() {});
       }
     } else {
-      await DioUtils.getInstance().post("SsupplierOrders",
+      await DioUtil.getInstance(context).post("SsupplierOrders",
           data: {"supplierId": supplierData.supplierInfo.id}).then((val) {
         if (val != null && val["data"] != null) {
           // 全部订单
@@ -154,7 +154,7 @@ class _OrderManageDetailState extends State<OrderManageDetail> {
       child: Row(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${orderDetail["good_cover"]}",
+            "${Config.apiHost}/${orderDetail["good_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,
@@ -275,7 +275,7 @@ class _OrderManageDetailState extends State<OrderManageDetail> {
       child: Row(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${orderDetail["crop_cover"]}",
+            "${Config.apiHost}/${orderDetail["crop_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,

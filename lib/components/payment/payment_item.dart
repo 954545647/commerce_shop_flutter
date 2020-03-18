@@ -24,7 +24,7 @@ class OrderItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}$imgCover",
+            "${Config.apiHost}/$imgCover",
             fit: BoxFit.fill,
             width: 150,
             height: 100,

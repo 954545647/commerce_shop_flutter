@@ -19,11 +19,11 @@ class MyCart extends StatefulWidget {
 }
 
 class _MyCartState extends State<MyCart> {
-  List userCart = []; // 用户购物车
-  List cartState; // 用户购物车状态
-  bool totalState;
+  List userCart = []; // 用户购物车数据
+  List cartState; // 用户购物车每件商品的状态
+  bool totalState; // 是否全选
   int totalPrice = 0;
-  List<String> cartCount = []; // 用户购物车的购买数量
+  List<String> cartCount = []; // 用户购物车中每件商品的购买数量
   int curItem; // 当前被点击的商品的索引
   @override
   void initState() {
@@ -34,7 +34,7 @@ class _MyCartState extends State<MyCart> {
 
   // 初始化购物车
   initCart() {
-    DioUtils.getInstance().post("getCarts").then((val) {
+    DioUtil.getInstance(context).post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         userCart = val["data"];
         if (userCart.length != 0) {
@@ -54,7 +54,7 @@ class _MyCartState extends State<MyCart> {
 
 // 获取购物车
   getCart() {
-    DioUtils.getInstance().post("getCarts").then((val) {
+    DioUtil.getInstance(context).post("getCarts").then((val) {
       if (val != null && val["data"] != null) {
         userCart = val["data"];
         userCart.forEach((item) {
@@ -69,7 +69,7 @@ class _MyCartState extends State<MyCart> {
 
   // 更新购物车
   updateCarts(goodId, count) {
-    DioUtils.getInstance().post("updateCarts", data: {
+    DioUtil.getInstance(context).post("updateCarts", data: {
       "goodId": goodId,
       "count": count,
     }).then((val) {
@@ -152,7 +152,14 @@ class _MyCartState extends State<MyCart> {
       // 点击关闭
       Navigator.pop(context);
     } else {
+      int stock = userCart[curItem]["stock"];
       String res = "${cartCount[curItem]}${data.key}";
+      if (int.parse(res) > stock) {
+        Toast.toast(context, msg: "超过最大库存");
+        cartCount[curItem] = "$stock";
+        setState(() {});
+        return;
+      }
       cartCount[curItem] = res;
       setState(() {});
     }
@@ -308,7 +315,7 @@ class _MyCartState extends State<MyCart> {
           ),
           SizedBox(width: 20),
           Image.network(
-            "${Config.apiHost}$imgCover",
+            "${Config.apiHost}/$imgCover",
             fit: BoxFit.fill,
             width: 150,
             height: 120,
@@ -328,7 +335,7 @@ class _MyCartState extends State<MyCart> {
                 Padding(
                   padding: EdgeInsets.only(left: 20),
                   child: Text(
-                    "${price.toString()}",
+                    "$price",
                     style: TextStyle(fontSize: 20, color: Colors.red),
                   ),
                 ),
@@ -377,8 +384,10 @@ class _MyCartState extends State<MyCart> {
                       ),
                       onTap: () {
                         int num = int.parse(count);
-                        if (num == stock) {
+                        if (num >= stock) {
                           Toast.toast(context, msg: "库存不足啦");
+                          cartCount[index] = stock.toString();
+                          setState(() {});
                           return;
                         }
                         cartCount[index] = (num + 1).toString();

@@ -32,16 +32,14 @@ class _InformationCenterState extends State<InformationCenter> {
       supplierData = Provider.of<SupplierData>(context);
       mysocket = supplierData.socket;
       // 监听顾客回复
-      mysocket.on("supplier", (data) {
-        print(data);
-      });
+      mysocket.on("supplier", (data) {});
       await getHistory();
     });
   }
 
   // 获取历史记录
   Future<void> getHistory() async {
-    var data = await DioUtils.getInstance()
+    var data = await DioUtil.getInstance(context)
         .post("SsupplierMessage", data: {"id": supplierData.supplierInfo.id});
     if (mounted) {
       setState(() {
@@ -121,7 +119,7 @@ class _InformationCenterState extends State<InformationCenter> {
                 height: ScreenUtil().setHeight(120),
                 padding: EdgeInsets.all(8),
                 child: Image.network(
-                  "${Config.apiHost}${userInfo["imgCover"]}",
+                  "${Config.apiHost}/${userInfo["imgCover"]}",
                   width: ScreenUtil().setWidth(100),
                   height: ScreenUtil().setHeight(100),
                   fit: BoxFit.cover,

@@ -17,7 +17,7 @@ class _CardListState extends State<CardList> {
 
 // 获取商品信息
   getGoodList() {
-    DioUtils.getInstance().post('getAllGoods').then((val) {
+    DioUtil.getInstance(context).post('getAllGoods').then((val) {
       if (val != null && val["data"] != null) {
         setState(() {
           goodsList = val['data'];

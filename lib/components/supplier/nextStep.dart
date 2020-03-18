@@ -33,7 +33,7 @@ class _NextStepState extends State<NextStep> {
   }
 
   Future enter(data) async {
-    await DioUtils.getInstance().post("newSupplier", data: {
+    await DioUtil.getInstance(context).post("newSupplier", data: {
       "username": data["username"],
       "password": data["password"],
       "phone": data["phone"],
@@ -168,7 +168,8 @@ class _NextStepState extends State<NextStep> {
                       Toast.toast(context, msg: "请上传店铺封面");
                       return;
                     }
-                    await DioUtils.getInstance().post("Ssregister", data: {
+                    await DioUtil.getInstance(context)
+                        .post("Ssregister", data: {
                       "username": userInfo["username"],
                       "password": userInfo["password"],
                       "phone": userInfo["phone"],
@@ -283,8 +284,7 @@ class _NextStepState extends State<NextStep> {
     String fileDir = img.path;
     FormData formData =
         FormData.fromMap({"file": await MultipartFile.fromFile(fileDir)});
-    var res =
-        await getData("supplier/upload", data: formData, baseUrl: BASEURL);
+    var res = await getData("utils/upload", data: formData, baseUrl: BASEURL);
     if (res != null && res["url"] != null) {
       if (number == 0) {
         serverFrontImg = res["url"];

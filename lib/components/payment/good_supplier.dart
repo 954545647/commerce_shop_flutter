@@ -29,7 +29,7 @@ class _GoodSupplierState extends State<GoodSupplier> {
     var cartData = widget.cartInfo;
     List supplierIds = cartData.getSupplierById(widget.userId);
     // 调用接口，获取商家信息
-    DioUtils.getInstance().get("SgetAllSuppliers").then((val) {
+    DioUtil.getInstance(context).get("SgetAllSuppliers").then((val) {
       if (val != null && val["data"] != null) {
         List suppliers = val["data"]; // 数据库所有商家信息
         // 数据出来，筛选展示的商家信息

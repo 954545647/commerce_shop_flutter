@@ -6,6 +6,7 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/payment/user_adress.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/orderData.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import "package:commerce_shop_flutter/config/config.dart";
@@ -28,7 +29,7 @@ class _FarmOrderState extends State<FarmOrder> {
 
 // 获取用户优惠卷（只获取未使用的）
   getUserCoupons() {
-    DioUtils.getInstance().post("myCoupon").then((val) {
+    DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         userCouponList = [];
         val["data"].forEach((data) {
@@ -43,14 +44,15 @@ class _FarmOrderState extends State<FarmOrder> {
 
 // 新增农场订单
   newFarmOrder(orderInfos) {
+    final orderdata = Provider.of<OrderData>(context);
     final user = Provider.of<UserData>(context);
-    DioUtils.getInstance().post("newFarmOrder", data: {
+    DioUtil.getInstance(context).post("newFarmOrder", data: {
       "couponId": chooseCoupon["id"],
       "orderAmount": orderInfos["total"],
       "payMoney": totalPrice == 0 ? orderInfos["total"] : totalPrice,
       "farmId": orderInfos["farmId"],
       "cropsInfos": handleCropInfos(orderInfos["crops"]),
-      "address": user.userInfo.address,
+      "address": orderdata.orderInfo.address,
       "orderUsername": user.userInfo.username,
       "supplierId": orderInfos["supplierId"]
     });
@@ -73,8 +75,9 @@ class _FarmOrderState extends State<FarmOrder> {
   @override
   Widget build(BuildContext context) {
     Map orderInfos = ModalRoute.of(context).settings.arguments;
-    int total = orderInfos["total"];
+    final orderdata = Provider.of<OrderData>(context);
     final user = Provider.of<UserData>(context);
+    int total = orderInfos["total"];
     var userInfo = user.userInfo;
     return Scaffold(
       body: MediaQuery.removePadding(
@@ -113,7 +116,7 @@ class _FarmOrderState extends State<FarmOrder> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (user.userInfo.address == "") {
+                          if (orderdata.orderInfo.address == "") {
                             Toast.toast(context, msg: "请选择收获地址");
                             return;
                           }
@@ -247,7 +250,7 @@ class _FarmOrderState extends State<FarmOrder> {
       child: Column(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${data["imgCover"]}",
+            "${Config.apiHost}/${data["imgCover"]}",
             width: 80,
             height: 50,
             fit: BoxFit.contain,

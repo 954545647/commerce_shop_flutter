@@ -1,10 +1,10 @@
 // 订单主页
 import 'package:flutter/material.dart';
-import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/utils/utils.dart';
 import "package:commerce_shop_flutter/config/config.dart";
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
 class AllOrder extends StatefulWidget {
   @override
@@ -19,9 +19,9 @@ class _AllOrderState extends State<AllOrder> {
     getOrders();
   }
 
-  // 获取全部订单
+  // // 获取全部订单
   getOrders() {
-    DioUtils.getInstance().get("allOrders").then((val) {
+    DioUtil.getInstance(context).get("allOrders").then((val) {
       if (val != null && val["data"] != null) {
         orderList = val["data"];
         setState(() {});
@@ -89,7 +89,7 @@ class _AllOrderState extends State<AllOrder> {
       child: Row(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${orderDetail["good_cover"]}",
+            "${Config.apiHost}/${orderDetail["good_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,

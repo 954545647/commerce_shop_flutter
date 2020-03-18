@@ -31,7 +31,7 @@ class _GoodManageState extends State<GoodManage> {
 
   // 获取全部商品
   getAllGoods() {
-    DioUtils.getInstance().post("SsupplierGood",
+    DioUtil.getInstance(context).post("SsupplierGood",
         data: {"id": supplierData.supplierInfo.id}).then((val) {
       if (val != null && val["data"] != null) {
         hasBeenOn = 0;

@@ -13,17 +13,11 @@ class _LocationState extends State<Location> {
   @override
   void initState() {
     super.initState();
-    DioUtils.getInstance().get('address').then((val) {
-      if (val != null) {
-        setState(() {
-          addressList = val["data"];
-        });
-      }
-    });
+    getAddress();
   }
 
-  loadData() async {
-    DioUtils.getInstance().post('address').then((val) {
+  getAddress() async {
+    DioUtil.getInstance(context).get('address').then((val) {
       if (val != null) {
         setState(() {
           addressList = val["data"];
@@ -68,7 +62,6 @@ class _LocationState extends State<Location> {
                 height: 30.0,
                 decoration: BoxDecoration(
                     color: Colors.red,
-                    // border: Border.all(width: 1),
                     borderRadius: BorderRadius.all(Radius.circular(30.0))),
                 child: Text(
                   "新增地址",
@@ -78,7 +71,7 @@ class _LocationState extends State<Location> {
               onTap: () {
                 Navigator.pushNamed(context, "newAddress").then((val) {
                   if (val == true) {
-                    loadData();
+                    getAddress();
                   }
                 });
               },
@@ -93,7 +86,6 @@ class _LocationState extends State<Location> {
           alignment: Alignment.center,
           height: 200.0,
           width: 500.0,
-          // decoration: BoxDecoration(border: Border.all(width: 1)),
           child: Text(
             "去新增地址",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -102,7 +94,7 @@ class _LocationState extends State<Location> {
         onTap: () {
           Navigator.pushNamed(context, "newAddress").then((val) {
             if (val == true) {
-              loadData();
+              getAddress();
             }
           });
         },
@@ -112,7 +104,9 @@ class _LocationState extends State<Location> {
 
   Widget singleAddress(data) {
     return Container(
+      padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
       decoration: BoxDecoration(
+          color: Colors.white,
           border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
       alignment: Alignment.center,
       height: 70.0,
@@ -138,6 +132,7 @@ class _LocationState extends State<Location> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
+                alignment: Alignment.centerLeft,
                 margin: EdgeInsets.fromLTRB(10, 0, 15, 0),
                 child: Text(
                   data["address"],
@@ -147,13 +142,16 @@ class _LocationState extends State<Location> {
                       color: Colors.grey),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child: GestureDetector(
-                  child: Icon(Icons.edit),
-                  onTap: () {},
-                ),
-              )
+              data["isDefault"]
+                  ? Container(
+                      child: Text(
+                        "默认地址",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    )
+                  : Container(
+                      child: Text(""),
+                    )
             ],
           )
         ],

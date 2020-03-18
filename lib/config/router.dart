@@ -1,14 +1,13 @@
 import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
-import 'package:commerce_shop_flutter/components/good_detail/index.dart';
 import 'package:commerce_shop_flutter/components/home/news/hot_news.dart';
 import 'package:commerce_shop_flutter/components/home/news/news_detail.dart';
 import 'package:commerce_shop_flutter/components/home/monitor/monitor.dart';
+import 'package:commerce_shop_flutter/components/home/near_farm/index.dart';
+import 'package:commerce_shop_flutter/components/home/near_farm/merchant_detail.dart';
 import 'package:commerce_shop_flutter/components/sign_in/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/index.dart';
 import 'package:commerce_shop_flutter/components/integral_shop/integral_detail.dart';
-import 'package:commerce_shop_flutter/components/near_farm/index.dart';
-import 'package:commerce_shop_flutter/components/near_farm/merchant_detail.dart';
 import 'package:commerce_shop_flutter/components/welcome/login.dart';
 import 'package:commerce_shop_flutter/components/welcome/register.dart';
 import 'package:commerce_shop_flutter/components/coupon/index.dart';
@@ -19,8 +18,10 @@ import 'package:commerce_shop_flutter/components/user_center/setting/photo.dart'
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
 import 'package:commerce_shop_flutter/components/common/loading.dart';
-import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
 import 'package:commerce_shop_flutter/components/payment/index.dart';
+import 'package:commerce_shop_flutter/components/payment/success.dart';
+import 'package:commerce_shop_flutter/components/good_detail/index.dart';
+import 'package:commerce_shop_flutter/components/good_detail/good_cart.dart';
 import 'package:commerce_shop_flutter/components/good_detail/supplier.dart';
 import 'package:commerce_shop_flutter/components/order/all_order.dart';
 import 'package:commerce_shop_flutter/components/order/unpay_order.dart';
@@ -66,6 +67,7 @@ final routes = {
   "myCart": (context) => MyCart(),
   "payment": (context, {arguments}) => PayMent(),
   "supplier": (context, {arguments}) => Supplier(),
+  "sucess": (context, {arguments}) => Sucess(),
   "allOrder": (context, {arguments}) => AllOrder(),
   "unpayOrder": (context, {arguments}) => UnpayOrder(),
   "finishOrder": (context, {arguments}) => FinishOrder(),

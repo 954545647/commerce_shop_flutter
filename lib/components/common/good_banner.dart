@@ -43,7 +43,7 @@ class _GoodBannerState extends State<GoodBanner> {
             fit: BoxFit.fill,
           );
         },
-        autoplay: true,
+        // autoplay: true,
         itemCount: imageList.length,
         viewportFraction: fraction,
         scale: scale,

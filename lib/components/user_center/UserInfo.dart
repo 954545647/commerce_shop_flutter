@@ -30,7 +30,7 @@ class _UserInfoState extends State<UserInfo> {
                       children: <Widget>[
                         ClipOval(
                           child: Image.network(
-                            "${Config.apiHost}${userInfo.imgCover}",
+                            "${Config.apiHost}/${userInfo.imgCover}",
                             fit: BoxFit.cover,
                             width: 65,
                             height: 65,

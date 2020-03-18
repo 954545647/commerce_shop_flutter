@@ -22,7 +22,7 @@ class _TakeCouponState extends State<TakeCoupon> {
 
 // 获取优惠卷
   getCoupon() async {
-    await DioUtils.getInstance().post("myCoupon").then((val) {
+    await DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         var list = [];
         val["data"].forEach((item) {
@@ -34,7 +34,7 @@ class _TakeCouponState extends State<TakeCoupon> {
       }
     });
     // 从系统中全部优惠卷筛选出自己未拥有的优惠卷
-    await DioUtils.getInstance().post("getAlls").then((val) {
+    await DioUtil.getInstance(context).post("getAlls").then((val) {
       if (val != null && val["data"] != null) {
         var list = [];
         val["data"].forEach((item) {
@@ -51,7 +51,7 @@ class _TakeCouponState extends State<TakeCoupon> {
   }
 
   handleCoupon(couponData) async {
-    await DioUtils.getInstance()
+    await DioUtil.getInstance(context)
         .post("handleCoupon", data: {"couponId": couponData["id"]}).then((val) {
       if (val != null && val["data"] != null) {
         Toast.toast(context, msg: "领取成功");

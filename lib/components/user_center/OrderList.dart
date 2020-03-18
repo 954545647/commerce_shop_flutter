@@ -13,7 +13,7 @@ class OrderList extends StatefulWidget {
 class _OrderListState extends State<OrderList> {
   List orderList = []; // 全部订单
   List unpayOrders = []; // 未支付订单
-  List pastOrders = []; // 过期订单
+  List cancelOrders = []; // 过期订单
   List finishOrders = []; // 完成订单
   UserData user;
   bool isLogin;
@@ -35,17 +35,17 @@ class _OrderListState extends State<OrderList> {
 
   // 获取全部订单
   getOrders() {
-    DioUtils.getInstance().get("allOrders").then((val) {
+    DioUtil.getInstance(context).get("allOrders").then((val) {
       if (val != null && val["data"] != null) {
         unpayOrders = [];
-        pastOrders = [];
+        cancelOrders = [];
         finishOrders = [];
         val["data"].forEach((data) {
           if (data["status"] == 1) {
             unpayOrders.add(data);
           }
           if (data["status"] == 3) {
-            pastOrders.add(data);
+            cancelOrders.add(data);
           }
           if (data["status"] == 2) {
             finishOrders.add(data);
@@ -105,7 +105,7 @@ class _OrderListState extends State<OrderList> {
               onTap: () {
                 isLogin
                     ? Navigator.pushNamed(context, "allOrder",
-                        arguments: pastOrders)
+                        arguments: orderList)
                     : Navigator.pushNamed(context, "login");
               }),
           GestureDetector(
@@ -143,7 +143,9 @@ class _OrderListState extends State<OrderList> {
               ),
               onTap: () {
                 isLogin
-                    ? Navigator.pushNamed(context, "unpayOrder").then((val) {
+                    ? Navigator.pushNamed(context, "unpayOrder",
+                            arguments: unpayOrders)
+                        .then((val) {
                         if (val) {
                           getOrders();
                         }
@@ -185,7 +187,8 @@ class _OrderListState extends State<OrderList> {
               ),
               onTap: () {
                 isLogin
-                    ? Navigator.pushNamed(context, "finishOrder")
+                    ? Navigator.pushNamed(context, "finishOrder",
+                        arguments: finishOrders)
                     : Navigator.pushNamed(context, "login");
               }),
           GestureDetector(
@@ -204,7 +207,7 @@ class _OrderListState extends State<OrderList> {
                   Positioned(
                       right: 0,
                       top: 5,
-                      child: pastOrders.length > 0 && isLogin
+                      child: cancelOrders.length > 0 && isLogin
                           ? Container(
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
@@ -214,7 +217,7 @@ class _OrderListState extends State<OrderList> {
                               height: 20,
                               width: 20,
                               child: Text(
-                                pastOrders.length.toString(),
+                                cancelOrders.length.toString(),
                                 style: TextStyle(color: Colors.white),
                               ),
                             )
@@ -223,7 +226,8 @@ class _OrderListState extends State<OrderList> {
               ),
               onTap: () {
                 isLogin
-                    ? Navigator.pushNamed(context, "cancelOrder")
+                    ? Navigator.pushNamed(context, "cancelOrder",
+                        arguments: cancelOrders)
                     : Navigator.pushNamed(context, "login");
               }),
         ],

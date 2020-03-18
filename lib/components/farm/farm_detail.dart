@@ -5,6 +5,8 @@ import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 // import 'package:commerce_shop_flutter/utils/dio.dart';
 import "package:commerce_shop_flutter/config/config.dart";
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
 
 class FarmDetail extends StatefulWidget {
   @override
@@ -112,6 +114,7 @@ class _FarmDetailState extends State<FarmDetail> {
   @override
   Widget build(BuildContext context) {
     Map arguments = ModalRoute.of(context).settings.arguments;
+    final user = Provider.of<UserData>(context);
     int len = arguments["cropInfo"].length;
     cropNum = List<int>(len);
     cropNum.fillRange(0, len, 0);
@@ -134,7 +137,7 @@ class _FarmDetailState extends State<FarmDetail> {
                       width: ScreenUtil().setWidth(750),
                       height: ScreenUtil().setHeight(450),
                       child: Image.network(
-                        "${Config.apiHost}${arguments["imgCover"]}",
+                        "${Config.apiHost}/${arguments["imgCover"]}",
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -300,6 +303,11 @@ class _FarmDetailState extends State<FarmDetail> {
                 bottom: 0,
                 child: GestureDetector(
                   onTap: () {
+                    if (!user.isLogin) {
+                      Toast.toast(context, msg: "请先登录");
+                      Navigator.pushNamed(context, "login");
+                      return;
+                    }
                     if (getTotalNum() == 0) {
                       Toast.toast(context, msg: "还没选择农作物");
                       return;
@@ -380,7 +388,7 @@ class _FarmDetailState extends State<FarmDetail> {
       child: Column(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${data["imgCover"]}",
+            "${Config.apiHost}/${data["imgCover"]}",
             width: ScreenUtil().setWidth(160),
             height: ScreenUtil().setHeight(140),
             fit: BoxFit.cover,

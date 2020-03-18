@@ -30,7 +30,7 @@ class _LandManageState extends State<LandManage> {
 
   // 获取全部土地
   getLands() {
-    DioUtils.getInstance().post("SsupplierFarm",
+    DioUtil.getInstance(context).post("SsupplierFarm",
         data: {"id": supplierData.supplierInfo.id}).then((val) {
       if (val != null && val["data"] != null) {
         hasBeenOn = 0;

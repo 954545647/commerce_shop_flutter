@@ -21,7 +21,7 @@ class _MyFarmState extends State<MyFarm> {
 
   // 获取全部订单
   getMyFarms() {
-    DioUtils.getInstance().get("myFarms").then((val) {
+    DioUtil.getInstance(context).get("myFarms").then((val) {
       if (val != null && val["data"] != null) {
         farmList = val["data"];
         setState(() {});
@@ -89,7 +89,7 @@ class _MyFarmState extends State<MyFarm> {
       child: Row(
         children: <Widget>[
           Image.network(
-            "${Config.apiHost}${orderDetail["crop_cover"]}",
+            "${Config.apiHost}/${orderDetail["crop_cover"]}",
             width: 140,
             height: 100,
             fit: BoxFit.fill,

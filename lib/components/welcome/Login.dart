@@ -24,22 +24,22 @@ class _LoginState extends State<Login> {
   }
 
   // 获取用户地址
-  getUserAddress() async {
-    await DioUtils.getInstance().get('address').then((val) {
-      if (val != null && val["data"] != null) {
-        if (val["data"].length == 0) {
-          userAddress = "";
-        } else {
-          userAddress = val["data"][0]["address"];
-        }
-        setState(() {});
-      }
-    });
-  }
+  // getUserAddress() async {
+  //   await DioUtil.getInstance(context).get('address').then((val) {
+  //     if (val != null && val["data"] != null) {
+  //       if (val["data"].length == 0) {
+  //         userAddress = "";
+  //       } else {
+  //         userAddress = val["data"][0]["address"];
+  //       }
+  //       setState(() {});
+  //     }
+  //   });
+  // }
 
   // 登录
   Future login() async {
-    return DioUtils.getInstance().post('login', data: {
+    return DioUtil.getInstance(context).post('login', data: {
       "username": _unameController.text,
       "password": _pwdController.text
     });
@@ -163,15 +163,16 @@ class _LoginState extends State<Login> {
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
-                                              prefs.setString(
-                                                  "token", res["token"]);
-                                              await getUserAddress();
+                                              prefs.setString("accessToken",
+                                                  res["accessToken"]);
+                                              prefs.setString("refreshToken",
+                                                  res["refreshToken"]);
                                               // 将用户信息注册到全局上
                                               user.login(
                                                   id: res["id"],
                                                   username: res["username"],
                                                   phone: res["phone"],
-                                                  address: userAddress,
+                                                  address: "",
                                                   imgCover: res["imgCover"],
                                                   unpayOrder: []);
                                               // socket连接

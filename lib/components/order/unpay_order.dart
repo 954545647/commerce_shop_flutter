@@ -22,7 +22,7 @@ class _UnpayOrderState extends State<UnpayOrder> {
 
   // 获取全部订单
   getOrders() {
-    DioUtils.getInstance().get("allOrders").then((val) {
+    DioUtil.getInstance(context).get("allOrders").then((val) {
       if (val != null && val["data"] != null) {
         val["data"].forEach((data) {
           if (data["status"] == 1) {
@@ -104,7 +104,7 @@ class _UnpayOrderState extends State<UnpayOrder> {
         child: Row(
           children: <Widget>[
             Image.network(
-              "${Config.apiHost}${orderDetail["good_cover"]}",
+              "${Config.apiHost}/${orderDetail["good_cover"]}",
               width: 140,
               height: 100,
               fit: BoxFit.fill,

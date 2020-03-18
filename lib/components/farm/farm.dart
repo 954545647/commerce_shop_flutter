@@ -11,7 +11,7 @@ class Farm extends StatelessWidget {
   Widget build(BuildContext context) {
     var farmDetail = farmInfo["farmInfo"];
     return Container(
-        height: ScreenUtil().setHeight(750),
+        height: ScreenUtil().setHeight(680),
         width: ScreenUtil().setWidth(750),
         margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
         padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -29,7 +29,7 @@ class Farm extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
                         image: NetworkImage(
-                            "${Config.apiHost}${farmDetail["imgCover"]}"),
+                            "${Config.apiHost}/${farmDetail["imgCover"]}"),
                         fit: BoxFit.fill))),
             SizedBox(height: 10),
             Text(

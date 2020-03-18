@@ -26,7 +26,7 @@ class _SupplierState extends State<Supplier> {
               TopTitle(title: '商户详情', showArrow: true),
               // 商家封面
               Image.network(
-                "${Config.apiHost}$imgCover",
+                "${Config.apiHost}/$imgCover",
                 height: 250,
                 fit: BoxFit.fill,
               ),

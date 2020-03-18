@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
 import 'package:commerce_shop_flutter/provider/socketData.dart';
-import 'package:commerce_shop_flutter/provider/goodData.dart';
+import 'package:commerce_shop_flutter/provider/orderData.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
 import "package:commerce_shop_flutter/config/router.dart";
 
@@ -14,8 +14,8 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: UserData()), // 用户数据
-      ChangeNotifierProvider.value(value: GoodData()), // 购物车数据
       ChangeNotifierProvider.value(value: CartData()), // 购物车数据
+      ChangeNotifierProvider.value(value: OrderData()), // 订单数据
       ChangeNotifierProvider.value(value: SupplierData()), // 商家数据
       ChangeNotifierProvider.value(value: SocketData()), // 商家数据
     ],

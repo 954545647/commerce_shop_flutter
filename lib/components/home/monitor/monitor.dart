@@ -39,7 +39,7 @@ class _MonitorState extends State<Monitor> {
 
 // 获取农场全部信息
   getAllFarms() {
-    DioUtils.getInstance().get("getAllFarmsInfo").then((val) {
+    DioUtil.getInstance(context).get("getAllFarmsInfo").then((val) {
       if (val != null && val["data"] != null) {
         val["data"].forEach((item) {
           var cur = item["farmInfo"];

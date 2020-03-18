@@ -53,7 +53,7 @@ class _GoodsCardState extends State<GoodsCard> {
             topRight: Radius.circular(8),
           ),
           child: Image.network(
-            "${Config.apiHost}${widget.data["imgCover"]}",
+            "${Config.apiHost}/${widget.data["imgCover"]}",
             height: 200,
             fit: BoxFit.fill,
           ),

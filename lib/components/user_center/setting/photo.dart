@@ -49,8 +49,7 @@ class _PhotoState extends State<Photo> {
     String fileDir = img.path;
     FormData formData =
         FormData.fromMap({"file": await MultipartFile.fromFile(fileDir)});
-    var res =
-        await getData("supplier/upload", data: formData, baseUrl: BASEURL);
+    var res = await getData("utils/upload", data: formData, baseUrl: BASEURL);
     if (res != null && res["url"] != null) {
       serverImg = res["url"];
     }
@@ -59,7 +58,7 @@ class _PhotoState extends State<Photo> {
 
   // 更新用户资料
   Future updateUserInfo() async {
-    return await DioUtils.getInstance()
+    return await DioUtil.getInstance(context)
         .post("updateImg", data: {"imgCover": serverImg});
   }
 

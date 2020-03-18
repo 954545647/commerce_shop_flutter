@@ -59,7 +59,7 @@ class _SupplierRegisterState extends State<SupplierRegister> {
   // 检查名字是否存在
   Future<bool> checkNameExit() async {
     bool ifExit = false;
-    var data = await DioUtils.getInstance()
+    var data = await DioUtil.getInstance(context)
         .post("SsupplierIfExit", data: {"username": _unameController.text});
     // 查找到有数据 或者 传参不符合规范
     if (data != null && data["code"] == 400) {

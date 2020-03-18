@@ -6,6 +6,7 @@ import 'package:city_pickers/city_pickers.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/utils/utils.dart';
 
 class NewAddress extends StatefulWidget {
   @override
@@ -30,7 +31,7 @@ class _NewAddressState extends State<NewAddress> {
   saveAddress(isDefault) async {
     String address = location + _detailController.text;
     // 新增地址接口
-    var data = await DioUtils.getInstance().post("newAddress", data: {
+    var data = await DioUtil.getInstance(context).post("newAddress", data: {
       "username": _userController.text,
       "phone": _phoneController.text,
       "province": province,
@@ -54,7 +55,7 @@ class _NewAddressState extends State<NewAddress> {
         Toast.toast(context, msg: "添加成功");
       } else {
         Navigator.of(context).pop();
-        Toast.toast(context, msg: data["msg"]);
+        Toast.toast(context, msg: parseErrorMessage(data["msg"]));
       }
     } else {
       Navigator.of(context).pop();

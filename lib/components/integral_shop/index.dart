@@ -15,7 +15,7 @@ class _IntegralMallState extends State<IntegralMall> {
   void initState() {
     super.initState();
     // 获取用户积分
-    DioUtils.getInstance().post('getUserInfo').then((val) {
+    DioUtil.getInstance(context).post('getUserInfo').then((val) {
       if (val != null) {
         setState(() {
           point = val["data"]["point"];

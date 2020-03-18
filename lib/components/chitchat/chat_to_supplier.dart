@@ -60,7 +60,7 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
   // 获取历史消息
   Future getHistory() async {
     Map args = ModalRoute.of(context).settings.arguments;
-    var data = await DioUtils.getInstance().post("supplierHistory",
+    var data = await DioUtil.getInstance(context).post("supplierHistory",
         data: {"toId": args["id"], "fromId": userData.userInfo.id});
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
@@ -86,7 +86,9 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
 
   // 顾客离开
   clientExit() {
-    mysocket.emit("nochatToSupplier", {"id": userData.userInfo.id});
+    if (mysocket != null) {
+      mysocket.emit("nochatToSupplier", {"id": userData.userInfo.id});
+    }
   }
 
   // 显示消息
@@ -238,7 +240,7 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        "${Config.apiHost}${userData.userInfo.imgCover}"),
+                        "${Config.apiHost}/${userData.userInfo.imgCover}"),
                     fit: BoxFit.cover)))
       ]),
     );
@@ -257,7 +259,7 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
             decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
-                    image: NetworkImage("${Config.apiHost}$imgCover"),
+                    image: NetworkImage("${Config.apiHost}/$imgCover"),
                     fit: BoxFit.cover))),
         SizedBox(
           width: 10,

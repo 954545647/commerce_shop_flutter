@@ -19,7 +19,7 @@ class _HotGoodsState extends State<HotGoods> {
 
 // 获取所有商品
   getAllGoods() {
-    DioUtils.getInstance().post('getAllGoods').then((val) {
+    DioUtil.getInstance(context).post('getAllGoods').then((val) {
       if (val != null && val["data"] != null) {
         goodsList = val["data"];
         ifShowLoading = false;
@@ -82,7 +82,7 @@ class _HotGoodsState extends State<HotGoods> {
         padding: EdgeInsets.fromLTRB(15, 15, 15, 15),
         child: Row(
           children: <Widget>[
-            Image.network("${Config.apiHost}$imgCover",
+            Image.network("${Config.apiHost}/$imgCover",
                 width: ScreenUtil().setWidth(300),
                 height: ScreenUtil().setHeight(300),
                 fit: BoxFit.cover),
@@ -108,7 +108,6 @@ class _HotGoodsState extends State<HotGoods> {
                       ),
                       Text("￥${price.toString()}",
                           style: TextStyle(
-                              // color: Color.fromRGBO(201, 66, 45, 1),
                               color: Colors.red,
                               fontSize: 25,
                               fontWeight: FontWeight.bold)),

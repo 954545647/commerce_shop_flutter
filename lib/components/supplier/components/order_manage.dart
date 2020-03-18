@@ -35,7 +35,7 @@ class _OrderManageState extends State<OrderManage> {
 
   // 获取全部订单
   getOrders() {
-    DioUtils.getInstance().post("SsupplierOrders",
+    DioUtil.getInstance(context).post("SsupplierOrders",
         data: {"supplierId": supplierData.supplierInfo.id}).then((val) {
       if (val != null && val["data"] != null) {
         var data = val["data"];

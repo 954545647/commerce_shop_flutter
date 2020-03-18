@@ -17,14 +17,14 @@ class UnpayDialog extends StatelessWidget {
   });
 
 // 支付订单，修改订单状态
-  payOrder(orderId) {
-    DioUtils.getInstance()
+  payOrder(orderId, context) {
+    DioUtil.getInstance(context)
         .post("modifyOrderStatus", data: {"orderId": orderId});
   }
 
 // 修改用户的积分
-  modifyUserPoint() {
-    DioUtils.getInstance().post("changeIntegral", data: {"source": 2});
+  modifyUserPoint(context) {
+    DioUtil.getInstance(context).post("changeIntegral", data: {"source": 2});
   }
 
   @override
@@ -95,11 +95,11 @@ class UnpayDialog extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () {
-                      payOrder(data["id"]);
+                      payOrder(data["id"], context);
                       // 删除Provider中对应未支付
                       // user.deleteUnpayOrder(userId, curItem);
                       // 更改用户积分
-                      modifyUserPoint();
+                      modifyUserPoint(context);
                       Navigator.of(context).push(new MaterialPageRoute(
                         builder: (context) {
                           return new IndexPage();
@@ -148,7 +148,7 @@ class UnpayDialog extends StatelessWidget {
           Row(
             children: <Widget>[
               Image.network(
-                "${Config.apiHost}${data["good_cover"]}",
+                "${Config.apiHost}/${data["good_cover"]}",
                 width: 120,
                 height: 80,
                 fit: BoxFit.fill,

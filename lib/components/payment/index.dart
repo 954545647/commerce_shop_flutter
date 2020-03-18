@@ -8,6 +8,7 @@ import './good_supplier.dart';
 import 'package:commerce_shop_flutter/provider/cartData.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/orderData.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
@@ -29,7 +30,7 @@ class _PayMentState extends State<PayMent> {
 
 // 获取用户优惠卷（只获取未使用的）
   getUserCoupons() {
-    DioUtils.getInstance().post("myCoupon").then((val) {
+    DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
         userCouponList = [];
         val["data"].forEach((data) {
@@ -44,7 +45,7 @@ class _PayMentState extends State<PayMent> {
 
 // 更新商品信息（销量，库存）
   updateGoodInfo(goodInfo) {
-    DioUtils.getInstance()
+    DioUtil.getInstance(context)
         .post("updateGood", data: {"goodInfo": goodInfo}).then((val) {
       if (val != null && val["data"] != null) {
         setState(() {});
@@ -54,13 +55,13 @@ class _PayMentState extends State<PayMent> {
 
   // 修改用户优惠卷状态
   modifyCouponStatus() {
-    DioUtils.getInstance().post("handleCoupon",
+    DioUtil.getInstance(context).post("handleCoupon",
         data: {"couponId": chooseCoupon["couponId"], "orderId": orderId});
   }
 
 // 修改用户的积分
   modifyUserPoint() {
-    DioUtils.getInstance().post("changeIntegral", data: {"source": 2});
+    DioUtil.getInstance(context).post("changeIntegral", data: {"source": 2});
   }
 
 // 计算总数
@@ -112,7 +113,7 @@ class _PayMentState extends State<PayMent> {
       goodsId,
       orderUsername,
       status}) async {
-    await DioUtils.getInstance().post('newOrder', data: {
+    await DioUtil.getInstance(context).post('newOrder', data: {
       "couponId": couponId,
       "orderAmount": orderAmount,
       "payMoney": payMoney,
@@ -130,6 +131,25 @@ class _PayMentState extends State<PayMent> {
     await updateCarts();
   }
 
+  // 提交订单
+  placeOrder(couponId, cut, goodsId, goodInfo, status) async {
+    final user = Provider.of<UserData>(context);
+    final orderdata = Provider.of<OrderData>(context);
+    // 提交订单
+    await submitOrder(
+        couponId: couponId,
+        orderAmount: int.parse(totalPrice) + cut,
+        payMoney: int.parse(totalPrice),
+        address: orderdata.orderInfo.address,
+        goodsId: goodsId,
+        orderUsername: user.userInfo.username,
+        status: status);
+    // 修改商品信息
+    updateGoodInfo(goodInfo);
+    // 修改优惠卷状态
+    modifyCouponStatus();
+  }
+
   // 更新购物车
   updateCarts() async {
     final cart = Provider.of<CartData>(context);
@@ -137,12 +157,13 @@ class _PayMentState extends State<PayMent> {
     cart.cartInfo.forEach((item) {
       cartIds.add(item.cartId);
     });
-    await DioUtils.getInstance().post('deleteCart', data: {"cartIds": cartIds});
+    await DioUtil.getInstance(context)
+        .post('deleteCart', data: {"cartIds": cartIds});
   }
 
   // 开启定时任务
   startTask() {
-    DioUtils.getInstance().post('startTask', data: {"orderId": orderId});
+    DioUtil.getInstance(context).post('startTask', data: {"orderId": orderId});
   }
 
   @override
@@ -150,6 +171,7 @@ class _PayMentState extends State<PayMent> {
     List goodLists = ModalRoute.of(context).settings.arguments;
     final cart = Provider.of<CartData>(context);
     final user = Provider.of<UserData>(context);
+    final orderdata = Provider.of<OrderData>(context);
     List goodsId = handleOrderData(goodLists, "goodId");
     List goodInfo = handleUpdateGoodInfo(goodLists);
     return Scaffold(
@@ -200,7 +222,7 @@ class _PayMentState extends State<PayMent> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          if (user.userInfo.address == "") {
+                          if (orderdata.orderInfo.address == "") {
                             Toast.toast(context, msg: "请选择收获地址");
                             return;
                           }
@@ -228,20 +250,8 @@ class _PayMentState extends State<PayMent> {
                                       new FlatButton(
                                         child: new Text("取消"),
                                         onPressed: () async {
-                                          await submitOrder(
-                                            couponId: couponId,
-                                            orderAmount:
-                                                int.parse(totalPrice) + cut,
-                                            payMoney: int.parse(totalPrice),
-                                            address: user.userInfo.address,
-                                            goodsId: goodsId,
-                                            orderUsername: userInfo.username,
-                                            status: 1,
-                                          );
-                                          // 修改商品信息
-                                          updateGoodInfo(goodInfo);
-                                          // 修改优惠卷状态
-                                          modifyCouponStatus();
+                                          await placeOrder(couponId, cut,
+                                              goodsId, goodInfo, 1);
                                           // 开启定时器
                                           startTask();
                                           Navigator.of(context)
@@ -253,25 +263,18 @@ class _PayMentState extends State<PayMent> {
                                       new FlatButton(
                                         child: new Text("确定"),
                                         onPressed: () async {
-                                          await submitOrder(
-                                            couponId: couponId,
-                                            orderAmount:
-                                                int.parse(totalPrice) + cut,
-                                            payMoney: int.parse(totalPrice),
-                                            address: user.userInfo.address,
-                                            goodsId: goodsId,
-                                            orderUsername: userInfo.username,
-                                            status: 2,
-                                          );
-                                          updateGoodInfo(goodInfo);
-                                          // 修改优惠卷状态
-                                          modifyCouponStatus();
+                                          await placeOrder(couponId, cut,
+                                              goodsId, goodInfo, 2);
+                                          // 修改用户积分
                                           modifyUserPoint();
+                                          // 路由跳转支付成功页面
+                                          Navigator.pushNamed(
+                                              context, "sucess");
                                           // 路由回退到购物车页面
-                                          Navigator.of(context)
-                                              .pushNamedAndRemoveUntil(
-                                                  'allOrder',
-                                                  ModalRoute.withName('index'));
+                                          // Navigator.of(context)
+                                          //     .pushNamedAndRemoveUntil(
+                                          //         'allOrder',
+                                          //         ModalRoute.withName('index'));
                                         },
                                       ),
                                     ],

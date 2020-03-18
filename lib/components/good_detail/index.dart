@@ -5,12 +5,11 @@ import 'package:commerce_shop_flutter/components/common/common_title.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/components/good_detail/good_detail.dart';
-// import 'package:commerce_shop_flutter/components/good_detail/good_comment.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
-import 'package:commerce_shop_flutter/provider/goodData.dart';
 import 'package:commerce_shop_flutter/utils/diaLog.dart';
 import "package:commerce_shop_flutter/config/config.dart";
+import 'package:flutter/services.dart';
 
 class GoodDetails extends StatefulWidget {
   @override
@@ -19,6 +18,8 @@ class GoodDetails extends StatefulWidget {
 
 class _GoodDetailsState extends State<GoodDetails> {
   TextEditingController _numController = TextEditingController();
+  UserData userInfo;
+  bool ifLogin;
   List userAddress = []; // 用户地址
   List orderCart = []; // 用户购物车
   int goodId; // 商品id;
@@ -33,10 +34,43 @@ class _GoodDetailsState extends State<GoodDetails> {
     getGoodInfo();
   }
 
+  // 获取用户购物车
+  getCart() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      userInfo = Provider.of<UserData>(context);
+      ifLogin = userInfo.isLogin;
+      if (ifLogin) {
+        DioUtil.getInstance(context).post("getCarts").then((val) {
+          if (val != null && val["data"] != null) {
+            orderCart = val["data"];
+            cartNum = orderCart.length;
+            setState(() {});
+          }
+        });
+      }
+    });
+  }
+
+  // 获取商品信息
+  Future<void> getGoodInfo() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      Map argument = ModalRoute.of(context).settings.arguments;
+      var data = await DioUtil.getInstance(context)
+          .post("getGoodInfo", data: {"goodId": argument["id"]});
+      if (data != null && data["data"] != null) {
+        setState(() {
+          goodInfo = data["data"];
+        });
+        // 获取商品商家信息
+        await getSupplierInfo();
+      }
+    });
+  }
+
   // 获取商家信息
   Future<void> getSupplierInfo() async {
     await Future.delayed(Duration(microseconds: 300), () async {
-      var data = await DioUtils.getInstance().post("SgetSupplierById",
+      var data = await DioUtil.getInstance(context).post("SgetSupplierById",
           data: {"supplierId": goodInfo["supplierId"]});
       if (data != null && data["data"] != null) {
         supplierInfo = data["data"];
@@ -45,36 +79,9 @@ class _GoodDetailsState extends State<GoodDetails> {
     });
   }
 
-// 获取商品信息
-  Future<void> getGoodInfo() async {
-    await Future.delayed(Duration(microseconds: 300), () async {
-      Map argument = ModalRoute.of(context).settings.arguments;
-      var data = await DioUtils.getInstance()
-          .post("getGoodInfo", data: {"goodId": argument["id"]});
-      if (data != null && data["data"] != null) {
-        setState(() {
-          goodInfo = data["data"];
-        });
-        // 获取商家信息
-        await getSupplierInfo();
-      }
-    });
-  }
-
-  // 获取购物车
-  getCart() {
-    DioUtils.getInstance().post("getCarts").then((val) {
-      if (val != null && val["data"] != null) {
-        orderCart = val["data"];
-        cartNum = orderCart.length;
-        setState(() {});
-      }
-    });
-  }
-
 // 添加到购物车
   addCart(id, goodName, price, buyCount, expressCost) {
-    DioUtils.getInstance().post("handleCart", data: {
+    DioUtil.getInstance(context).post("handleCart", data: {
       "goodId": id,
       "goodName": goodName,
       "price": price,
@@ -82,6 +89,7 @@ class _GoodDetailsState extends State<GoodDetails> {
       "expressCost": expressCost
     }).then((val) {
       if (val != null && val["data"] != null) {
+        // 更新购物车
         getCart();
       }
     });
@@ -90,20 +98,14 @@ class _GoodDetailsState extends State<GoodDetails> {
   @override
   Widget build(BuildContext context) {
     Map argument = ModalRoute.of(context).settings.arguments;
-    final userInfo = Provider.of<UserData>(context);
-    final good = Provider.of<GoodData>(context);
-    bool ifLogin = userInfo.isLogin; // 用户是否登录
     // 获取路由参数
     if (goodInfo == null) {
       return Text("数据出现异常");
     } else {
-      var id = goodInfo["id"];
+      int id = goodInfo["id"];
       String goodName = goodInfo["goodName"];
-      var price = goodInfo["price"].toString();
-      var expressCost = goodInfo["expressCost"].toString();
-      var supplierId = goodInfo["supplierId"];
-      String imgCover = goodInfo["imgCover"];
-      good.add(id, supplierId, goodName, imgCover);
+      String price = goodInfo["price"].toString();
+      String expressCost = goodInfo["expressCost"].toString();
       return Scaffold(
         body: MediaQuery.removePadding(
           context: context,
@@ -137,9 +139,9 @@ class _GoodDetailsState extends State<GoodDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
+                      // 商家详情
                       GestureDetector(
                         onTap: () async {
-                          // 先获取数据
                           Navigator.pushNamed(context, "supplier",
                               arguments: supplierInfo);
                         },
@@ -151,6 +153,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                           ),
                         ),
                       ),
+                      // 购物车
                       GestureDetector(
                         onTap: () {
                           if (!ifLogin) {
@@ -158,8 +161,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                           } else {
                             Navigator.pushNamed(context, "myCart").then((val) {
                               if (val) {
-                                // 更新购物车
-                                getCart();
+                                getCart(); // 更新购物车
                               }
                             });
                           }
@@ -177,7 +179,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                                   Text("购物车"),
                                 ],
                               ),
-                              ifLogin && cartNum > 0
+                              ifLogin != null && ifLogin == true && cartNum > 0
                                   ? Positioned(
                                       child: Container(
                                         width: 18,
@@ -201,9 +203,9 @@ class _GoodDetailsState extends State<GoodDetails> {
                           ),
                         ),
                       ),
+                      // 加入购物车
                       GestureDetector(
                         onTap: () {
-                          // 将当前商品及数量加入购物车
                           if (!ifLogin) {
                             loginDialog(context, "请先登录");
                           } else {
@@ -223,6 +225,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                           ),
                         ),
                       ),
+                      // 联系商家
                       GestureDetector(
                         onTap: () {
                           // 联系商家
@@ -254,7 +257,6 @@ class _GoodDetailsState extends State<GoodDetails> {
             ],
           ),
         ),
-        // 顶部商品展示
       );
     }
   }
@@ -262,7 +264,7 @@ class _GoodDetailsState extends State<GoodDetails> {
 //  商品图片展示
   Widget goodBanner(argument) {
     return Image.network(
-      "${Config.apiHost}${argument["imgCover"]}",
+      "${Config.apiHost}/${argument["imgCover"]}",
       height: 300,
       fit: BoxFit.fill,
     );
@@ -276,7 +278,6 @@ class _GoodDetailsState extends State<GoodDetails> {
       width: ScreenUtil().setWidth(750),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15), color: Colors.white),
-      // color: Colors.white,
       child: Container(
           child: Column(
         children: <Widget>[
@@ -291,6 +292,10 @@ class _GoodDetailsState extends State<GoodDetails> {
   Widget specification(argument) {
     return GestureDetector(
       onTap: () {
+        if (argument["stock"] == 0) {
+          Toast.toast(context, msg: "商品没库存啦~");
+          return;
+        }
         showModalBottomSheet(
           isScrollControlled: true,
           context: context,
@@ -309,7 +314,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                   child: Row(
                     children: <Widget>[
                       Image.network(
-                        "${Config.apiHost}${argument["imgCover"]}",
+                        "${Config.apiHost}/${argument["imgCover"]}",
                         fit: BoxFit.cover,
                         width: 150,
                         height: 150,
@@ -319,7 +324,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                       ),
                       Column(
                         children: <Widget>[
-                          Text("￥${argument['price'].toString()}"),
+                          Text("￥${argument['price']}"),
                           Text("库存：${argument["stock"]}")
                         ],
                       )
@@ -335,7 +340,10 @@ class _GoodDetailsState extends State<GoodDetails> {
                     children: <Widget>[
                       Text("购买数量："),
                       InkWell(
-                        child: Icon(Icons.ac_unit),
+                        child: Icon(
+                          IconData(0xe6e6, fontFamily: "myIcons"),
+                          size: 30,
+                        ),
                         onTap: () {
                           if (_numController.text == "") {
                             _numController.text = "0";
@@ -350,29 +358,35 @@ class _GoodDetailsState extends State<GoodDetails> {
                       ),
                       Container(
                         width: 200,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            TextField(
-                              controller: _numController,
-                              keyboardType: TextInputType.number,
-                              onChanged: (v) {
-                                int num = int.parse(v);
-                                int max = int.parse(argument["stock"]);
-                                if (num > max) {
-                                  Toast.toast(context, msg: "库存不足啦");
-                                  _numController.text = "$max";
-                                }
-                                if (num < 0) {
-                                  Toast.toast(context, msg: "购买数量不能低于0");
-                                  _numController.text = "0";
-                                }
-                              },
-                              decoration: InputDecoration(
-                                  labelText: "购买数量",
-                                  prefixIcon: Icon(Icons.person)),
-                            ),
+                        child: TextField(
+                          controller: _numController,
+                          onChanged: (v) {
+                            int num = int.parse(v);
+                            int max = int.parse(argument["stock"]);
+                            if (num > max) {
+                              Toast.toast(context, msg: "库存不足啦");
+                              _numController.text = "$max";
+                            }
+                            if (num < 0) {
+                              Toast.toast(context, msg: "购买数量不能低于0");
+                              _numController.text = "0";
+                            }
+                          },
+                          inputFormatters: [
+                            // 长度限制
+                            LengthLimitingTextInputFormatter(50),
+                            WhitelistingTextInputFormatter.digitsOnly
                           ],
+                          keyboardType: TextInputType.phone,
+                          style: TextStyle(fontSize: 16.0, color: Colors.black),
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 16.0),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.black54,
+                                      style: BorderStyle.solid)), //获取焦点时，下划线的样式
+                              hintText: "购买数量"),
                         ),
                       ),
                       InkWell(
@@ -407,8 +421,18 @@ class _GoodDetailsState extends State<GoodDetails> {
                     ),
                   ),
                   onTap: () {
-                    if (_numController.text == "") {
+                    if (_numController.text == "" ||
+                        _numController.text == "0") {
                       Toast.toast(context, msg: "数量最低为1");
+                      _numController.text = "1";
+                      return;
+                    }
+                    int num = int.parse(_numController.text);
+                    int max = argument["stock"];
+                    if (num > max) {
+                      Toast.toast(context, msg: "库存不足,最多为$max");
+                      _numController.text = "$max";
+                      return;
                     }
                     setState(() {
                       buyCount = int.parse(_numController.text);
@@ -439,7 +463,7 @@ class _GoodDetailsState extends State<GoodDetails> {
                   SizedBox(
                     width: 10,
                   ),
-                  Text(buyCount.toString())
+                  Text("$buyCount")
                 ],
               ),
               InkWell(

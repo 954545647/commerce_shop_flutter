@@ -6,11 +6,8 @@ import 'package:commerce_shop_flutter/utils/dio.dart';
 class HomeSwiper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // print('设备的像素密度${ScreenUtil.pixelRatio}');
-    // print('设备的宽度${ScreenUtil.screenWidth}');
-    // print('设备的高度${ScreenUtil.screenHeight}');
     return FutureBuilder(
-      future: DioUtils.getInstance().get('homeSwiperImgList'),
+      future: DioUtil.getInstance(context).get('homeSwiperImgList'),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
