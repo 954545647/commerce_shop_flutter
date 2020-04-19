@@ -56,7 +56,7 @@ class _GoodDetailsState extends State<GoodDetails> {
     await Future.delayed(Duration(microseconds: 300), () async {
       Map argument = ModalRoute.of(context).settings.arguments;
       var data = await DioUtil.getInstance(context)
-          .post("getGoodInfo", data: {"goodId": argument["id"]});
+          .post("getGoodInfo", data: {"id": argument["id"]});
       if (data != null && data["data"] != null) {
         setState(() {
           goodInfo = data["data"];
@@ -70,8 +70,8 @@ class _GoodDetailsState extends State<GoodDetails> {
   // 获取商家信息
   Future<void> getSupplierInfo() async {
     await Future.delayed(Duration(microseconds: 300), () async {
-      var data = await DioUtil.getInstance(context).post("SgetSupplierById",
-          data: {"supplierId": goodInfo["supplierId"]});
+      var data = await DioUtil.getInstance(context)
+          .post("SgetSupplierById", data: {"id": goodInfo["supplierId"]});
       if (data != null && data["data"] != null) {
         supplierInfo = data["data"];
         setState(() {});

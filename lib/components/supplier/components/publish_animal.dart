@@ -13,19 +13,19 @@ import 'package:commerce_shop_flutter/config/config.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/supplierData.dart';
 
-class PublishGood extends StatefulWidget {
+class PublishAnimal extends StatefulWidget {
   @override
-  _PublishGoodState createState() => _PublishGoodState();
+  _PublishAnimalState createState() => _PublishAnimalState();
 }
 
-class _PublishGoodState extends State<PublishGood> {
-  TextEditingController _nameController = new TextEditingController(); // 商品名字
+class _PublishAnimalState extends State<PublishAnimal> {
+  TextEditingController _nameController = new TextEditingController(); // 家禽名字
   TextEditingController _descController = new TextEditingController(); // 农场简介
   TextEditingController _priceController = new TextEditingController(); // 价格
   TextEditingController _stockController = new TextEditingController(); // 库存
-  TextEditingController _coverController = new TextEditingController(); // 商品标签
+  TextEditingController _coverController = new TextEditingController(); // 家禽标签
   TextEditingController _expressController =
-      new TextEditingController(); // 商品标签
+      new TextEditingController(); // 家禽标签
   String defaultTitle = "例如：【走地鸡】新鲜活泼";
   String location = "点我选择地区";
   String province = "";
@@ -98,7 +98,7 @@ class _PublishGoodState extends State<PublishGood> {
     String stock = _stockController.text;
     String expressCost = _expressController.text;
     int id = supplier.supplierInfo.id;
-    DioUtil.getInstance(context).post("newGood", data: {
+    DioUtil.getInstance(context).post("SnewGood", data: {
       "supplierId": id,
       "goodName": name,
       "descript": descript,
@@ -140,7 +140,7 @@ class _PublishGoodState extends State<PublishGood> {
       child: ListView(
         children: <Widget>[
           TopTitle(
-            title: "发布商品",
+            title: "发布家禽",
             showArrow: true,
             ifRefresh: true,
           ),
@@ -155,17 +155,17 @@ class _PublishGoodState extends State<PublishGood> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // 商品名称
+                // 家禽名称
                 SingleItem(
-                  title: "商品名称",
-                  detail: "请输入商品名称",
+                  title: "家禽名称",
+                  detail: "请输入家禽名称",
                   itemController: _nameController,
                   ifNum: false,
                 ),
                 enterUrl
                     ? SingleItem(
-                        title: "商品封面",
-                        detail: "输入商品封面地址",
+                        title: "家禽封面",
+                        detail: "输入家禽封面地址",
                         itemController: _coverController,
                         ifNum: false,
                       )
@@ -178,7 +178,7 @@ class _PublishGoodState extends State<PublishGood> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                             ),
-                            child: Text("商品封面"),
+                            child: Text("家禽封面"),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -223,7 +223,7 @@ class _PublishGoodState extends State<PublishGood> {
                               ),
                               height: ScreenUtil().setHeight(180),
                               width: ScreenUtil().setWidth(180),
-                              child: ImageView("商品封面", coverImg, coverImg),
+                              child: ImageView("家禽封面", coverImg, coverImg),
                             ),
                           )
                         ],
@@ -231,24 +231,24 @@ class _PublishGoodState extends State<PublishGood> {
               ],
             ),
           ),
-          // 商品价格
+          // 家禽价格
           SingleItem(
-            title: "商品描述",
-            detail: "请输入商品描述",
+            title: "家禽描述",
+            detail: "请输入家禽描述",
             itemController: _descController,
             ifNum: false,
           ),
-          // 商品价格
+          // 家禽价格
           SingleItem(
-            title: "商品价格",
-            detail: "请输入商品价格",
+            title: "家禽价格",
+            detail: "请输入家禽价格",
             itemController: _priceController,
             ifNum: true,
           ),
-          // 商品库存
+          // 家禽库存
           SingleItem(
-            title: "商品库存",
-            detail: "请输入商品库存",
+            title: "家禽库存",
+            detail: "请输入家禽库存",
             itemController: _stockController,
             ifNum: true,
           ),

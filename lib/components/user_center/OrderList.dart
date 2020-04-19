@@ -199,7 +199,7 @@ class _OrderListState extends State<OrderList> {
                     children: <Widget>[
                       Icon(MenuIcons.delivered, size: 25),
                       Text(
-                        '已取消',
+                        '已失效',
                         style: TextStyle(fontSize: 16.0),
                       )
                     ],

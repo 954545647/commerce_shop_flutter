@@ -15,7 +15,7 @@ class NextStep extends StatefulWidget {
 }
 
 class _NextStepState extends State<NextStep> {
-  TextEditingController _idCardController = new TextEditingController(); // 手机号
+  TextEditingController _idCardController = new TextEditingController(); // 身份证号
   File frontImg; // 身份证正面
   File backImg; // 身份证背面
   File shopImg; // 店铺封面
@@ -40,6 +40,49 @@ class _NextStepState extends State<NextStep> {
       "idNum": _idCardController.text,
       "frontImg": serverFrontImg,
       "backImg": serverBackImg
+    });
+  }
+
+  bool checkField() {
+    if (_idCardController.text == "") {
+      Toast.toast(context, msg: "请填写身份证号码");
+      return false;
+    }
+    if (serverFrontImg == null) {
+      Toast.toast(context, msg: "请上传身份证正面");
+      return false;
+    }
+    if (serverBackImg == null) {
+      Toast.toast(context, msg: "请上传身份证反面");
+      return false;
+    }
+    if (serverShopImg == null) {
+      Toast.toast(context, msg: "请上传店铺封面");
+      return false;
+    }
+    return true;
+  }
+
+  // 商家注册
+  Future supplierRegister(userInfo) async {
+    if (!checkField()) return;
+    await DioUtil.getInstance(context).post("Ssregister", data: {
+      "username": userInfo["username"],
+      "password": userInfo["password"],
+      "phone": userInfo["phone"],
+      "idNum": _idCardController.text,
+      "frontImg": serverFrontImg,
+      "backImg": serverBackImg,
+      "imgCover": serverShopImg
+    }).then((val) {
+      if (val != null && val["data"] != null) {
+        Toast.toast(context, msg: "入驻成功");
+        // Navigator.pushReplacementNamed(context, "sLogin");
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('sLogin', (Route<dynamic> route) => false);
+      } else {
+        Toast.toast(context, msg: val["msg"]);
+      }
     });
   }
 
@@ -152,41 +195,7 @@ class _NextStepState extends State<NextStep> {
                 height: ScreenUtil().setHeight(100),
                 child: RaisedButton(
                   onPressed: () async {
-                    if (_idCardController.text == "") {
-                      Toast.toast(context, msg: "请填写身份证号码");
-                      return;
-                    }
-                    if (serverFrontImg == null) {
-                      Toast.toast(context, msg: "请上传身份证正面");
-                      return;
-                    }
-                    if (serverBackImg == null) {
-                      Toast.toast(context, msg: "请上传身份证反面");
-                      return;
-                    }
-                    if (serverShopImg == null) {
-                      Toast.toast(context, msg: "请上传店铺封面");
-                      return;
-                    }
-                    await DioUtil.getInstance(context)
-                        .post("Ssregister", data: {
-                      "username": userInfo["username"],
-                      "password": userInfo["password"],
-                      "phone": userInfo["phone"],
-                      "idNum": _idCardController.text,
-                      "frontImg": serverFrontImg,
-                      "backImg": serverBackImg,
-                      "imgCover": serverShopImg
-                    }).then((val) {
-                      if (val != null && val["data"] != null) {
-                        Toast.toast(context, msg: "入驻成功");
-                        // Navigator.pushReplacementNamed(context, "sLogin");
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            'sLogin', (Route<dynamic> route) => false);
-                      } else {
-                        Toast.toast(context, msg: val["msg"]);
-                      }
-                    });
+                    await supplierRegister(userInfo);
                   },
                   child: Text("提交入驻"),
                 ),

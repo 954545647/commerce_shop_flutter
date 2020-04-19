@@ -3,25 +3,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import "package:commerce_shop_flutter/config/config.dart";
 
-class HotGoods extends StatefulWidget {
+class HotFarm extends StatefulWidget {
   @override
-  _HotGoodsState createState() => _HotGoodsState();
+  _HotFarmState createState() => _HotFarmState();
 }
 
-class _HotGoodsState extends State<HotGoods> {
-  List goodsList;
+class _HotFarmState extends State<HotFarm> {
+  List farmList;
   bool ifShowLoading = true;
   @override
   void initState() {
-    getAllGoods();
+    getHotFarm();
     super.initState();
   }
 
 // 获取所有商品
-  getAllGoods() {
-    DioUtil.getInstance(context).post('getAllGoods').then((val) {
+  getHotFarm() {
+    DioUtil.getInstance(context).get('hotFarms').then((val) {
       if (val != null && val["data"] != null) {
-        goodsList = val["data"];
+        farmList = val["data"];
         ifShowLoading = false;
         if (mounted) {
           setState(() {});
@@ -41,7 +41,7 @@ class _HotGoodsState extends State<HotGoods> {
               children: <Widget>[
                 hotGoodsTitle(),
                 Column(
-                    children: goodsList.map((item) {
+                    children: farmList.map((item) {
                   return hotGoodsItem(item);
                 }).toList())
               ],
@@ -59,19 +59,19 @@ class _HotGoodsState extends State<HotGoods> {
       height: ScreenUtil.getInstance().setHeight(100),
       width: ScreenUtil.getInstance().setWidth(750),
       alignment: Alignment.center,
-      child: Text('热门商品'),
+      child: Text('热门租地'),
     );
   }
 
   // 热门商品子项
   Widget hotGoodsItem(item) {
-    var name = item['goodName'];
-    var price = item['price'];
-    var desc = item['descript'];
-    var imgCover = item['imgCover'];
+    var farmInfo = item["farmInfo"];
+    var name = farmInfo['farmName'];
+    var desc = farmInfo['descript'];
+    var imgCover = farmInfo['imgCover'];
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, "homeGoodsDetail", arguments: item);
+        Navigator.pushNamed(context, "farmDetail", arguments: farmInfo);
       },
       child: Container(
         height: ScreenUtil().setHeight(340),
@@ -106,11 +106,6 @@ class _HotGoodsState extends State<HotGoods> {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 20),
                       ),
-                      Text("￥${price.toString()}",
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold)),
                     ],
                   )
                 ],

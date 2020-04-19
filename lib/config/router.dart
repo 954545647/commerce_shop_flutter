@@ -1,20 +1,23 @@
-import 'package:commerce_shop_flutter/pages/welcome.dart';
 import 'package:commerce_shop_flutter/pages/index.dart';
+import 'package:commerce_shop_flutter/pages/welcome.dart';
+import 'package:commerce_shop_flutter/components/welcome/login.dart';
+import 'package:commerce_shop_flutter/components/welcome/register.dart';
 import 'package:commerce_shop_flutter/components/home/news/hot_news.dart';
 import 'package:commerce_shop_flutter/components/home/news/news_detail.dart';
 import 'package:commerce_shop_flutter/components/home/monitor/monitor.dart';
 import 'package:commerce_shop_flutter/components/home/near_farm/index.dart';
 import 'package:commerce_shop_flutter/components/home/near_farm/merchant_detail.dart';
-import 'package:commerce_shop_flutter/components/sign_in/index.dart';
-import 'package:commerce_shop_flutter/components/integral_shop/index.dart';
-import 'package:commerce_shop_flutter/components/integral_shop/integral_detail.dart';
-import 'package:commerce_shop_flutter/components/welcome/login.dart';
-import 'package:commerce_shop_flutter/components/welcome/register.dart';
-import 'package:commerce_shop_flutter/components/coupon/index.dart';
-import 'package:commerce_shop_flutter/components/coupon/take_coupon.dart';
+import 'package:commerce_shop_flutter/components/home/sign_in/index.dart';
+import 'package:commerce_shop_flutter/components/home/integral_shop/index.dart';
+import 'package:commerce_shop_flutter/components/home/integral_shop/integral_detail.dart';
+import 'package:commerce_shop_flutter/components/home/coupon/index.dart';
+import 'package:commerce_shop_flutter/components/home/coupon/take_coupon.dart';
+import 'package:commerce_shop_flutter/components/home/chitchat/chat_to_service.dart';
+import 'package:commerce_shop_flutter/components/home/chitchat/chat_to_supplier.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/setting.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/password.dart';
 import 'package:commerce_shop_flutter/components/user_center/setting/photo.dart';
+import 'package:commerce_shop_flutter/components/user_center/setting/about.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/location.dart';
 import 'package:commerce_shop_flutter/components/user_center/location/newAddress.dart';
 import 'package:commerce_shop_flutter/components/common/loading.dart';
@@ -34,15 +37,14 @@ import 'package:commerce_shop_flutter/components/supplier/index.dart';
 import 'package:commerce_shop_flutter/components/supplier/login.dart';
 import 'package:commerce_shop_flutter/components/supplier/register.dart';
 import 'package:commerce_shop_flutter/components/supplier/nextStep.dart';
-import 'package:commerce_shop_flutter/components/supplier/components/publish_good.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/publish_animal.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_land.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/publish_crop.dart';
+import 'package:commerce_shop_flutter/components/supplier/components/publish_coupon.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/information_center.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/information_detail.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/good_manage_detail.dart';
 import 'package:commerce_shop_flutter/components/supplier/components/order_manage_detail.dart';
-import 'package:commerce_shop_flutter/components/chitchat/service.dart';
-import 'package:commerce_shop_flutter/components/chitchat/chat_to_supplier.dart';
 
 final routes = {
   'welcome': (context) => Welcome(),
@@ -80,14 +82,16 @@ final routes = {
   "sRegister": (context, {arguments}) => SupplierRegister(),
   "nextStep": (context, {arguments}) => NextStep(),
   "supplierCenter": (context, {arguments}) => SupplierCenter(),
-  "publishGood": (context, {arguments}) => PublishGood(),
+  "publishGood": (context, {arguments}) => PublishAnimal(),
   "publishLand": (context, {arguments}) => PublishLand(),
   "goodManageDetail": (context, {arguments}) => GoodManageDetail(),
   "orderManageDetail": (context, {arguments}) => OrderManageDetail(),
   "publishCrop": (context, {arguments}) => PublishCrop(),
-  "service": (context, {arguments}) => Service(),
+  "publishCoupon": (context, {arguments}) => PublishCoupon(),
+  "service": (context, {arguments}) => ChatToService(),
   "chatToSupplier": (context, {arguments}) => ChatToSupplier(),
   "photo": (context) => Photo(),
+  "about": (context) => About(),
   "informationCenter": (context, {arguments}) => InformationCenter(),
   "informationDetail": (context, {arguments}) => InformationDetail(),
 };

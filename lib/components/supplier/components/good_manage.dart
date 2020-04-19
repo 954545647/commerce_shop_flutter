@@ -71,7 +71,7 @@ class _GoodManageState extends State<GoodManage> {
             width: ScreenUtil().setWidth(750),
             height: ScreenUtil().setHeight(80),
             child: Text(
-              "商品管理",
+              "认养管理",
               style: TextStyle(color: Color.fromRGBO(90, 90, 90, 1)),
             ),
           ),
@@ -90,7 +90,7 @@ class _GoodManageState extends State<GoodManage> {
                         Text(hasBeenOn.toString(),
                             style: TextStyle(fontSize: 18.0)),
                         Text(
-                          '出售中',
+                          '已上架',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         ),
                       ],
@@ -128,7 +128,7 @@ class _GoodManageState extends State<GoodManage> {
                         Text(goodCount.toString(),
                             style: TextStyle(fontSize: 18.0)),
                         Text(
-                          '全部商品',
+                          '家禽管理',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],
@@ -161,7 +161,7 @@ class _GoodManageState extends State<GoodManage> {
                         children: <Widget>[
                           Icon(Icons.add),
                           Text(
-                            '发布新品',
+                            '发布家禽',
                             style:
                                 TextStyle(fontSize: 14.0, color: Colors.grey),
                           )

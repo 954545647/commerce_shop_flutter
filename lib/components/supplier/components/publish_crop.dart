@@ -1,4 +1,4 @@
-// 新增蔬菜
+// 新增农场品
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
@@ -19,12 +19,12 @@ class _PublishCropState extends State<PublishCrop> {
   TextEditingController _nameController = new TextEditingController(); // 名字
   TextEditingController _priceController = new TextEditingController(); // 价格
   TextEditingController _descController = new TextEditingController(); // 简介
-  TextEditingController _coverController = new TextEditingController(); // 蔬菜标签
+  TextEditingController _coverController = new TextEditingController(); // 农场品标签
   File coverImg;
   String serverImg = "";
   dynamic chooseItem; // 选中挂钩的农场
   bool enterUrl = false; // 封面地址是否使用url
-  String chooseFarm = "请选择挂钩农场";
+  String chooseFarm = "选择挂钩农场";
   @override
   void initState() {
     super.initState();
@@ -121,7 +121,7 @@ class _PublishCropState extends State<PublishCrop> {
       child: ListView(
         children: <Widget>[
           TopTitle(
-            title: "发布蔬菜",
+            title: "发布农场品",
             showArrow: true,
             ifRefresh: true,
           ),
@@ -136,17 +136,17 @@ class _PublishCropState extends State<PublishCrop> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                // 蔬菜名称
+                // 农场品名称
                 SingleItem(
-                  title: "蔬菜名称",
-                  detail: "请输入蔬菜名称",
+                  title: "农场品名称",
+                  detail: "请输入农场品名称",
                   itemController: _nameController,
                   ifNum: false,
                 ),
                 enterUrl
                     ? SingleItem(
-                        title: "蔬菜封面",
-                        detail: "输入蔬菜封面地址",
+                        title: "农场品封面",
+                        detail: "输入农场品封面地址",
                         itemController: _coverController,
                         ifNum: false,
                       )
@@ -159,7 +159,7 @@ class _PublishCropState extends State<PublishCrop> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                             ),
-                            child: Text("蔬菜封面"),
+                            child: Text("农场品封面"),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -212,17 +212,17 @@ class _PublishCropState extends State<PublishCrop> {
               ],
             ),
           ),
-          // 蔬菜价格
+          // 农场品价格
           SingleItem(
-            title: "蔬菜价格",
-            detail: "请输入蔬菜价格",
+            title: "农场品价格",
+            detail: "请输入农场品价格",
             itemController: _priceController,
             ifNum: true,
           ),
-          // 蔬菜简介
+          // 农场品简介
           SingleItem(
-            title: "蔬菜简介",
-            detail: "请输入蔬菜简介",
+            title: "农场品简介",
+            detail: "请输入农场品简介",
             itemController: _descController,
             ifNum: false,
           ),

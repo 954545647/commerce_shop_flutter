@@ -150,7 +150,6 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                         if ((_formKey.currentState as FormState)
                                             .validate()) {
                                           var data = await login();
-
                                           if (data != null) {
                                             if (data["errorCode"] == 0) {
                                               var res = data["data"];
@@ -158,8 +157,12 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
+                                              prefs.setInt(
+                                                  "supplierId", res["id"]);
                                               prefs.setString("SaccessToken",
                                                   res["accessToken"]);
+                                              prefs.setString("SrefreshToken",
+                                                  res["refreshToken"]);
                                               // 关闭键盘
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());

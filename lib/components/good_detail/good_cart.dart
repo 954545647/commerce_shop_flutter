@@ -40,7 +40,7 @@ class _MyCartState extends State<MyCart> {
         if (userCart.length != 0) {
           // 创建一个数组，用来关联每一件商品在购物车中的选择状态
           cartState = List<bool>(userCart.length);
-          cartState.fillRange(0, userCart.length - 1, false);
+          cartState.fillRange(0, userCart.length, false);
           totalState =
               cartState.every((state) => state == true) && cartState.length > 0;
           userCart.forEach((item) {
@@ -115,11 +115,13 @@ class _MyCartState extends State<MyCart> {
 // 是否有选中商品
   bool ifChoose() {
     bool result = false;
-    cartState.forEach((item) {
-      if (item == true) {
-        result = true;
-      }
-    });
+    if (cartState != null) {
+      cartState.forEach((item) {
+        if (item == true) {
+          result = true;
+        }
+      });
+    }
     return result;
   }
 

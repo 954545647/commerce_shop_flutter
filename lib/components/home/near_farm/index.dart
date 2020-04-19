@@ -69,7 +69,7 @@ class _NearFarmState extends State<NearFarm> {
   // 商家详情
   Widget merchantDetail(data) {
     var farmInfo = data["farmInfo"];
-    var supplierInfo = data["farmInfo"]["Good_Supplier"];
+    var supplierInfo = data["farmInfo"]["Supplier_Info"];
     var cropInfo = data["farmInfo"]["cropInfo"];
     return GestureDetector(
         onTap: () {

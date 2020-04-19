@@ -128,7 +128,7 @@ Widget couponList(
 Widget couponItem({context, couponInfo, totalPrice, chooseCoupon, setState}) {
   return GestureDetector(
     onTap: () {
-      if (couponInfo["with_amount"] > totalPrice) {
+      if (couponInfo["threshold"] > totalPrice) {
         Toast.toast(context, msg: "订单金额不足");
       } else {
         chooseCoupon = couponInfo;

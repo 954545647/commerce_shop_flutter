@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-import 'package:commerce_shop_flutter/components/home/hot_goods.dart';
+import 'package:commerce_shop_flutter/components/home/hot_adopt.dart';
 
 class Sucess extends StatelessWidget {
   @override
@@ -82,7 +82,7 @@ class Sucess extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 10),
-              HotGoods(),
+              HotAdopt(),
             ],
           ),
         ),

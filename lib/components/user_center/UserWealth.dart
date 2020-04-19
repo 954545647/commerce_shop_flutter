@@ -34,10 +34,10 @@ class _UserWealthState extends State<UserWealth> {
       jumpRoute: "location",
     ),
     ListItem(
-      title: "修改密码",
+      title: "更换头像",
       onChanged: () {},
-      iconName: "0xe611",
-      jumpRoute: "password",
+      iconName: "0xe6b0",
+      jumpRoute: "photo",
     ),
     ListItem(
       title: "设置",

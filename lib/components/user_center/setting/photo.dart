@@ -21,8 +21,8 @@ class Photo extends StatefulWidget {
 class _PhotoState extends State<Photo> {
   File coverImg;
   String serverImg;
-  bool enterUrl = false; // 封面地址是否使用url
-  TextEditingController _coverController = new TextEditingController(); // 商品标签
+  bool enterUrl = false; // 是否输入url
+  TextEditingController _coverController = new TextEditingController(); // 头像
 
   // 使用本地图片
   Future _getPhoto() async {

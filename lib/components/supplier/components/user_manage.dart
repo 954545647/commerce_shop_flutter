@@ -86,12 +86,14 @@ class _UserManageState extends State<UserManage> {
                       children: <Widget>[
                         Icon(IconData(0xe611, fontFamily: 'myIcons')),
                         Text(
-                          '修改密码',
+                          '发布优惠卷',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, "publishCoupon");
+                    },
                   ),
                 ),
                 Expanded(

@@ -16,70 +16,71 @@ class _PasswordState extends State<Password> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          // color: Color.fromRGBO(240, 237, 237, 1),
+          color: Colors.white,
           child: Column(
-        children: <Widget>[
-          TopTitle(
-            title: "修改密码",
-            showArrow: true,
-          ),
-          Form(
-            key: _formKey,
-            // autovalidate: true,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // 校验旧密码
-                  TextFormField(
-                    controller: _pass1Controller,
-                    decoration: InputDecoration(
-                        labelText: "旧密码", icon: Icon(Icons.lock)),
-                    validator: (v) {
-                      return v.trim().length > 0 ? null : "旧密码不能为空";
-                    },
-                  ),
-                  // 输入新密码
-                  TextFormField(
-                    controller: _pass2Controller,
-                    decoration: InputDecoration(
-                        labelText: "新密码", icon: Icon(Icons.lock)),
-                    validator: (v) {
-                      return v.trim().length > 0 ? null : "新密码不能为空";
-                    },
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  RaisedButton(
-                    child: Text("确定修改"),
-                    onPressed: () async {
-                      if ((_formKey.currentState as FormState).validate()) {
-                        // 校验通过
-                        var data = await DioUtil.getInstance(context)
-                            .post("changePass", data: {
-                          "oldPass": _pass1Controller.text,
-                          "newPass": _pass2Controller.text
-                        });
-                        if (data != null) {
-                          if (data["errorCode"] == 0) {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                            (_formKey.currentState as FormState).reset();
-                            // 将用户信息注册到全局上
-                            Toast.toast(context, msg: "修改成功");
-                          } else {
-                            Toast.toast(context, msg: data["msg"]);
-                          }
-                        }
-                      }
-                    },
-                  )
-                ],
+            children: <Widget>[
+              TopTitle(
+                title: "修改密码",
+                showArrow: true,
               ),
-            ),
-          )
-        ],
-      )),
+              Form(
+                key: _formKey,
+                // autovalidate: true,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // 校验旧密码
+                      TextFormField(
+                        controller: _pass1Controller,
+                        decoration: InputDecoration(
+                            labelText: "旧密码", icon: Icon(Icons.lock)),
+                        validator: (v) {
+                          return v.trim().length > 0 ? null : "旧密码不能为空";
+                        },
+                      ),
+                      // 输入新密码
+                      TextFormField(
+                        controller: _pass2Controller,
+                        decoration: InputDecoration(
+                            labelText: "新密码", icon: Icon(Icons.lock)),
+                        validator: (v) {
+                          return v.trim().length > 0 ? null : "新密码不能为空";
+                        },
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      RaisedButton(
+                        child: Text("确定修改"),
+                        onPressed: () async {
+                          if ((_formKey.currentState as FormState).validate()) {
+                            // 校验通过
+                            var data = await DioUtil.getInstance(context)
+                                .post("changePass", data: {
+                              "oldPass": _pass1Controller.text,
+                              "newPass": _pass2Controller.text
+                            });
+                            if (data != null) {
+                              if (data["errorCode"] == 0) {
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                                (_formKey.currentState as FormState).reset();
+                                // 将用户信息注册到全局上
+                                Toast.toast(context, msg: "修改成功");
+                              } else {
+                                Toast.toast(context, msg: data["msg"]);
+                              }
+                            }
+                          }
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          )),
     );
   }
 }

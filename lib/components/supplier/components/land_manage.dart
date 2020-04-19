@@ -126,7 +126,7 @@ class _LandManageState extends State<LandManage> {
                         children: <Widget>[
                           Icon(Icons.add),
                           Text(
-                            '发布新地',
+                            '新增农场',
                             style:
                                 TextStyle(fontSize: 14.0, color: Colors.grey),
                           )
@@ -155,7 +155,7 @@ class _LandManageState extends State<LandManage> {
                         children: <Widget>[
                           Icon(Icons.add),
                           Text(
-                            '发布菜品',
+                            '发布农场品',
                             style:
                                 TextStyle(fontSize: 14.0, color: Colors.grey),
                           )

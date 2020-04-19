@@ -43,21 +43,52 @@ class _FarmOrderState extends State<FarmOrder> {
   }
 
 // 新增农场订单
-  newFarmOrder(orderInfos) {
+  Future newFarmOrder(orderInfos) async {
     final orderdata = Provider.of<OrderData>(context);
     final user = Provider.of<UserData>(context);
-    DioUtil.getInstance(context).post("newFarmOrder", data: {
-      "couponId": chooseCoupon["id"],
+    var data = await DioUtil.getInstance(context).post("newFarmOrder", data: {
+      "couponId": chooseCoupon["couponId"],
       "orderAmount": orderInfos["total"],
       "payMoney": totalPrice == 0 ? orderInfos["total"] : totalPrice,
       "farmId": orderInfos["farmId"],
+      "farmCount": orderInfos["areaNum"],
       "cropsInfos": handleCropInfos(orderInfos["crops"]),
       "address": orderdata.orderInfo.address,
       "orderUsername": user.userInfo.username,
       "supplierId": orderInfos["supplierId"]
     });
+    if (data != null && data["code"] == 200) {
+      orderId = data["data"]["id"];
+      setState(() {});
+    } else {
+      Toast.toast(context, msg: data["msg"]);
+      return;
+    }
+    // 更新农场信息
+    await updateFarmInfo(orderInfos);
+    // 修改优惠卷状态
+    modifyCouponStatus();
   }
 
+  // 修改用户优惠卷状态
+  modifyCouponStatus() {
+    DioUtil.getInstance(context).post("handleCoupon", data: {
+      "couponId": chooseCoupon["couponId"],
+      "orderId": orderId,
+    });
+  }
+
+  // 更新商品农场（销量，库存）
+  Future updateFarmInfo(farmInfo) async {
+    DioUtil.getInstance(context)
+        .post("updateFarm", data: {"farmInfo": farmInfo}).then((val) {
+      if (val != null && val["data"] != null) {
+        setState(() {});
+      }
+    });
+  }
+
+  // 处理农场品数据
   handleCropInfos(data) {
     List orderInfos = [];
     for (var i = 0; i < data.length; i++) {
@@ -90,11 +121,11 @@ class _FarmOrderState extends State<FarmOrder> {
             children: <Widget>[
               ListView(
                 children: <Widget>[
-                  TopTitle(title: "提交订单", showArrow: true),
+                  TopTitle(title: "订单详情", showArrow: true),
                   // 用户地址信息
                   UserAddress(),
                   farmInfo(orderInfos),
-                  useCoupon(total),
+                  useCoupon(total, orderInfos),
                   SizedBox(
                     height: 60,
                   )
@@ -145,8 +176,8 @@ class _FarmOrderState extends State<FarmOrder> {
                                       ),
                                       new FlatButton(
                                         child: new Text("确定"),
-                                        onPressed: () {
-                                          newFarmOrder(orderInfos);
+                                        onPressed: () async {
+                                          await newFarmOrder(orderInfos);
                                           Navigator.popAndPushNamed(
                                               context, "index");
                                         },
@@ -263,7 +294,7 @@ class _FarmOrderState extends State<FarmOrder> {
   }
 
 // 优惠卷
-  Widget useCoupon(total) {
+  Widget useCoupon(total, orderInfos) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
       padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -358,16 +389,22 @@ class _FarmOrderState extends State<FarmOrder> {
   }
 
   Widget couponItem(data, index, total) {
+    var supplierData = data["Supplier_Info"];
+    Map orderInfos = ModalRoute.of(context).settings.arguments;
+    int supplierId = orderInfos["supplierId"];
     return GestureDetector(
       onTap: () {
-        if (data["with_amount"] > total) {
+        if (data["threshold"] > total) {
           Toast.toast(context, msg: "订单金额不足");
-        } else {
-          chooseCoupon = data;
-          totalPrice = total - data["used_amount"];
-          setState(() {});
-          Navigator.pop(context);
         }
+        if (data["source"] != supplierId) {
+          Toast.toast(context, msg: "优惠劵不支持当前商品");
+          return;
+        }
+        chooseCoupon = data;
+        totalPrice = total - data["faceValue"];
+        setState(() {});
+        Navigator.pop(context);
       },
       child: Container(
         alignment: Alignment.center,
@@ -381,10 +418,16 @@ class _FarmOrderState extends State<FarmOrder> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Text(
-              data["name"],
-              style: TextStyle(color: Colors.red),
+              "￥${data["faceValue"]}",
+              style: TextStyle(
+                  color: Colors.red, fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Text(data["type"] == 0 ? "无门槛劵" : "促销商品劵")
+            Text("满${data["threshold"]}可用"),
+            Text(
+              data["name"],
+            ),
+            Text(
+                data["type"] == 0 ? "无门槛劵" : "限定商家：${supplierData["username"]}")
           ],
         ),
       ),

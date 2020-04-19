@@ -138,6 +138,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   }
 
   Widget unUsedCoupon(data) {
+    var supplier = data["Supplier_Info"];
     return Container(
       height: 100,
       margin: EdgeInsets.only(bottom: 15),
@@ -154,14 +155,14 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "￥${data["used_amount"]}",
+                  "￥${data["faceValue"]}",
                   style: TextStyle(
                       // color: Color.fromRGBO(201, 66, 45, 1),
                       color: Colors.red,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
-                Text("满${data["with_amount"]}可用",
+                Text("满${data["threshold"]}可用",
                     style: TextStyle(
                       // color: Color.fromRGBO(159, 74, 68, 1),
                       color: Colors.red,
@@ -173,7 +174,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
           // 优惠卷使用信息
           Expanded(
             child: Center(
-              child: Text(data["type"] == 0 ? "无门槛优惠卷" : "促销商品可用",
+              child: Text(
+                  data["type"] == 0 ? "无门槛优惠卷" : "限定商家：${supplier["username"]}",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ),
           ),
@@ -201,6 +203,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
   }
 
   Widget alreadyUsedCoupon(data) {
+    var supplier = data["Supplier_Info"];
     return Container(
       height: 100,
       margin: EdgeInsets.only(bottom: 15),
@@ -215,13 +218,13 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "￥${data["used_amount"]}",
+                  "￥${data["faceValue"]}",
                   style: TextStyle(
                       color: Colors.grey,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
-                Text("满${data["with_amount"]}可用",
+                Text("满${data["threshold"]}可用",
                     style: TextStyle(
                       // color: Color.fromRGBO(159, 74, 68, 1),
                       color: Colors.grey,
@@ -232,7 +235,8 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
           ),
           // 优惠卷使用信息
           Center(
-            child: Text(data["type"] == 0 ? "无门槛优惠卷" : "促销商品可用",
+            child: Text(
+                data["type"] == 0 ? "无门槛优惠卷" : "限定商家：${supplier["username"]}",
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,

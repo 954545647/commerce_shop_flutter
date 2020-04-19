@@ -1,28 +1,31 @@
-// 客服中心
+// 联系商家
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-import "package:commerce_shop_flutter/utils/dio.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
 import "package:commerce_shop_flutter/config/global.dart";
-import 'dart:async';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
+import 'package:commerce_shop_flutter/provider/socketData.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/config.dart';
+import 'dart:async';
 
-class Service extends StatefulWidget {
+class ChatToSupplier extends StatefulWidget {
   @override
-  _ServiceState createState() => new _ServiceState();
+  _ChatToSupplierState createState() => _ChatToSupplierState();
 }
 
-class _ServiceState extends State<Service> {
+class _ChatToSupplierState extends State<ChatToSupplier> {
   var fsNode1 = new FocusNode();
   ScrollController _controller =
       new ScrollController(initialScrollOffset: 200.0);
   var _textInputController = new TextEditingController();
-  List talkList = []; //   谈话内容
   IO.Socket mysocket;
+  SupplierData supplierData;
   UserData userData;
+  List talkList = []; //   谈话内容
   bool typing = false; // 是否有输入内容
   @override
   void initState() {
@@ -30,22 +33,25 @@ class _ServiceState extends State<Service> {
     _initSocket();
   }
 
-  // 初始化连接socket
   Future<void> _initSocket() async {
     await Future.delayed(Duration(microseconds: 300), () async {
+      Map args = ModalRoute.of(context).settings.arguments;
       userData = Provider.of<UserData>(context);
-      mysocket = userData.socket;
-      // 获取历史消息
+      supplierData = Provider.of<SupplierData>(context);
+      mysocket = Provider.of<SocketData>(context).socket;
+      // 获取历史记录
       await getHistory();
-      // 通知服务端开始客服服务
+      // 告诉商家开始咨询服务(这里不能使用Provider，因为商家可能未登录)
       mysocket.emit(
-          "startForService",
+          "startForSupplier",
           new MessageInfo(
               fromId: userData.userInfo.id,
               fromName: userData.userInfo.username,
-              toName: "客服"));
-      // 监听客服回复
-      mysocket.on("replayFromService", (data) {
+              toId: args["id"],
+              toName: args["username"],
+              type: 0));
+      // 监听商家返回消息
+      mysocket.on("replayFromSupplier", (data) {
         createLi(data);
         setState(() {});
       });
@@ -54,8 +60,9 @@ class _ServiceState extends State<Service> {
 
   // 获取历史消息
   Future getHistory() async {
-    var data = await DioUtil.getInstance(context)
-        .post("servicerHistory", data: {"id": userData.userInfo.id});
+    Map args = ModalRoute.of(context).settings.arguments;
+    var data = await DioUtil.getInstance(context).post("supplierHistory",
+        data: {"toId": args["id"], "fromId": userData.userInfo.id});
     if (data != null && data["data"] != null) {
       talkList = data["data"].reversed.toList();
     }
@@ -64,15 +71,25 @@ class _ServiceState extends State<Service> {
 
   // 发送消息
   sendMessage(val) {
+    Map args = ModalRoute.of(context).settings.arguments;
     val = {
       "content": val,
       "fromName": userData.userInfo.username,
       "fromId": userData.userInfo.id,
+      "toId": args["id"],
+      "toName": args["username"],
       "type": 0
     };
-    mysocket.emit("chatToService", val);
+    mysocket.emit("chatToSupplier", val);
     createLi(val);
     setState(() {});
+  }
+
+  // 顾客离开
+  clientExit() {
+    if (mysocket != null) {
+      mysocket.emit("nochatToSupplier", {"id": userData.userInfo.id});
+    }
   }
 
   // 显示消息
@@ -87,7 +104,7 @@ class _ServiceState extends State<Service> {
   @override
   void dispose() {
     if (mysocket != null) {
-      mysocket.off("replayFromService");
+      mysocket.off("replayFromSupplier");
     }
     super.dispose();
   }
@@ -96,16 +113,19 @@ class _ServiceState extends State<Service> {
   Widget build(BuildContext context) {
     Timer(Duration(microseconds: 0),
         () => _controller.jumpTo(_controller.position.maxScrollExtent));
-    return new Scaffold(
-      backgroundColor: Color.fromRGBO(242, 242, 242, 1),
-      body: MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
+    Map args = ModalRoute.of(context).settings.arguments;
+    String name = args["username"];
+    String imgCover = args["imgCover"];
+    return Scaffold(
+      body: Container(
+        color: Color.fromRGBO(240, 240, 240, 1),
         child: Column(
           children: <Widget>[
-            TopTitle(title: "客服中心", showArrow: true),
-            SizedBox(
-              height: 10,
+            TopTitle(
+              title: name,
+              showArrow: true,
+              shouldExecute: true,
+              method: clientExit,
             ),
             Expanded(
               child: ListView.builder(
@@ -114,7 +134,7 @@ class _ServiceState extends State<Service> {
                 itemBuilder: (BuildContext context, int index) {
                   int type = talkList[index]["type"];
                   if (type == 1) {
-                    return fromService(talkList[index]);
+                    return fromService(talkList[index], imgCover);
                   } else {
                     return chatItem(talkList[index]);
                   }
@@ -200,7 +220,6 @@ class _ServiceState extends State<Service> {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      // decoration: BoxDecoration(color: Colors.white),
       height: 50,
       width: MediaQuery.of(context).size.width,
       child: Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
@@ -228,12 +247,9 @@ class _ServiceState extends State<Service> {
     );
   }
 
-  Widget fromService(data) {
+  Widget fromService(data, imgCover) {
     return Container(
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      // decoration: BoxDecoration(
-      //   color: Colors.white,
-      // ),
       margin: EdgeInsets.only(bottom: 10),
       height: 50,
       width: MediaQuery.of(context).size.width,
@@ -244,8 +260,7 @@ class _ServiceState extends State<Service> {
             decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
-                    image: NetworkImage(
-                        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583779492487&di=2843ea2cc709f68d1f2857ce3f6a4b40&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01af985927beeeb5b3086ed47f7e57.png%401280w_1l_2o_100sh.png'),
+                    image: NetworkImage("${Config.apiHost}/$imgCover"),
                     fit: BoxFit.cover))),
         SizedBox(
           width: 10,

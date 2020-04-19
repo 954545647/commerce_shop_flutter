@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/config/style.dart' as config;
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
-// import 'package:commerce_shop_flutter/utils/dio.dart';
 import "package:commerce_shop_flutter/config/config.dart";
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
@@ -42,7 +41,7 @@ class _FarmDetailState extends State<FarmDetail> {
 // 解析标签
   splitTags(tags) {
     List<Widget> list = [];
-    List tagList = tags.split(";");
+    List tagList = tags.split(" ");
     for (var i = 0; i < tagList.length; i++) {
       list.add(Container(
         margin: EdgeInsets.fromLTRB(0, 0, 15, 0),
@@ -79,10 +78,14 @@ class _FarmDetailState extends State<FarmDetail> {
   }
 
 // 计算商品总价
-  getTotalPrice(data, setSta) {
+  getTotalPrice(data, areaNum, preArea, setSta) {
     int result = 0;
     for (var i = 0; i < data.length; i++) {
       result += data[i]["price"] * cropNum[i];
+    }
+    if (result != 0) {
+      // 还需要加上每块土地的价格
+      result = result + preArea * areaNum;
     }
     total = result;
     setSta(() {});
@@ -126,7 +129,6 @@ class _FarmDetailState extends State<FarmDetail> {
         context: context,
         removeTop: true,
         child: Container(
-          // height: 1000,
           child: Stack(
             children: <Widget>[
               SingleChildScrollView(
@@ -220,8 +222,8 @@ class _FarmDetailState extends State<FarmDetail> {
                                     ),
                                     Container(
                                       margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                      child: cropList(
-                                          arguments["cropInfo"], setSta),
+                                      child: cropList(arguments["cropInfo"],
+                                          arguments["preArea"], setSta),
                                     ),
                                     Expanded(
                                       child: Container(
@@ -290,7 +292,7 @@ class _FarmDetailState extends State<FarmDetail> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
                             color: Colors.white),
-                        child: Text("请选择规格数量"),
+                        child: Text("选择农场品"),
                       ),
                     ),
                     SizedBox(
@@ -363,10 +365,10 @@ class _FarmDetailState extends State<FarmDetail> {
   }
 
 // 农作物列表
-  Widget cropList(data, setSta) {
+  Widget cropList(data, preArea, setSta) {
     List<Widget> list = [];
     for (var i = 0; i < data.length; i++) {
-      list.add(cropItem(data, data[i], i, setSta));
+      list.add(cropItem(data, data[i], i, preArea, setSta));
     }
     return Container(
       height: 220,
@@ -378,7 +380,7 @@ class _FarmDetailState extends State<FarmDetail> {
     );
   }
 
-  Widget cropItem(totalData, data, index, setSta) {
+  Widget cropItem(totalData, data, index, preArea, setSta) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -415,10 +417,10 @@ class _FarmDetailState extends State<FarmDetail> {
                   int cur = cropNum[index];
                   if (cur == 0) {
                     Toast.toast(context, msg: "最低选择量为0");
-                    return;
+                  } else {
+                    cropNum[index] = cropNum[index] - 1;
                   }
-                  cropNum[index] = cropNum[index] - 1;
-                  getTotalPrice(totalData, setSta);
+                  getTotalPrice(totalData, areaNum, preArea, setSta);
                   setSta(() {});
                 },
                 child: Icon(IconData(0xe6e6, fontFamily: "myIcons")),
@@ -433,7 +435,7 @@ class _FarmDetailState extends State<FarmDetail> {
                     return;
                   }
                   cropNum[index] = cropNum[index] + 1;
-                  getTotalPrice(totalData, setSta);
+                  getTotalPrice(totalData, areaNum, preArea, setSta);
                   setSta(() {});
                 },
                 child: Icon(Icons.add),

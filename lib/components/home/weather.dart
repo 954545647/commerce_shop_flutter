@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:dio/dio.dart';
-import 'dart:convert';
+import 'package:commerce_shop_flutter/utils/dio.dart';
 
-class NewBroadCast extends StatefulWidget {
+class Weather extends StatefulWidget {
   @override
-  _NewBroadCastState createState() => _NewBroadCastState();
+  _WeatherState createState() => _WeatherState();
 }
 
-class _NewBroadCastState extends State<NewBroadCast> {
+class _WeatherState extends State<Weather> {
   String cityName = "";
-  List weatherList = [];
+  var weatherList = [];
+  bool ifShowLoading = true;
   @override
   void initState() {
     super.initState();
@@ -19,36 +19,37 @@ class _NewBroadCastState extends State<NewBroadCast> {
   }
 
   Future<void> getWeather() async {
-    var data = await new Dio().get(
-        "https://tianqiapi.com/api?version=v1&appid=85861573&appsecret=DEayWu5Y");
-    var weather = jsonDecode(data.toString());
-    cityName = weather["city"];
-    weatherList = weather["data"];
-    if (mounted) {
-      setState(() {});
-    }
+    DioUtil.getInstance(context).get('weather').then((val) {
+      if (val != null && val["data"] != null && val["data"]["data"] != null) {
+        val = val["data"];
+        weatherList = val["data"];
+        cityName = val["city"];
+        ifShowLoading = false;
+        if (mounted) {
+          setState(() {});
+        }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (cityName != "") {
-      return Container(
-        width: ScreenUtil.getInstance().setWidth(750),
-        height: ScreenUtil.getInstance().setHeight(120),
-        margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[leftNew(), rightNew(weatherList)],
-        ),
-      );
-    } else {
-      return Container(
-        width: ScreenUtil.getInstance().setWidth(750),
-        height: ScreenUtil.getInstance().setHeight(120),
-        margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
-        child: Text(""),
-      );
-    }
+    return ifShowLoading
+        ? Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            height: ScreenUtil.getInstance().setHeight(120),
+            margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+            child: Text(""),
+          )
+        : Container(
+            width: ScreenUtil.getInstance().setWidth(750),
+            height: ScreenUtil.getInstance().setHeight(120),
+            margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[leftNew(), rightNew(weatherList)],
+            ),
+          );
   }
 
   // 左侧标题

@@ -2,6 +2,9 @@
 const urlList = {
   // 首页接口
   'homeSwiperImgList': '/home/homeSwiperImgList',
+  "hotFarms": "/home/hotFarms",
+  "hotAdopts": "/home/hotAdopts",
+  "weather": "/home/weather",
   // 登录注册接口
   'login': '/user/login',
   'register': '/user/register',
@@ -17,18 +20,20 @@ const urlList = {
   "userIfExit": "/user/ifExit",
   "updateImg": "/user/updateCover",
   // 优惠卷接口
-  "getAlls": "/coupon/getAlls",
+  "getAllCoupon": "/coupon/getAlls",
   "myCoupon": "/coupon/myCoupon",
   "handleCoupon": "/coupon/handleCoupon",
-  "new": "/coupon/new",
+  "SnewCoupon": "/coupon/new",
+  "takeCoupon": "/coupon/take",
   // 商品接口
   "getAllGoods": "/goods/getAlls",
+  "getOnlineGoods": "/goods/online",
   "updateGood": "/goods/update",
   "updateGoodStatus": "/goods/updateStatus",
   "getGoodInfo": "/goods/getInfo",
   "saveId": "/goods/saveId",
   "getId": "/goods/getId",
-  "newGood": "/goods/new",
+  "SnewGood": "/goods/new",
   // 订单接口
   "newOrder": "/order/new",
   "allOrders": "/order/all",
@@ -42,6 +47,7 @@ const urlList = {
   // 商家接口
   "SgetAllSuppliers": "/supplier/getAll",
   "SgetSupplierById": "/supplier/getSupplierById",
+  "SgetSupplierInfo": "/supplier/getSupplierInfo",
   "Ssregister": "/supplier/register",
   "Sslogin": "/supplier/login",
   "SsupplierFarm": "/supplier/farms",
@@ -53,8 +59,13 @@ const urlList = {
   "getFarmsInfo": "/farm/getInfo",
   "getAllFarmsInfo": "/farm/getAlls",
   "newFarmOrder": "/farm/newOrder",
+  "updateFarm": "/farm/update",
   "newFarm": "/farm/newFarm",
   "newCrop": "/farm/newCrop",
+  // 搜索接口
+  "search": "/search",
+  "searchHistory": "/search/history",
+  "newSearch": "/search/new",
   // 通信接口
   "sMessage": "/socket/sMessage",
   "servicerHistory": "/socket/servicerHistory",

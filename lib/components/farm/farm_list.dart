@@ -21,9 +21,10 @@ class _FarmListState extends State<FarmList> {
   getFarmList() {
     DioUtil.getInstance(context).get("getAllFarmsInfo").then((val) {
       if (val != null && val["data"] != null) {
-        setState(() {
-          farmList = val["data"];
-        });
+        farmList = val["data"];
+        if (mounted) {
+          setState(() {});
+        }
       }
     });
   }

@@ -7,16 +7,22 @@ class SocketData with ChangeNotifier {
   get socket => _socket;
 
   connect() {
-    print("socket连接成功");
-    IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
-      "transports": ['websocket'],
+    if (_socket == null) {
+      IO.Socket mysocket = IO.io(BASEURL, <String, dynamic>{
+        "transports": ['websocket'],
+      });
+      _socket = mysocket;
+    } else {
+      _socket.connect();
+    }
+    _socket.on("connect", (_) {
+      print("连接成功");
     });
-    _socket = mysocket;
   }
 
   disconnect() {
+    _socket.disconnect();
     print("socket断开连接");
-    _socket.close();
   }
 }
 

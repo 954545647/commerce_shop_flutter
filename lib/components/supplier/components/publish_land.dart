@@ -109,7 +109,7 @@ class _PublishLandState extends State<PublishLand> {
     String totalNum = _totalNumController.text;
     String preArea = _preAreaController.text;
     String preMoney = _preMoneyController.text;
-    String monitor = _monitorController.text;
+    // String monitor = _monitorController.text;
     int id = supplier.supplierInfo.id;
     DioUtil.getInstance(context).post("newFarm", data: {
       "supplierId": id,
@@ -120,7 +120,7 @@ class _PublishLandState extends State<PublishLand> {
       "preArea": preArea,
       "preMoney": preMoney,
       "imgCover": enterUrl ? _coverController.text : serverImg,
-      "monitor": monitor,
+      "monitor": "https://greenadoption.cn/tempImages/example.mp4",
       "address": location,
     }).then((val) {
       if (val != null && val["data"] != null) {
@@ -276,7 +276,7 @@ class _PublishLandState extends State<PublishLand> {
           // 单位租金
           SingleItem(
             title: "单位租金",
-            detail: "请输入单块土地面积",
+            detail: "请输入单块土地租金",
             itemController: _preMoneyController,
           ),
           // 监控地址

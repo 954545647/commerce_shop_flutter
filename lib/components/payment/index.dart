@@ -22,10 +22,22 @@ class _PayMentState extends State<PayMent> {
   int orderId; // 取消支付加入定时队列的id
   String totalPrice; // 订单总价格
   var chooseCoupon = {}; // 选中的优惠卷
+  List supplierIds = [];
   @override
   void initState() {
     getUserCoupons();
+    initCoupon();
     super.initState();
+  }
+
+  Future<void> initCoupon() async {
+    await Future.delayed(Duration(microseconds: 300), () async {
+      final cart = Provider.of<CartData>(context);
+      cart.cartInfo.forEach((item) {
+        supplierIds.add(item.supplierId);
+      });
+      setState(() {});
+    });
   }
 
 // 获取用户优惠卷（只获取未使用的）
@@ -132,7 +144,7 @@ class _PayMentState extends State<PayMent> {
   }
 
   // 提交订单
-  placeOrder(couponId, cut, goodsId, goodInfo, status) async {
+  createOrder(couponId, cut, goodsId, goodInfo, status) async {
     final user = Provider.of<UserData>(context);
     final orderdata = Provider.of<OrderData>(context);
     // 提交订单
@@ -185,7 +197,7 @@ class _PayMentState extends State<PayMent> {
             children: <Widget>[
               ListView(
                 children: <Widget>[
-                  TopTitle(title: "提交订单", showArrow: true),
+                  TopTitle(title: "订单详情", showArrow: true),
                   // 用户地址信息
                   UserAddress(),
                   // 订单信息
@@ -213,7 +225,7 @@ class _PayMentState extends State<PayMent> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                                "总计：${calTotalPrice(cart.cartInfo, cut: chooseCoupon["used_amount"])}"),
+                                "总计：${calTotalPrice(cart.cartInfo, cut: chooseCoupon["faceValue"])}"),
                           ],
                         ),
                       ),
@@ -227,8 +239,8 @@ class _PayMentState extends State<PayMent> {
                             return;
                           }
                           var userInfo = user.userInfo;
-                          int cut = chooseCoupon["used_amount"] != null
-                              ? chooseCoupon["used_amount"]
+                          int cut = chooseCoupon["faceValue"] != null
+                              ? chooseCoupon["faceValue"]
                               : 0;
                           var couponId = chooseCoupon["id"] != null
                               ? chooseCoupon["id"]
@@ -250,7 +262,7 @@ class _PayMentState extends State<PayMent> {
                                       new FlatButton(
                                         child: new Text("取消"),
                                         onPressed: () async {
-                                          await placeOrder(couponId, cut,
+                                          await createOrder(couponId, cut,
                                               goodsId, goodInfo, 1);
                                           // 开启定时器
                                           startTask();
@@ -263,7 +275,7 @@ class _PayMentState extends State<PayMent> {
                                       new FlatButton(
                                         child: new Text("确定"),
                                         onPressed: () async {
-                                          await placeOrder(couponId, cut,
+                                          await createOrder(couponId, cut,
                                               goodsId, goodInfo, 2);
                                           // 修改用户积分
                                           modifyUserPoint();
@@ -400,15 +412,20 @@ class _PayMentState extends State<PayMent> {
   }
 
   Widget couponItem(data, index) {
+    var supplier = data["Supplier_Info"];
     return GestureDetector(
       onTap: () {
-        if (data["with_amount"] > int.parse(totalPrice)) {
+        if (data["threshold"] > int.parse(totalPrice)) {
           Toast.toast(context, msg: "订单金额不足");
-        } else {
-          chooseCoupon = data;
-          setState(() {});
-          Navigator.pop(context);
+          return;
         }
+        if (supplierIds.indexOf(data["source"]) == -1) {
+          Toast.toast(context, msg: "优惠劵不支持当前商品");
+          return;
+        }
+        chooseCoupon = data;
+        setState(() {});
+        Navigator.pop(context);
       },
       child: Container(
         alignment: Alignment.center,
@@ -425,7 +442,7 @@ class _PayMentState extends State<PayMent> {
               data["name"],
               style: TextStyle(color: Colors.red),
             ),
-            Text(data["type"] == 0 ? "无门槛劵" : "促销商品劵")
+            Text(data["type"] == 0 ? "无门槛劵" : "限定商家：${supplier["username"]}")
           ],
         ),
       ),

@@ -28,7 +28,7 @@ class _NewAddressState extends State<NewAddress> {
   FocusScopeNode focusScopeNode;
 
 // 保存地址
-  saveAddress(isDefault) async {
+  newAddress(isDefault) async {
     String address = location + _detailController.text;
     // 新增地址接口
     var data = await DioUtil.getInstance(context).post("newAddress", data: {
@@ -203,7 +203,7 @@ class _NewAddressState extends State<NewAddress> {
                                                   _detailController.text;
                                               user.addAdress(
                                                   user.userInfo.id, address);
-                                              saveAddress(false);
+                                              newAddress(false);
                                             },
                                           ),
                                           new FlatButton(
@@ -215,7 +215,7 @@ class _NewAddressState extends State<NewAddress> {
                                                   _detailController.text;
                                               user.addAdress(
                                                   user.userInfo.id, address);
-                                              saveAddress(true);
+                                              newAddress(true);
                                             },
                                           ),
                                         ],

@@ -10,6 +10,11 @@ class MenuList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom: BorderSide(
+                  width: 1, color: Color.fromRGBO(239, 239, 239, 1)))),
       width: ScreenUtil.getInstance().setWidth(750),
       height: ScreenUtil.getInstance().setHeight(300),
       child: GridView.count(
@@ -169,7 +174,7 @@ const List<MenuListItemViewModel> menuListData = [
       ),
       shouldLogin: true),
   MenuListItemViewModel(
-      title: '商家入驻',
+      title: '商家中心',
       path: 'supplierCenter',
       icon: Icon(
         MenuIcons.customerService,

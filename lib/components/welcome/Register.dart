@@ -204,10 +204,10 @@ class _RegisterState extends State<Register> {
                                     } else if (_isAvailableGetVCode == false) {
                                       Toast.toast(context, msg: "一分钟只能获取一次验证码");
                                     } else {
+                                      _startTimer();
                                       getData("user/sendSms", data: {
                                         "phone": _phoneController.text
                                       }).then((val) {
-                                        _startTimer();
                                         Toast.toast(context,
                                             msg: "短信已发送，请查收手机短信");
                                       });

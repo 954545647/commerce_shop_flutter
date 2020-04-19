@@ -17,55 +17,31 @@ class _TakeCouponState extends State<TakeCoupon> {
   @override
   void initState() {
     super.initState();
-    getCoupon();
+    getAllCoupon();
   }
 
 // 获取优惠卷
-  getCoupon() async {
-    await DioUtil.getInstance(context).post("myCoupon").then((val) {
+  getAllCoupon() async {
+    await DioUtil.getInstance(context).post("getAllCoupon").then((val) {
       if (val != null && val["data"] != null) {
-        var list = [];
-        val["data"].forEach((item) {
-          list.add(item["couponId"]);
-        });
-        setState(() {
-          myCouponId = list;
-        });
+        couponList = val["data"];
       }
     });
-    // 从系统中全部优惠卷筛选出自己未拥有的优惠卷
-    await DioUtil.getInstance(context).post("getAlls").then((val) {
-      if (val != null && val["data"] != null) {
-        var list = [];
-        val["data"].forEach((item) {
-          // 未领取的优惠卷
-          if (myCouponId.indexOf(item["id"]) == -1) {
-            list.add(item);
-          }
-        });
-        setState(() {
-          couponList = list;
-        });
-      }
-    });
+    setState(() {});
   }
 
-  handleCoupon(couponData) async {
-    await DioUtil.getInstance(context)
-        .post("handleCoupon", data: {"couponId": couponData["id"]}).then((val) {
-      if (val != null && val["data"] != null) {
-        Toast.toast(context, msg: "领取成功");
-      }
-      // 已经领取了
-      if (val != null && val["errorCode"] != null) {
-        var errorCode = val["errorCode"];
-        if (errorCode != 0) {
-          Toast.toast(context, msg: val["msg"]);
-        }
-      }
-    });
-    // 更新优惠卷数据
-    await getCoupon();
+  // 领取优惠卷
+  takeCoupon(couponData) async {
+    var data = await DioUtil.getInstance(context)
+        .post("takeCoupon", data: {"couponId": couponData["id"]});
+    if (data != null && data["code"] == 200) {
+      Toast.toast(context, msg: "领取成功");
+    } else {
+      Toast.toast(context, msg: data["msg"]);
+      return;
+    }
+    // 更新优惠卷
+    await getAllCoupon();
   }
 
   @override
@@ -105,6 +81,7 @@ class _TakeCouponState extends State<TakeCoupon> {
 
 // 优惠卷信息
   Widget couponInfo(couponData) {
+    var supplier = couponData["Supplier_Info"];
     return Container(
       height: 100,
       margin: EdgeInsets.fromLTRB(20, 0, 20, 15),
@@ -123,13 +100,13 @@ class _TakeCouponState extends State<TakeCoupon> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "￥${couponData["used_amount"]}",
+                  "￥${couponData["faceValue"]}",
                   style: TextStyle(
                       color: Colors.red,
                       fontSize: 25,
                       fontWeight: FontWeight.bold),
                 ),
-                Text("满${couponData["with_amount"]}可用",
+                Text("满${couponData["threshold"]}可用",
                     style: TextStyle(
                       color: Colors.red,
                       fontSize: 18,
@@ -142,9 +119,17 @@ class _TakeCouponState extends State<TakeCoupon> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(couponData["name"]),
-                Text(couponData["type"] == 0 ? "无门槛优惠卷" : "促销商品可用",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500))
+                Text(couponData["name"],
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                Text(
+                    couponData["type"] == 0
+                        ? "无门槛优惠卷"
+                        : "限定商家：${supplier["username"]}",
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                Text("剩余数量${couponData["count"]}",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
               ],
             ),
           ),
@@ -160,7 +145,7 @@ class _TakeCouponState extends State<TakeCoupon> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 onPressed: () async {
-                  await handleCoupon(couponData);
+                  await takeCoupon(couponData);
                 },
               ))
         ],

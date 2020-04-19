@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:commerce_shop_flutter/utils/dio.dart';
+import 'package:provider/provider.dart';
+import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/supplierData.dart';
+import 'package:commerce_shop_flutter/provider/socketData.dart';
 
 // 欢迎页，定时三秒后进入首页
 class Welcome extends StatefulWidget {
@@ -16,7 +22,65 @@ class _WelcomeState extends State<Welcome> {
   @override
   void initState() {
     super.initState();
+    initProject();
     startCountdownTimer();
+  }
+
+  // 初始化
+  initProject() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // 顾客信息
+    String refreshToken = prefs.get("refreshToken");
+    // 如果有token，则直接登录获取用户数据
+    if (refreshToken != null) {
+      int userId = prefs.get("userId");
+      // 根据用户id去获取用户信息并更改登录状态
+      getUserInfo(userId);
+    }
+    // 商家信息
+    String srefreshToken = prefs.get("SrefreshToken");
+    // 如果有token，则直接登录获取商家数据
+    if (srefreshToken != null) {
+      int supplierId = prefs.get("supplierId");
+      print(supplierId);
+      getSupplierInfo(supplierId);
+    }
+  }
+
+  // 获取顾客信息
+  getUserInfo(userId) async {
+    final user = Provider.of<UserData>(context);
+    final socket = Provider.of<SocketData>(context);
+    var data = await DioUtil.getInstance(context).post('getUserInfo');
+    // 获取用户默认地址
+    if (data != null && data["code"] == 200) {
+      var res = data["data"];
+      user.login(
+          id: res["id"],
+          username: res["username"],
+          phone: res["phone"],
+          address: "",
+          imgCover: res["imgCover"],
+          unpayOrder: []);
+      // 重新连接socket
+      socket.connect();
+    }
+  }
+
+  // 获取商家信息
+  getSupplierInfo(supplierId) async {
+    final supplier = Provider.of<SupplierData>(context);
+    var data = await DioUtil.getInstance(context).post('SgetSupplierInfo');
+    if (data != null && data["code"] == 200) {
+      var res = data["data"];
+      supplier.login(
+          id: res["id"],
+          username: res["username"],
+          imgCover: res["imgCover"],
+          phone: res["phone"]);
+      // 重新连接socket
+      supplier.connect();
+    }
   }
 
   void startCountdownTimer() {

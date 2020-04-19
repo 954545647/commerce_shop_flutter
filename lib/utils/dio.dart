@@ -15,6 +15,7 @@ class DioUtil {
   var curOptions; // 访问当前路由携带的配置
   BuildContext context;
   bool type; // 默认true代表get请求
+
   // 获取DIO实例
   static DioUtil getInstance(context) {
     if (_instance == null) {
@@ -26,7 +27,6 @@ class DioUtil {
 
   // dio 初始化配置
   DioUtil() {
-    print("我DIO初始化");
     //请求参数配置
     _baseOptions = new BaseOptions(
       baseUrl: BASEURL,
@@ -77,6 +77,7 @@ class DioUtil {
               newRequest = await tokenDio.get("${Config.apiHost}$path",
                   options: curOptions);
             }
+            print("$error,$errorCode,$accessToken,$path,$newRequest");
             // 解锁
             dio.unlock();
             return newRequest;
@@ -138,8 +139,9 @@ class DioUtil {
 
   getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String refreshToken =
+        isClient ? prefs.get("refreshToken") : prefs.get("SrefreshToken");
     // 获取 refreshToken (在登录的时候保存的)
-    String refreshToken = prefs.get("refreshToken");
     String accessToken;
     Dio dio = new Dio();
     dio.options.headers.addAll({"Authorization": "Bearer " + refreshToken});
@@ -150,8 +152,15 @@ class DioUtil {
       var data = response.data["data"];
       accessToken = data['accessToken']; //新的accessToken
       refreshToken = data['refreshToken']; //新的refreshToken
-      prefs.setString("accessToken", accessToken); //保存新的accessToken
-      prefs.setString("refreshToken", refreshToken); //保存新的refreshToken
+      if (isClient) {
+        // 更新顾客的token
+        prefs.setString("accessToken", accessToken); //保存顾客新的accessToken
+        prefs.setString("refreshToken", refreshToken); //保存顾客新的refreshToken
+      } else {
+        // 更新商家的token
+        prefs.setString("SaccessToken", accessToken); //保存商家新的accessToken
+        prefs.setString("SrefreshToken", refreshToken); //保存商家新的refreshToken
+      }
     } on DioError catch (error) {
       int errorCode = error.response.data["errorCode"];
       // refreshToken 过期
@@ -190,7 +199,6 @@ Future getData(url, {data, String baseUrl: BASEURL2}) async {
   }
 }
 
-//401代表refresh_token过期
 //refreshToken过期，弹出登录页面
 //解决方法一：封装一个全局的context
 //return Navigator.of(Util.context).push(new MaterialPageRoute( builder: (ctx) => new LoginPage()))；

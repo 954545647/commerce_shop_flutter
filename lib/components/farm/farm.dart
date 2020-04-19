@@ -11,7 +11,6 @@ class Farm extends StatelessWidget {
   Widget build(BuildContext context) {
     var farmDetail = farmInfo["farmInfo"];
     return Container(
-        height: ScreenUtil().setHeight(680),
         width: ScreenUtil().setWidth(750),
         margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
         padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -24,7 +23,7 @@ class Farm extends StatelessWidget {
           children: <Widget>[
             Container(
                 width: ScreenUtil().setWidth(720),
-                height: ScreenUtil().setHeight(400),
+                height: ScreenUtil().setHeight(450),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
@@ -72,7 +71,10 @@ class Farm extends StatelessWidget {
                         color: Color.fromRGBO(50, 117, 116, 1)),
                     width: ScreenUtil().setWidth(200),
                     height: ScreenUtil().setHeight(80),
-                    child: Text("前往租地"),
+                    child: Text(
+                      "前往租地",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 )
               ],

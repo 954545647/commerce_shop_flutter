@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
-// import 'package:commerce_shop_flutter/utils/utils.dart';
 import "package:commerce_shop_flutter/config/config.dart";
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';

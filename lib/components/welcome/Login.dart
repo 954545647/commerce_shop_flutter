@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:commerce_shop_flutter/provider/userData.dart';
+import 'package:commerce_shop_flutter/provider/socketData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
@@ -23,19 +24,12 @@ class _LoginState extends State<Login> {
     super.initState();
   }
 
-  // 获取用户地址
-  // getUserAddress() async {
-  //   await DioUtil.getInstance(context).get('address').then((val) {
-  //     if (val != null && val["data"] != null) {
-  //       if (val["data"].length == 0) {
-  //         userAddress = "";
-  //       } else {
-  //         userAddress = val["data"][0]["address"];
-  //       }
-  //       setState(() {});
-  //     }
-  //   });
-  // }
+  @override
+  void dispose() {
+    super.dispose();
+    _unameController.dispose();
+    _pwdController.dispose();
+  }
 
   // 登录
   Future login() async {
@@ -51,6 +45,7 @@ class _LoginState extends State<Login> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     final user = Provider.of<UserData>(context);
+    final socket = Provider.of<SocketData>(context);
     return Material(
       child: Container(
         color: Colors.white,
@@ -163,6 +158,7 @@ class _LoginState extends State<Login> {
                                               SharedPreferences prefs =
                                                   await SharedPreferences
                                                       .getInstance();
+                                              prefs.setInt("userId", res["id"]);
                                               prefs.setString("accessToken",
                                                   res["accessToken"]);
                                               prefs.setString("refreshToken",
@@ -176,7 +172,7 @@ class _LoginState extends State<Login> {
                                                   imgCover: res["imgCover"],
                                                   unpayOrder: []);
                                               // socket连接
-                                              user.connect();
+                                              socket.connect();
                                               FocusScope.of(context)
                                                   .requestFocus(FocusNode());
                                               Navigator.pushNamed(
