@@ -18,10 +18,10 @@ class PayMent extends StatefulWidget {
 }
 
 class _PayMentState extends State<PayMent> {
-  List userCouponList = []; // 用户优惠卷列表
+  List userCouponList = []; // 用户优惠券列表
   int orderId; // 取消支付加入定时队列的id
   String totalPrice; // 订单总价格
-  var chooseCoupon = {}; // 选中的优惠卷
+  var chooseCoupon = {}; // 选中的优惠券
   List supplierIds = [];
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _PayMentState extends State<PayMent> {
     });
   }
 
-// 获取用户优惠卷（只获取未使用的）
+// 获取用户优惠券（只获取未使用的）
   getUserCoupons() {
     DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
@@ -65,7 +65,7 @@ class _PayMentState extends State<PayMent> {
     });
   }
 
-  // 修改用户优惠卷状态
+  // 修改用户优惠券状态
   modifyCouponStatus() {
     DioUtil.getInstance(context).post("handleCoupon",
         data: {"couponId": chooseCoupon["couponId"], "orderId": orderId});
@@ -158,7 +158,7 @@ class _PayMentState extends State<PayMent> {
         status: status);
     // 修改商品信息
     updateGoodInfo(goodInfo);
-    // 修改优惠卷状态
+    // 修改优惠券状态
     modifyCouponStatus();
   }
 
@@ -316,7 +316,7 @@ class _PayMentState extends State<PayMent> {
     );
   }
 
-// 优惠卷
+// 优惠券
   Widget useCoupon() {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -327,7 +327,7 @@ class _PayMentState extends State<PayMent> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("选择优惠卷"),
+          Text("选择优惠券"),
           Text(
             chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
             style: TextStyle(color: Colors.red, fontSize: 18),
@@ -348,7 +348,7 @@ class _PayMentState extends State<PayMent> {
                                 alignment: Alignment.center,
                                 height: 80,
                                 child: Text(
-                                  "优惠卷列表",
+                                  "优惠券列表",
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.w600),

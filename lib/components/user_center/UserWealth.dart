@@ -22,7 +22,7 @@ class _UserWealthState extends State<UserWealth> {
       jumpRoute: "integralDetail",
     ),
     ListItem(
-      title: "优惠卷",
+      title: "优惠券",
       onChanged: () {},
       iconName: "0xe60e",
       jumpRoute: "coupon",

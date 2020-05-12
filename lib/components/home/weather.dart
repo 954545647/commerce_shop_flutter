@@ -36,15 +36,23 @@ class _WeatherState extends State<Weather> {
   Widget build(BuildContext context) {
     return ifShowLoading
         ? Container(
+            color: Colors.white,
             width: ScreenUtil.getInstance().setWidth(750),
-            height: ScreenUtil.getInstance().setHeight(120),
-            margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+            height: ScreenUtil.getInstance().setHeight(122),
+            margin: EdgeInsets.fromLTRB(0, 0.0, 0, 0.0),
             child: Text(""),
           )
         : Container(
             width: ScreenUtil.getInstance().setWidth(750),
-            height: ScreenUtil.getInstance().setHeight(120),
-            margin: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+            height: ScreenUtil.getInstance().setHeight(122),
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 0.0),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                    bottom: BorderSide(
+                        width: 1, color: Color.fromRGBO(239, 239, 239, 1)),
+                    top: BorderSide(
+                        width: 1, color: Color.fromRGBO(239, 239, 239, 1)))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[leftNew(), rightNew(weatherList)],

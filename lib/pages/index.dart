@@ -47,7 +47,7 @@ class _IndexPageState extends State<IndexPage> {
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
           ..init(context);
     return Scaffold(
-      backgroundColor: Color.fromARGB(244, 245, 245, 1),
+      backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,

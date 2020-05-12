@@ -11,7 +11,7 @@ class TakeCoupon extends StatefulWidget {
 }
 
 class _TakeCouponState extends State<TakeCoupon> {
-  List couponList = []; // 未拥有的优惠卷
+  List couponList = []; // 未拥有的优惠券
   List myCouponId = [];
 
   @override
@@ -20,7 +20,7 @@ class _TakeCouponState extends State<TakeCoupon> {
     getAllCoupon();
   }
 
-// 获取优惠卷
+// 获取优惠券
   getAllCoupon() async {
     await DioUtil.getInstance(context).post("getAllCoupon").then((val) {
       if (val != null && val["data"] != null) {
@@ -30,17 +30,17 @@ class _TakeCouponState extends State<TakeCoupon> {
     setState(() {});
   }
 
-  // 领取优惠卷
+  // 领取优惠券
   takeCoupon(couponData) async {
     var data = await DioUtil.getInstance(context)
         .post("takeCoupon", data: {"couponId": couponData["id"]});
     if (data != null && data["code"] == 200) {
       Toast.toast(context, msg: "领取成功");
     } else {
-      Toast.toast(context, msg: data["msg"]);
+      Toast.toast(context, msg: "优惠卷已经领取了");
       return;
     }
-    // 更新优惠卷
+    // 更新优惠券
     await getAllCoupon();
   }
 
@@ -52,7 +52,7 @@ class _TakeCouponState extends State<TakeCoupon> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          TopTitle(title: "优惠卷中心", showArrow: true, ifRefresh: true),
+          TopTitle(title: "优惠券中心", showArrow: true, ifRefresh: true),
           _buildRoot(),
         ],
       )),
@@ -74,12 +74,12 @@ class _TakeCouponState extends State<TakeCoupon> {
       return Container(
         height: 500,
         alignment: Alignment.center,
-        child: Text("暂时没卷，请稍后再来!", style: TextStyle(fontSize: 18)),
+        child: Text("暂时没券，请稍后再来!", style: TextStyle(fontSize: 18)),
       );
     }
   }
 
-// 优惠卷信息
+// 优惠券信息
   Widget couponInfo(couponData) {
     var supplier = couponData["Supplier_Info"];
     return Container(
@@ -93,9 +93,9 @@ class _TakeCouponState extends State<TakeCoupon> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          // 优惠卷金额信息
+          // 优惠券金额信息
           Container(
-            width: 110,
+            width: 90,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -103,7 +103,7 @@ class _TakeCouponState extends State<TakeCoupon> {
                   "￥${couponData["faceValue"]}",
                   style: TextStyle(
                       color: Colors.red,
-                      fontSize: 25,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold),
                 ),
                 Text("满${couponData["threshold"]}可用",
@@ -114,7 +114,7 @@ class _TakeCouponState extends State<TakeCoupon> {
               ],
             ),
           ),
-          // 优惠卷使用信息
+          // 优惠券使用信息
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +124,7 @@ class _TakeCouponState extends State<TakeCoupon> {
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 Text(
                     couponData["type"] == 0
-                        ? "无门槛优惠卷"
+                        ? "无门槛优惠券"
                         : "限定商家：${supplier["username"]}",
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
@@ -134,14 +134,17 @@ class _TakeCouponState extends State<TakeCoupon> {
             ),
           ),
           Container(
-              width: 110,
+              width: 100,
               padding: EdgeInsets.only(right: 5),
               child: FlatButton(
                 color: Colors.red,
                 highlightColor: Colors.red,
                 colorBrightness: Brightness.dark,
                 splashColor: Colors.grey,
-                child: Text("立即领取"),
+                child: Text(
+                  "立即领取",
+                  style: TextStyle(fontSize: 14),
+                ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 onPressed: () async {

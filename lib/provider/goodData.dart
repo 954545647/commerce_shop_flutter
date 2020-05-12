@@ -8,7 +8,6 @@ class GoodData with ChangeNotifier {
 
 // 判断是否已经保存该商品信息
   has(id) {
-    print("object");
     bool res = false;
     _goodLists.forEach((item) {
       if (item.id == id) {
@@ -25,7 +24,6 @@ class GoodData with ChangeNotifier {
     goodName,
     imgCover,
   ) {
-    print("object");
     if (has(id)) {
       return;
     } else {
@@ -34,7 +32,6 @@ class GoodData with ChangeNotifier {
   }
 
   getGoodById(id) {
-    print("object");
     var result;
     if (has(id)) {
       _goodLists.forEach((item) {
@@ -61,7 +58,6 @@ class Good {
     String goodName,
     String imgCover,
   ) {
-    print("object");
     this.id = id;
     this.goodName = goodName;
     this.imgCover = imgCover;

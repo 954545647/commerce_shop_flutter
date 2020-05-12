@@ -49,7 +49,7 @@ class _HotAdoptState extends State<HotAdopt> {
           );
   }
 
-  // 热门商品标题
+  // 热门认养标题
   Widget hotGoodsTitle() {
     return Container(
       decoration: BoxDecoration(
@@ -59,11 +59,11 @@ class _HotAdoptState extends State<HotAdopt> {
       height: ScreenUtil.getInstance().setHeight(100),
       width: ScreenUtil.getInstance().setWidth(750),
       alignment: Alignment.center,
-      child: Text('热门商品'),
+      child: Text('热门认养'),
     );
   }
 
-  // 热门商品子项
+  // 热门认养子项
   Widget hotGoodsItem(item) {
     var name = item['goodName'];
     var price = item['price'];
@@ -86,17 +86,14 @@ class _HotAdoptState extends State<HotAdopt> {
                 width: ScreenUtil().setWidth(300),
                 height: ScreenUtil().setHeight(300),
                 fit: BoxFit.cover),
+            SizedBox(
+              width: 10,
+            ),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    desc.toString(),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 20),
-                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -112,7 +109,13 @@ class _HotAdoptState extends State<HotAdopt> {
                               fontSize: 25,
                               fontWeight: FontWeight.bold)),
                     ],
-                  )
+                  ),
+                  Text(
+                    desc.toString(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ],
               ),
             )

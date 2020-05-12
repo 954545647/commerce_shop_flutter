@@ -77,7 +77,12 @@ class _MyFarmState extends State<MyFarm> {
   farmInfo(orderInfo, orderDetail) {
     List<Widget> list = [];
     for (int i = 0; i < orderDetail.length; i++) {
-      list.add(farmItemInfo(orderInfo, orderDetail[i], orderDetail.length, i));
+      if (orderDetail != null &&
+          orderDetail[i] != null &&
+          orderDetail[i]["crop_count"] != 0) {
+        list.add(
+            farmItemInfo(orderInfo, orderDetail[i], orderDetail.length, i));
+      }
     }
     return list;
   }

@@ -17,17 +17,17 @@ class FarmOrder extends StatefulWidget {
 }
 
 class _FarmOrderState extends State<FarmOrder> {
-  List userCouponList = []; // 用户优惠卷列表
+  List userCouponList = []; // 用户优惠券列表
   int orderId; // 取消支付加入定时队列的id
   int totalPrice = 0; // 订单总价格
-  var chooseCoupon = {}; // 选中的优惠卷
+  var chooseCoupon = {}; // 选中的优惠券
   @override
   void initState() {
     getUserCoupons();
     super.initState();
   }
 
-// 获取用户优惠卷（只获取未使用的）
+// 获取用户优惠券（只获取未使用的）
   getUserCoupons() {
     DioUtil.getInstance(context).post("myCoupon").then((val) {
       if (val != null && val["data"] != null) {
@@ -66,11 +66,11 @@ class _FarmOrderState extends State<FarmOrder> {
     }
     // 更新农场信息
     await updateFarmInfo(orderInfos);
-    // 修改优惠卷状态
+    // 修改优惠券状态
     modifyCouponStatus();
   }
 
-  // 修改用户优惠卷状态
+  // 修改用户优惠券状态
   modifyCouponStatus() {
     DioUtil.getInstance(context).post("handleCoupon", data: {
       "couponId": chooseCoupon["couponId"],
@@ -293,7 +293,7 @@ class _FarmOrderState extends State<FarmOrder> {
     );
   }
 
-// 优惠卷
+// 优惠券
   Widget useCoupon(total, orderInfos) {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -304,7 +304,7 @@ class _FarmOrderState extends State<FarmOrder> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("选择优惠卷"),
+          Text("选择优惠券"),
           Text(
             chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
             style: TextStyle(color: Colors.red, fontSize: 18),
@@ -325,7 +325,7 @@ class _FarmOrderState extends State<FarmOrder> {
                                 alignment: Alignment.center,
                                 height: 80,
                                 child: Text(
-                                  "优惠卷列表",
+                                  "优惠券列表",
                                   style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.w600),

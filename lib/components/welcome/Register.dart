@@ -130,7 +130,7 @@ class _RegisterState extends State<Register> {
               left: 5.0,
               top: 90.0,
               child: Text(
-                'Sign Up',
+                '注册',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.0,
@@ -219,6 +219,7 @@ class _RegisterState extends State<Register> {
                           ),
                           TextFormField(
                               controller: _checkCodeController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                   labelText: "验证码",
                                   hintText: "输入6位数验证码",
@@ -281,10 +282,8 @@ class _RegisterState extends State<Register> {
                   width: ScreenUtil().setWidth(680),
                   margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
                   child: Text(
-                    'Already have an account? Sign In',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    '已有帐号，前往登录',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 onTap: () {

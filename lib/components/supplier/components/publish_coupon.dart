@@ -1,4 +1,4 @@
-// 发布优惠卷
+// 发布优惠券
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/top_title.dart';
@@ -19,7 +19,7 @@ class _PublishCouponState extends State<PublishCoupon> {
   TextEditingController _thresholdController =
       new TextEditingController(); // 阙值
   TextEditingController _faceController = new TextEditingController(); // 面值
-  TextEditingController _countController = new TextEditingController(); // 优惠卷数量
+  TextEditingController _countController = new TextEditingController(); // 优惠券数量
   @override
   void initState() {
     super.initState();
@@ -51,7 +51,7 @@ class _PublishCouponState extends State<PublishCoupon> {
     return res;
   }
 
-// 发布优惠卷
+// 发布优惠券
   publish() {
     String couponName = _nameController.text;
     int threshold = int.parse(_thresholdController.text);
@@ -90,34 +90,34 @@ class _PublishCouponState extends State<PublishCoupon> {
       child: ListView(
         children: <Widget>[
           TopTitle(
-            title: "发布优惠卷",
+            title: "发布优惠券",
             showArrow: true,
             ifRefresh: true,
           ),
-          // 优惠卷名称
+          // 优惠券名称
           SingleItem(
             title: "名称",
-            detail: "请输入优惠卷名称",
+            detail: "请输入优惠券名称",
             itemController: _nameController,
             ifNum: false,
-          ), // 优惠卷阙值
+          ), // 优惠券阙值
           SingleItem(
             title: "阙值",
-            detail: "请输入优惠卷阙值",
+            detail: "请输入优惠券阙值",
             itemController: _thresholdController,
             ifNum: true,
           ),
-          // 优惠卷面值
+          // 优惠券面值
           SingleItem(
             title: "面值",
-            detail: "请输入优惠卷面值",
+            detail: "请输入优惠券面值",
             itemController: _faceController,
             ifNum: true,
           ),
-          // 优惠卷数量
+          // 优惠券数量
           SingleItem(
             title: "数量",
-            detail: "请输入优惠卷数量",
+            detail: "请输入优惠券数量",
             itemController: _countController,
             ifNum: true,
           ),

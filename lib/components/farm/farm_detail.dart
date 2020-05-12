@@ -342,7 +342,8 @@ class _FarmDetailState extends State<FarmDetail> {
                       child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              border: Border.all(width: 1)),
+                              border:
+                                  Border.all(width: 1, color: Colors.white)),
                           alignment: Alignment.center,
                           height: ScreenUtil().setWidth(50),
                           width: ScreenUtil().setWidth(50),

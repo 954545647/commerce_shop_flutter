@@ -95,6 +95,7 @@ class _NextStepState extends State<NextStep> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: ListView(
             children: <Widget>[
               SizedBox(
@@ -191,6 +192,7 @@ class _NextStepState extends State<NextStep> {
               ),
               Container(
                 margin: EdgeInsets.fromLTRB(10, 30, 10, 0),
+                color: Colors.white,
                 alignment: Alignment.center,
                 height: ScreenUtil().setHeight(100),
                 child: RaisedButton(

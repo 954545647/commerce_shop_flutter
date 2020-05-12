@@ -98,7 +98,7 @@ class _ChatToServiceState extends State<ChatToService> {
     Timer(Duration(microseconds: 0),
         () => _controller.jumpTo(_controller.position.maxScrollExtent));
     return new Scaffold(
-      backgroundColor: Color.fromRGBO(242, 242, 242, 1),
+      backgroundColor: Color.fromRGBO(248, 248, 248, 1),
       body: MediaQuery.removePadding(
         context: context,
         removeTop: true,
@@ -246,7 +246,7 @@ class _ChatToServiceState extends State<ChatToService> {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                     image: NetworkImage(
-                        'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583779492487&di=2843ea2cc709f68d1f2857ce3f6a4b40&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01af985927beeeb5b3086ed47f7e57.png%401280w_1l_2o_100sh.png'),
+                        'http://p5.qhmsg.com/t018a254264487b5a5d.png'),
                     fit: BoxFit.cover))),
         SizedBox(
           width: 10,

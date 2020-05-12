@@ -69,7 +69,7 @@ class _LoginState extends State<Login> {
               left: 5.0,
               top: 90.0,
               child: Text(
-                'Login',
+                '登录',
                 style: TextStyle(
                     color: Colors.black,
                     fontSize: 30.0,
@@ -118,8 +118,9 @@ class _LoginState extends State<Login> {
                                     child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
                                       child: Text(
-                                        'No account yet. Sign up for one?',
+                                        '前往注册',
                                         style: TextStyle(
+                                          fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

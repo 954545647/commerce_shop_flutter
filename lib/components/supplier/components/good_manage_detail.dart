@@ -124,11 +124,14 @@ class _GoodManageDetailState extends State<GoodManageDetail> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 // 描述
-                Text(
-                  desc.toString(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 20),
+                Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Text(
+                    desc.toString(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

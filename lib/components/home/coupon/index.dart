@@ -1,4 +1,4 @@
-// 优惠卷主页
+// 优惠券主页
 import 'package:flutter/material.dart';
 import 'package:commerce_shop_flutter/utils/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +57,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            TopTitle(title: "我的优惠卷", showArrow: true),
+            TopTitle(title: "我的优惠券", showArrow: true),
             Stack(
               children: <Widget>[
                 _buildRoot(),
@@ -148,7 +148,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
           borderRadius: BorderRadius.circular(15)),
       child: Row(
         children: <Widget>[
-          // 优惠卷金额信息
+          // 优惠券金额信息
           Container(
             width: 140,
             child: Column(
@@ -171,11 +171,11 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-          // 优惠卷使用信息
+          // 优惠券使用信息
           Expanded(
             child: Center(
               child: Text(
-                  data["type"] == 0 ? "无门槛优惠卷" : "限定商家：${supplier["username"]}",
+                  data["type"] == 0 ? "无门槛优惠券" : "限定商家：${supplier["username"]}",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ),
           ),
@@ -190,12 +190,14 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
       padding: EdgeInsets.fromLTRB(25, 0, 25, 0),
       child: Column(
         children: <Widget>[
-          ListView.builder(
-            itemCount: useCoupons.length,
-            itemBuilder: (BuildContext context, int index) {
-              return alreadyUsedCoupon(useCoupons[index]);
-            },
-            shrinkWrap: true,
+          Expanded(
+            child: ListView.builder(
+              itemCount: useCoupons.length,
+              itemBuilder: (BuildContext context, int index) {
+                return alreadyUsedCoupon(useCoupons[index]);
+              },
+              shrinkWrap: true,
+            ),
           )
         ],
       ),
@@ -211,7 +213,7 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
           color: Colors.white, borderRadius: BorderRadius.circular(15)),
       child: Row(
         children: <Widget>[
-          // 优惠卷金额信息
+          // 优惠券金额信息
           Container(
             width: 140,
             child: Column(
@@ -233,23 +235,23 @@ class _CouponState extends State<Coupon> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
-          // 优惠卷使用信息
+          // 优惠券使用信息
           Center(
             child: Text(
-                data["type"] == 0 ? "无门槛优惠卷" : "限定商家：${supplier["username"]}",
+                data["type"] == 0 ? "无门槛优惠券" : "限定商家：${supplier["username"]}",
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                     color: Colors.grey)),
           ),
-          Expanded(
-            child: Center(
-              child: Text(
-                "已经使用",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-          )
+          // Expanded(
+          //   child: Center(
+          //     child: Text(
+          //       "已经使用",
+          //       style: TextStyle(color: Colors.grey),
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

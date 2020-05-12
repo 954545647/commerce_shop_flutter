@@ -84,9 +84,9 @@ class _UserManageState extends State<UserManage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Icon(IconData(0xe611, fontFamily: 'myIcons')),
+                        Icon(IconData(0xe647, fontFamily: 'myIcons')),
                         Text(
-                          '发布优惠卷',
+                          '发布优惠券',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],

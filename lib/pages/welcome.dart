@@ -42,7 +42,6 @@ class _WelcomeState extends State<Welcome> {
     // 如果有token，则直接登录获取商家数据
     if (srefreshToken != null) {
       int supplierId = prefs.get("supplierId");
-      print(supplierId);
       getSupplierInfo(supplierId);
     }
   }
@@ -51,7 +50,8 @@ class _WelcomeState extends State<Welcome> {
   getUserInfo(userId) async {
     final user = Provider.of<UserData>(context);
     final socket = Provider.of<SocketData>(context);
-    var data = await DioUtil.getInstance(context).post('getUserInfo');
+    var data = await DioUtil.getInstance(context)
+        .post('getUserInfo', data: {"id": userId});
     // 获取用户默认地址
     if (data != null && data["code"] == 200) {
       var res = data["data"];
@@ -70,7 +70,8 @@ class _WelcomeState extends State<Welcome> {
   // 获取商家信息
   getSupplierInfo(supplierId) async {
     final supplier = Provider.of<SupplierData>(context);
-    var data = await DioUtil.getInstance(context).post('SgetSupplierInfo');
+    var data = await DioUtil.getInstance(context)
+        .post('SgetSupplierInfo', data: {"id": supplierId});
     if (data != null && data["code"] == 200) {
       var res = data["data"];
       supplier.login(

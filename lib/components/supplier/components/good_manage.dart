@@ -128,7 +128,7 @@ class _GoodManageState extends State<GoodManage> {
                         Text(goodCount.toString(),
                             style: TextStyle(fontSize: 18.0)),
                         Text(
-                          '家禽管理',
+                          '认养管理',
                           style: TextStyle(fontSize: 14.0, color: Colors.grey),
                         )
                       ],
@@ -161,7 +161,7 @@ class _GoodManageState extends State<GoodManage> {
                         children: <Widget>[
                           Icon(Icons.add),
                           Text(
-                            '发布家禽',
+                            '发布认养',
                             style:
                                 TextStyle(fontSize: 14.0, color: Colors.grey),
                           )

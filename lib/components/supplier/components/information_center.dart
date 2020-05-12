@@ -43,7 +43,9 @@ class _InformationCenterState extends State<InformationCenter> {
         .post("SsupplierMessage", data: {"id": supplierData.supplierInfo.id});
     if (mounted) {
       setState(() {
-        message = data["data"];
+        if (data != null && data["data"] != null) {
+          message = data["data"];
+        }
       });
     }
   }
@@ -97,77 +99,93 @@ class _InformationCenterState extends State<InformationCenter> {
   }
 
   Widget userItem(data) {
-    var userInfo = data["userInfo"];
-    List historyInfo = data["historyInfo"];
-    String lastMess = historyInfo[0]["content"];
-    String lassMessTime = historyInfo[0]["createdAt"];
-    return GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(context, "informationDetail", arguments: data)
-              .then((val) {
-            if (val) {
-              getHistory();
-            }
-          });
-        },
-        child: Container(
-          height: ScreenUtil().setHeight(120),
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: ScreenUtil().setWidth(120),
-                height: ScreenUtil().setHeight(120),
-                padding: EdgeInsets.all(8),
-                child: Image.network(
-                  "${Config.apiHost}/${userInfo["imgCover"]}",
-                  width: ScreenUtil().setWidth(100),
-                  height: ScreenUtil().setHeight(100),
-                  fit: BoxFit.cover,
+    var userInfo;
+    List historyInfo;
+    String lastMess = "";
+    String lassMessTime = "";
+    if (data != null &&
+        data["userInfo"] != null &&
+        data["historyInfo"] != null &&
+        data["historyInfo"][0] != null) {
+      userInfo = data["userInfo"];
+      historyInfo = data["historyInfo"];
+      lastMess = historyInfo[0]["content"];
+      lassMessTime = historyInfo[0]["createdAt"];
+      return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, "informationDetail", arguments: data)
+                .then((val) {
+              if (val) {
+                getHistory();
+              }
+            });
+          },
+          child: Container(
+            height: ScreenUtil().setHeight(120),
+            child: Row(
+              children: <Widget>[
+                Container(
+                  width: ScreenUtil().setWidth(120),
+                  height: ScreenUtil().setHeight(120),
+                  padding: EdgeInsets.all(8),
+                  child: Image.network(
+                    "${Config.apiHost}/${userInfo["imgCover"]}",
+                    width: ScreenUtil().setWidth(100),
+                    height: ScreenUtil().setHeight(100),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.fromLTRB(
-                    ScreenUtil().setWidth(10), 0, ScreenUtil().setWidth(10), 0),
-                width: MediaQuery.of(context).size.width -
-                    ScreenUtil().setHeight(140),
-                decoration: BoxDecoration(
-                    border: Border(
-                  bottom: BorderSide(width: 1, color: Colors.black12),
-                )),
-                alignment: Alignment.bottomLeft,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          userInfo["username"],
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        Text(
-                          getMessTime(lassMessTime),
-                          style: TextStyle(color: Colors.black12, fontSize: 12),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          lastMess,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.black26, fontSize: 16),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
-        ));
+                Container(
+                  padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(10), 0,
+                      ScreenUtil().setWidth(10), 0),
+                  width: MediaQuery.of(context).size.width -
+                      ScreenUtil().setHeight(140),
+                  decoration: BoxDecoration(
+                      border: Border(
+                    bottom: BorderSide(width: 1, color: Colors.black12),
+                  )),
+                  alignment: Alignment.bottomLeft,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            userInfo["username"],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          Text(
+                            getMessTime(lassMessTime),
+                            style:
+                                TextStyle(color: Colors.black12, fontSize: 12),
+                          )
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            lastMess,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style:
+                                TextStyle(color: Colors.black26, fontSize: 16),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ));
+    } else {
+      return Container(
+        height: 0,
+        child: Text("data"),
+      );
+    }
   }
 }

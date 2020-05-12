@@ -2,8 +2,5 @@
 
 void main(List<String> args) {
   var a = {};
-  print(a.length);
-  if (a != null && a.length > 0) {
-    print("sss");
-  }
+  if (a != null && a.length > 0) {}
 }

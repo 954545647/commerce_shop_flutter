@@ -19,7 +19,7 @@ const urlList = {
   "getUserInfo": "/user/getUserInfo",
   "userIfExit": "/user/ifExit",
   "updateImg": "/user/updateCover",
-  // 优惠卷接口
+  // 优惠券接口
   "getAllCoupon": "/coupon/getAlls",
   "myCoupon": "/coupon/myCoupon",
   "handleCoupon": "/coupon/handleCoupon",

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:commerce_shop_flutter/components/common/toast.dart';
 
-// 优惠卷
-// userCouponList 保存用户优惠卷的数组
-// couponInfo当前优惠卷的信息
+// 优惠券
+// userCouponList 保存用户优惠券的数组
+// couponInfo当前优惠券的信息
 // totalPrice 订单总价格
-// chooseCoupon 选中的优惠卷
-// getUserCoupons 获取用户优惠卷的方法
+// chooseCoupon 选中的优惠券
+// getUserCoupons 获取用户优惠券的方法
 // setState 重绘
 Widget useCoupon(
     {context,
@@ -25,7 +25,7 @@ Widget useCoupon(
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Text("选择优惠卷"),
+        Text("选择优惠券"),
         Text(
           chooseCoupon.containsKey("name") ? chooseCoupon["name"] : "",
           style: TextStyle(color: Colors.red, fontSize: 18),
@@ -46,7 +46,7 @@ Widget useCoupon(
                               alignment: Alignment.center,
                               height: 80,
                               child: Text(
-                                "优惠卷列表",
+                                "优惠券列表",
                                 style: TextStyle(
                                     fontSize: 25, fontWeight: FontWeight.w600),
                               ),

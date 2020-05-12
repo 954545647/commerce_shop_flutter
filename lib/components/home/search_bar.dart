@@ -131,7 +131,12 @@ class CustomSearchDelegate extends SearchDelegate {
     }
     if (animalData != null && animalData.length > 0) {
       for (var i = 0; i < animalData.length; i++) {
-        list.add(animal(context, animalData[i]));
+        if (animalData[i] != null && animalData[i]["status"] != null) {
+          int status = animalData[i]["status"];
+          if (status == 1) {
+            list.add(animal(context, animalData[i]));
+          }
+        }
       }
     }
     if (list.length == 0) {
@@ -203,25 +208,27 @@ class CustomSearchDelegate extends SearchDelegate {
                 fit: BoxFit.contain,
               ),
               SizedBox(
-                width: 50,
+                width: 10,
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(15),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        tag,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                    child: Text(
-                      tag,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  Text(name),
-                  Text(desc),
-                ],
+                    Text(name),
+                    Text(desc),
+                  ],
+                ),
               )
             ],
           ),

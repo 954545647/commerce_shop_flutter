@@ -24,7 +24,7 @@ Widget gooodPrice(argument) {
     height: ScreenUtil().setHeight(130),
     padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Text.rich(TextSpan(children: [
           TextSpan(
@@ -40,30 +40,30 @@ Widget gooodPrice(argument) {
                   color: Colors.red,
                   fontWeight: FontWeight.bold))
         ])),
-        Container(
-          child: Row(
-            children: <Widget>[
-              InkWell(
-                child: Column(
-                  children: <Widget>[
-                    Icon(IconData(0xe628, fontFamily: 'myIcons'), size: 22),
-                    SizedBox(height: 2),
-                    Text('降价通知')
-                  ],
-                ),
-              ),
-              SizedBox(width: 10),
-              InkWell(
-                  child: Column(
-                children: <Widget>[
-                  Icon(IconData(0xe60a, fontFamily: 'myIcons'), size: 22),
-                  SizedBox(height: 2),
-                  Text('关注')
-                ],
-              ))
-            ],
-          ),
-        )
+        // Container(
+        //   child: Row(
+        //     children: <Widget>[
+        //       InkWell(
+        //         child: Column(
+        //           children: <Widget>[
+        //             Icon(IconData(0xe628, fontFamily: 'myIcons'), size: 22),
+        //             SizedBox(height: 2),
+        //             Text('降价通知')
+        //           ],
+        //         ),
+        //       ),
+        //       SizedBox(width: 10),
+        //       InkWell(
+        //           child: Column(
+        //         children: <Widget>[
+        //           Icon(IconData(0xe60a, fontFamily: 'myIcons'), size: 22),
+        //           SizedBox(height: 2),
+        //           Text('关注')
+        //         ],
+        //       ))
+        //     ],
+        //   ),
+        // )
       ],
     ),
   );

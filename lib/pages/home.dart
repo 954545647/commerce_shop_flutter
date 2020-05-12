@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:commerce_shop_flutter/components/home/search_bar.dart';
-// import 'package:commerce_shop_flutter/components/home/home_swiper.dart';
+import 'package:commerce_shop_flutter/components/home/home_swiper.dart';
 import 'package:commerce_shop_flutter/components/home/menu_list.dart';
-// import 'package:commerce_shop_flutter/components/home/weather.dart';
+import 'package:commerce_shop_flutter/components/home/weather.dart';
 import 'package:commerce_shop_flutter/components/home/hot_adopt.dart';
 import 'package:commerce_shop_flutter/components/home/hot_farm.dart';
 
@@ -17,11 +17,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
   List lists = [
     // 轮播图
-    // HomeSwiper(),
+    HomeSwiper(),
     // 菜单列表
     MenuList(),
     // 天气预报
-    // Weather(),
+    Weather(),
     // 热门认养
     HotAdopt(),
     // 热门租地
@@ -34,6 +34,7 @@ class _HomeState extends State<Home> with AutomaticKeepAliveClientMixin {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.search),

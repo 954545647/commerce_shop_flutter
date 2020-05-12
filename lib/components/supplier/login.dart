@@ -123,10 +123,10 @@ class _SupplierLoginState extends State<SupplierLogin> {
                                     child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 30, 30, 0),
                                       child: Text(
-                                        'No account yet. Sign up for one?',
+                                        '前往注册',
                                         style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
                                       ),
                                     ),
                                     onTap: () {

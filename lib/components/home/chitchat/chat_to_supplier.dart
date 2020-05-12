@@ -118,7 +118,7 @@ class _ChatToSupplierState extends State<ChatToSupplier> {
     String imgCover = args["imgCover"];
     return Scaffold(
       body: Container(
-        color: Color.fromRGBO(240, 240, 240, 1),
+        color: Color.fromRGBO(248, 248, 248, 1),
         child: Column(
           children: <Widget>[
             TopTitle(

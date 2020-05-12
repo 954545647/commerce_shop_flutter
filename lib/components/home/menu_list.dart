@@ -19,8 +19,8 @@ class MenuList extends StatelessWidget {
       height: ScreenUtil.getInstance().setHeight(300),
       child: GridView.count(
         physics: NeverScrollableScrollPhysics(), // 禁止回弹
-        crossAxisCount: 4,
-        childAspectRatio: 1.3,
+        crossAxisCount: 3,
+        childAspectRatio: 1.8,
         children:
             menuListData.map((item) => menuListItem(item, context)).toList(),
       ),
@@ -118,15 +118,15 @@ const List<MenuListItemViewModel> menuListData = [
   //     color: Colors.deepOrangeAccent,
   //   ),
   // ),
-  MenuListItemViewModel(
-      title: '附近农场',
-      path: 'nearFarm',
-      icon: Icon(
-        MenuIcons.nearFarm,
-        size: 29,
-        color: Colors.deepOrangeAccent,
-      ),
-      shouldLogin: false),
+  // MenuListItemViewModel(
+  //     title: '附近农场',
+  //     path: 'nearFarm',
+  //     icon: Icon(
+  //       MenuIcons.nearFarm,
+  //       size: 29,
+  //       color: Colors.deepOrangeAccent,
+  //     ),
+  //     shouldLogin: false),
 
   MenuListItemViewModel(
       title: '每日签到',
@@ -137,15 +137,15 @@ const List<MenuListItemViewModel> menuListData = [
         color: Colors.deepOrangeAccent,
       ),
       shouldLogin: true),
-  MenuListItemViewModel(
-      title: '积分商城',
-      path: 'integralMall',
-      icon: Icon(
-        MenuIcons.integralShop,
-        size: 29,
-        color: Colors.deepOrangeAccent,
-      ),
-      shouldLogin: true),
+  // MenuListItemViewModel(
+  //     title: '积分商城',
+  //     path: 'integralMall',
+  //     icon: Icon(
+  //       MenuIcons.integralShop,
+  //       size: 29,
+  //       color: Colors.deepOrangeAccent,
+  //     ),
+  //     shouldLogin: true),
   MenuListItemViewModel(
       title: '热点新闻',
       path: 'hotNews',
